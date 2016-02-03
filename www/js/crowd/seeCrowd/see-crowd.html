@@ -1,0 +1,69 @@
+<ons-page>
+  <ons-toolbar>
+    <div class="left">
+      <ons-toolbar-button ng-click="menu.toggle()">
+        <ons-icon icon="ion-navicon" size="28px" fixed-width="false"></ons-icon>
+      </ons-toolbar-button>
+    </div>
+    <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
+  </ons-toolbar>
+
+  <div ng-if="!crowds">
+    <div style="text-align: center">
+      <br />
+      <br />
+      <button class="button button--quiet" ng-click="$root.checkLocation()">Location Failed. Refresh</button>
+    </div>
+  </div>
+
+  <div ng-if="crowds === 'pending'">
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-sm-2" style="width:100%">
+          <div class="sp sp-wave"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="crowds && crowds !== 'pending'">
+    <ons-tabbar>
+      <ons-tab page="list.html" label="{{$root.lang.SEE_CROWD_MENU.LIST}}" icon="ion-android-list" active="true"></ons-tab>
+      <!-- <ons-tab page="tags.html" label="Tags" icon="ion-ios-pricetag"></ons-tab> -->
+      <ons-tab page="map.html" label="{{$root.lang.SEE_CROWD_MENU.MAP}}" icon="ion-earth"></ons-tab>
+    </ons-tabbar>
+
+    <ons-template id="list.html">
+      <ons-list ng-if="placeBasedCrowds">
+        <ons-list-item ng-click="selectPlaceBasedCrowd(placeBasedCrowd);" ng-repeat="placeBasedCrowd in placeBasedCrowds">{{placeBasedCrowd.placeName}} Avg:{{placeBasedCrowd.crowdAverage}},LastDate:{{placeBasedCrowd.lastUpdateDate}}
+          <div class="c100 p{{placeBasedCrowd.crowdAverage}} small">
+            <span>{{placeBasedCrowd.crowdAverage}}%</span>
+            <div class="slice">
+              <div class="bar"></div>
+              <div class="fill"></div>
+            </div>
+          </div>
+        </ons-list-item>
+      </ons-list>
+      <button ng-if="!placeBasedCrowds" class="button button--quiet" ng-click="">No recent crowd. Tab to add</button>
+    </ons-template>
+
+    <ons-template id="tags.html">
+      <ons-toolbar>
+        <div class="center">Tags</div>
+      </ons-toolbar>
+
+      <p style="padding-top: 100px; color: #999; text-align: center">Page Contents</p>
+    </ons-template>
+
+    <ons-template id="crowd-detail.html">
+      <ons-dialog var="dialog" cancelable ng-controller="seeCrowdDetailDialogController">
+        {{selectedPlaceBasedCrowd.placeName}} {{selectedPlaceBasedCrowd.crowdAverage}}
+      </ons-dialog>
+    </ons-template>
+
+    <ons-template id="map.html">
+      <div ng-controller="seeCrowdInMapController" id="map" style="width:100%; height:100%">
+    </ons-template>
+    </div>
+</ons-page>

@@ -1,0 +1,26 @@
+{
+  "MAIN_MENU": {
+    "SEE_CROWD": "Kalabalık Gör",
+    "SET_CROWD": "Kalabalık Gir",
+    "SETTINGS": "Ayarlar",
+    "EXIT": "Çıkış"
+  },
+  "SEE_CROWD_MENU": {
+    "LIST": "Liste",
+    "MAP": "Harita"
+  },
+  "SET_CROWD_MENU": {
+    "SELECT_PLACE": "Yer Seç",
+    "ENTER_CUSTOM_PLACE": "Özel Yer Gir",
+    "PLACE_NAME": "Yer Adı"
+  },
+  "CONFIRM": {
+    "CONFIRM": "Onay",
+    "QUIT_CONFIRM": "Çıkmak istediğine emin misin?",
+    "OK": "Tamam",
+    "CANCEL": "İptal"
+  },
+  "ERROR": {
+
+  }
+}

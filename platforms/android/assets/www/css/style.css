@@ -1,0 +1,14 @@
+.menu-item-generic-container {
+  padding: 0 !important;
+}
+.menu-item-generic {
+  height: 7em;
+  background-image: url('../img/crowd.png');
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -o-filter: blur(1px);
+  -ms-filter: blur(1px);
+  filter: blur(1px);
+}
