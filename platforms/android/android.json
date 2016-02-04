@@ -19,6 +19,10 @@
                         {
                             "xml": "<feature name=\"Globalization\"><param name=\"android-package\" value=\"org.apache.cordova.globalization.Globalization\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -36,6 +40,10 @@
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
                             "count": 1
                         }
                     ]
@@ -64,6 +72,9 @@
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
         "cordova-plugin-globalization": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         }
     },
@@ -257,12 +268,30 @@
             "clobbers": [
                 "navigator.globalization"
             ]
+        },
+        {
+            "file": "plugins/cordova-plugin-network-information/www/network.js",
+            "id": "cordova-plugin-network-information.network",
+            "pluginId": "cordova-plugin-network-information",
+            "clobbers": [
+                "navigator.connection",
+                "navigator.network.connection"
+            ]
+        },
+        {
+            "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+            "id": "cordova-plugin-network-information.Connection",
+            "pluginId": "cordova-plugin-network-information",
+            "clobbers": [
+                "Connection"
+            ]
         }
     ],
     "plugin_metadata": {
         "cordova-plugin-whitelist": "1.2.0",
         "cordova-plugin-geolocation": "1.0.1",
         "cordova-plugin-file": "3.0.0",
-        "cordova-plugin-globalization": "1.0.2"
+        "cordova-plugin-globalization": "1.0.2",
+        "cordova-plugin-network-information": "1.2.1-dev"
     }
 }

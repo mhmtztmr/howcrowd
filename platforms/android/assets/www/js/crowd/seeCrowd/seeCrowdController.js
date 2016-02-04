@@ -6,6 +6,7 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
       configService) {
       console.log('see crowd controller initialized');
       $scope.crowds = 'pending';
+
       seeCrowdModel.setCenterPoint(angular.fromJson(localStorage.getItem(
         'location')));
       if (seeCrowdModel.getCenterPoint()) {
@@ -16,15 +17,15 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
 
       $rootScope.$on("locationChanged", function(event, args) {
         console.log('location change event caught');
-		if(!seeCrowdModel.getCenterPoint()){
-		  if ($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
+        if (!seeCrowdModel.getCenterPoint()) {
+          if ($rootScope.location && $rootScope.location.latitude &&
+            $rootScope.location.longitude) {
             seeCrowdModel.setCenterPoint($rootScope.location);
             loadCrowds();
-          }
-		  else {
+          } else {
             $scope.crowds = undefined;
           }
-		}
+        }
       });
 
       $scope.checkLocation = function() {

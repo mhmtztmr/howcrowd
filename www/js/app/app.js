@@ -1,6 +1,6 @@
 var app = angular.module('app', ['onsen', 'ui.router', 'seeCrowd', 'setCrowd',
   'contact', 'about', 'db', 'device.id', 'map.Service', 'lang',
-  'config'
+  'config', 'myconn'
 ]);
 
 app.config(function($stateProvider, $urlRouterProvider) {
@@ -34,42 +34,77 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
   'identificationService', 'mapService', '$interval', 'langService',
-  'configService',
+  'configService', 'myconnection',
   function($rootScope, $scope, dbService, identificationService,
-    mapService, $interval, langService, configService) {
-
-    $rootScope.checkLocation = function() {
-      mapService.checkCurrentLocation();
-    };
-    dbService.init();
-    $rootScope.checkLocation();
-    $interval(function() {
-      if (!$rootScope.location.error) {
-        $rootScope.checkLocation();
-      }
-    }, 10000);
-
-    identificationService.loadDeviceId(true).then(function() {
-      var deviceId = identificationService.getDeviceId();
-      $rootScope.device = {
-        id: deviceId,
-        positiveFeedback: 1,
-        negativeFeedback: 0
-      }
-      dbService.retrieveDevice(deviceId).then(function(d) {
-        if (!d) {
-          dbService.insertDevice($rootScope.device);
-        } else {
-          $rootScope.device = {
-            id: d.deviceId,
-            positiveFeedback: d.positiveFeedback,
-            negativeFeedback: d.negativeFeedback
-          }
-        }
-      });
-    });
+    mapService, $interval, langService, configService,
+    myconnection) {
 
     langService.loadLangData();
+    dbService.init();
+
+    function initAppFncs() {
+      identificationService.loadDeviceId(true).then(function() {
+        var deviceId = identificationService.getDeviceId();
+        $rootScope.device = {
+          id: deviceId,
+          positiveFeedback: 1,
+          negativeFeedback: 0
+        }
+        dbService.retrieveDevice(deviceId).then(function(d) {
+          if (!d) {
+            dbService.insertDevice($rootScope.device);
+          } else {
+            $rootScope.device = {
+              id: d.deviceId,
+              positiveFeedback: d.positiveFeedback,
+              negativeFeedback: d.negativeFeedback
+            }
+          }
+        });
+      });
+
+      $rootScope.checkLocation = function() {
+        mapService.checkCurrentLocation();
+      };
+      $rootScope.checkLocation();
+
+      $interval(function() {
+        if (!$rootScope.location.error) {
+          $rootScope.checkLocation();
+        }
+      }, 10000);
+    }
+
+    if (!myApp.isCordovaApp) {
+      initAppFncs();
+    } else {
+      myconnection.getConnectionType(function(connType) {
+        if (connType === 'none') {
+          ons.notification.alert({
+            title: $rootScope.lang.ALERT.ALERT,
+            message: 'No connection. App will shut down...',
+            buttonLabel: $rootScope.lang.ALERT.OK,
+            callback: function(answer) {
+              navigator.app.exitApp(); // Close the app
+            }
+          });
+        } else {
+          initAppFncs();
+          myconnection.addConnectionListener(function() {
+            //alert('connected');
+          }, function() {
+            ons.notification.alert({
+              title: $rootScope.lang.ALERT.ALERT,
+              message: 'Connection lost. App will shut down...',
+              buttonLabel: $rootScope.lang.ALERT.OK,
+              callback: function(answer) {
+                navigator.app.exitApp(); // Close the app
+              }
+            });
+          });
+        }
+      });
+    }
 
     $scope.exitApp = function() {
       ons.notification.confirm({
