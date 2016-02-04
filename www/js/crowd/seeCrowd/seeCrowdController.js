@@ -4,7 +4,7 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
 
     function($rootScope, $scope, $timeout, seeCrowdModel, mapService,
       configService) {
-      console.log('see crowd');
+      console.log('see crowd controller initialized');
       $scope.crowds = 'pending';
       seeCrowdModel.setCenterPoint(angular.fromJson(localStorage.getItem(
         'location')));
@@ -14,22 +14,23 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
         $scope.crowds = undefined;
       }
 
-      $scope.$watch(function() {
-        return $rootScope.location;
-      }, function(newValue, oldValue) {
-        if (newValue) {
-          if (newValue.latitude && newValue.longitude) {
-            if (!oldValue) {
-              seeCrowdModel.setCenterPoint($rootScope.location);
-              loadCrowds();
-            } else if (newValue.latitude !== oldValue.latitude ||
-              newValue.longitude !== oldValue.longitude) {
-              seeCrowdModel.setCenterPoint($rootScope.location);
-              loadCrowds();
-            }
+      $rootScope.$on("locationChanged", function(event, args) {
+        console.log('location change event caught');
+		if(!seeCrowdModel.getCenterPoint()){
+		  if ($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
+            seeCrowdModel.setCenterPoint($rootScope.location);
+            loadCrowds();
           }
-        }
-      }, true);
+		  else {
+            $scope.crowds = undefined;
+          }
+		}
+      });
+
+      $scope.checkLocation = function() {
+        $scope.crowds = 'pending';
+        $rootScope.checkLocation();
+      }
 
       function loadCrowds(serverRequest) {
         seeCrowdModel.loadCrowds(undefined, serverRequest).then(function() {
@@ -42,12 +43,6 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
       $scope.selectPlaceBasedCrowd = function(placeBasedCrowd) {
         seeCrowdModel.selectPlaceBasedCrowd(placeBasedCrowd);
       };
-
-      // $scope.showCrowdDetailDialog = function(dlg) {
-      //   ons.createDialog(dlg).then(function(dialog) {
-      //     dialog.show();
-      //   });
-      // };
     }
   ])
   .controller('seeCrowdInMapController', ['$rootScope', '$scope', '$timeout',

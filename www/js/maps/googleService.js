@@ -39,7 +39,7 @@ var googleService = function() {
     var service = new google.maps.places.PlacesService(map);
     var nearbyRequest = {
       location: latLng,
-      radius: 100
+      radius: 75
         // ,
         // types: ['restaurant']
     };

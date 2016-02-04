@@ -61,7 +61,7 @@ var dbService = function(backendlessService) {
   }
 
   function retrieveCrowds(filter) {
-    return backendlessService.retrieveCrowds();
+    return backendlessService.retrieveCrowds(filter);
   }
 
   return {

@@ -20,6 +20,12 @@
     "OK": "Ok",
     "CANCEL": "Cancel"
   },
+  "ALERT": {
+    "ALERT": "Alert",
+    "SUCCESS": "Successful!",
+    "FAIL": "Failure!",
+    "OK": "Ok"
+  },
   "ERROR": {
 
   }

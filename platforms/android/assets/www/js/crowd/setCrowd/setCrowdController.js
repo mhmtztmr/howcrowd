@@ -6,46 +6,40 @@ angular.module('setCrowd', ['setCrowd.Model', 'seeCrowd.Model', 'map.Model',
     function($rootScope, $scope, $timeout, mapModel, mapService,
       setCrowdModel) {
       console.log('set crowd');
-      $scope.nearbyPlaces = {
-        status: 'pending',
-        data: []
-      };
 
-      loadNearbyPlaces();
+      $scope.nearbyPlaces = 'pending';
+      if ($rootScope.location && $rootScope.location.latitude && $rootScope.location
+        .longitude) {
+        loadNearbyPlaces();
+      } else {
+        $scope.nearbyPlaces = undefined;
+      }
 
-      $scope.$watch(function() {
-        return $rootScope.location;
-      }, function(newValue, oldValue) {
-        if (newValue) {
-          if (newValue.latitude && newValue.longitude) {
-            if (!oldValue) {
-              loadNearbyPlaces();
-            } else if (newValue.latitude !== oldValue.latitude ||
-              newValue.longitude !== oldValue.longitude) {
-              loadNearbyPlaces();
-            }
-          } else if (newValue.error) {
-            // $scope.nearbyPlaces = {
-            //   status: 'failed'
-            // };
-          }
+      $rootScope.$on("locationChanged", function(event, args) {
+        console.log('location change event caught: ' + JSON.stringify(
+          $rootScope.location));
+        if ($rootScope.location && $rootScope.location.latitude &&
+          $rootScope.location.longitude) {
+          loadNearbyPlaces();
         } else {
-          // $scope.nearbyPlaces = {
-          //   status: 'failed'
-          // };
+          $scope.nearbyPlaces = undefined;
         }
-      }, true);
+      });
 
       function loadNearbyPlaces() {
-        if ($rootScope.location && $rootScope.location.latitude && $rootScope
-          .location.longitude) {
-          mapModel.loadNearbyPlaces($rootScope.location, true).then(
-            function() {
-              $scope.nearbyPlaces = mapModel.getNearbyPlaces();
-            },
-            function() {});
-        }
+        mapModel.loadNearbyPlaces($rootScope.location, true).then(
+          function() {
+            $scope.nearbyPlaces = mapModel.getNearbyPlaces();
+          },
+          function() {
+            $scope.nearbyPlaces = [];
+          });
       };
+
+      $scope.checkLocation = function() {
+        $scope.nearbyPlaces = 'pending';
+        $rootScope.checkLocation();
+      }
 
       $scope.selectPlace = function(place) {
         setCrowdModel.selectPlace(place);
@@ -89,12 +83,16 @@ angular.module('setCrowd', ['setCrowd.Model', 'seeCrowd.Model', 'map.Model',
           setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
             function() {
               ons.notification.alert({
-                message: 'Successful!'
+                title: $rootScope.lang.ALERT.ALERT,
+                message: $rootScope.lang.ALERT.SUCCESS,
+                buttonLabel: $rootScope.lang.ALERT.OK,
               });
             },
             function() {
               ons.notification.alert({
-                message: 'Failure!'
+                title: $rootScope.lang.ALERT.ALERT,
+                message: $rootScope.lang.ALERT.FAIL,
+                buttonLabel: $rootScope.lang.ALERT.OK,
               });
             });
         }
