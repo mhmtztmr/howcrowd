@@ -20,6 +20,12 @@
     "OK": "Tamam",
     "CANCEL": "İptal"
   },
+  "ALERT": {
+    "ALERT": "Uyarı",
+    "SUCCESS": "Başarılı!",
+    "FAIL": "Başarısız!",
+    "OK": "Tamam"
+  },
   "ERROR": {
 
   }

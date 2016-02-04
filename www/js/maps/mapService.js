@@ -1,47 +1,58 @@
 var mapService = function($q, $rootScope, googleService) {
 
-  function getCurrentLocation() {
-    var def = $q.defer();
-    if ($rootScope.location) {
-      $rootScope.location.status = 'pending';
-    } else {
-      $rootScope.location = {
-        status: 'pending'
-      }
+  function checkCurrentLocation() {
+    if (!$rootScope.location) {
+      $rootScope.location = {};
     }
+    var oldLocation = $rootScope.location;
+    console.log('checking location...location was: ' + JSON.stringify(
+      oldLocation));
     navigator.geolocation.getCurrentPosition(function(position) {
         var newLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         };
-        if (!$rootScope.location.latitude || !$rootScope.location.longitude) {
+        console.log('location successfully gained: ' + JSON.stringify(
+          newLocation));
+        if (!oldLocation || !oldLocation.latitude || !oldLocation.longitude) {
+          console.log(
+            'old location was undefined so current location is initalized with new one: ' +
+            JSON.stringify(newLocation));
           $rootScope.location = newLocation;
+          $rootScope.$broadcast('locationChanged', {
+            oldLocation: oldLocation
+          });
         } else {
           var distance = getDistanceBetweenLocations(newLocation,
-            $rootScope.location);
+            oldLocation);
+          console.log(
+            'distance between old and new locations: ' + distance);
           if (distance > 0.3) { //300 m
+            console.log(
+              'since old/new location distance is more than 300 m current location is updated with new : ' +
+              JSON.stringify(newLocation));
             $rootScope.location = newLocation;
+            $rootScope.$broadcast('locationChanged', {
+              oldLocation: oldLocation
+            });
           }
         }
         localStorage.setItem('location', angular.toJson($rootScope.location));
-        $rootScope.location.status = 'done';
-        def.resolve($rootScope.location);
       },
       function(err) {
+        console.log('location failed...');
         $rootScope.location = {
           error: {
             code: err.code,
             message: err.message
-          },
-          status: 'failed'
+          }
         }
-        def.resolve($rootScope.location);
+        $rootScope.$broadcast('locationChanged', {
+          oldLocation: oldLocation
+        });
       }, {
-        //enableHighAccuracy: true,
-        timeout: 5000
-          //maximumAge: 30000
+        timeout: 20000
       });
-    return def.promise;
   }
 
   //in km
@@ -59,7 +70,8 @@ var mapService = function($q, $rootScope, googleService) {
     var dLon = (location2.longitude - location1.longitude).degToRad();
     var a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((location1.latitude).degToRad()) * Math.cos((location2
+      Math.cos((location1.latitude).degToRad()) * Math.cos((
+        location2
         .latitude).degToRad()) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -78,7 +90,8 @@ var mapService = function($q, $rootScope, googleService) {
    * @author Alex Salisbury
    */
   function getBoundingBox(centerPoint, distance) {
-    var MIN_LAT, MAX_LAT, MIN_LON, MAX_LON, R, radDist, degLat, degLon,
+    var MIN_LAT, MAX_LAT, MIN_LON, MAX_LON, R, radDist, degLat,
+      degLon,
       radLat, radLon, minLat, maxLat, minLon, maxLon, deltaLon;
     if (distance < 0) {
       return 'Illegal arguments';
@@ -152,8 +165,10 @@ var mapService = function($q, $rootScope, googleService) {
     googleService.setMapBoundingBox(map, swLat, swLng, neLat, neLng);
   }
 
-  function markPlaceOnMap(map, latitude, longitude, crowdValue, clickEvent) {
-    googleService.markPlaceOnMap(map, latitude, longitude, crowdValue,
+  function markPlaceOnMap(map, latitude, longitude, crowdValue,
+    clickEvent) {
+    googleService.markPlaceOnMap(map, latitude, longitude,
+      crowdValue,
       clickEvent);
   }
 
@@ -163,7 +178,7 @@ var mapService = function($q, $rootScope, googleService) {
         def.resolve(nearbyPlaces);
       },
       function() {
-        def.reject();
+        def.resolve([]);
       });
     return def.promise;
   }
@@ -171,7 +186,7 @@ var mapService = function($q, $rootScope, googleService) {
   return {
     getBoundingBox: getBoundingBox,
     retrieveNearbyPlaces: retrieveNearbyPlaces,
-    getCurrentLocation: getCurrentLocation,
+    checkCurrentLocation: checkCurrentLocation,
     initMap: initMap,
     setMapBoundingBox: setMapBoundingBox,
     markPlaceOnMap: markPlaceOnMap
@@ -179,4 +194,6 @@ var mapService = function($q, $rootScope, googleService) {
 };
 
 angular.module('map.Service', ['google'])
-  .factory('mapService', ['$q', '$rootScope', 'googleService', mapService]);
+  .factory('mapService', ['$q', '$rootScope', 'googleService',
+    mapService
+  ]);

@@ -29,7 +29,7 @@ var identificationService = function($q, guidUtil, fileService) {
 					def.resolve(DID);
 				});
 			}
-		 
+
         }, function() {
 			DID = guidUtil.get();
 			writeDeviceIdToLocalStorage(DID);

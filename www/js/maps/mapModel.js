@@ -1,5 +1,5 @@
 var mapModel = function($q, mapService) {
-  var nearbyPlaces = {};
+  var nearbyPlaces = [];
   var loadStatus = '';
 
   function loadNearbyPlaces(location, serverRequest) {
@@ -10,20 +10,15 @@ var mapModel = function($q, mapService) {
     if (loadStatus === 'loaded') {
       def.resolve(nearbyPlaces);
     } else if (loadStatus === 'pending') {
-      def.resolve({});
+      def.resolve([]);
     } else {
-      nearbyPlaces.status = 'pending';
       loadStatus = 'pending';
       mapService.retrieveNearbyPlaces(location).then(function(results) {
-          nearbyPlaces.data = results;
-          nearbyPlaces.status = 'done';
+          nearbyPlaces = results;
           loadStatus = 'loaded';
           def.resolve(nearbyPlaces);
         },
         function() {
-          nearbyPlaces = {
-            status: 'failed'
-          }
           def.resolve(nearbyPlaces);
         });
     }

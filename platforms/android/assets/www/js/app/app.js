@@ -39,15 +39,12 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
     mapService, $interval, langService, configService) {
 
     $rootScope.checkLocation = function() {
-      mapService.getCurrentLocation().then(function(result) {
-          $rootScope.location = result;
-        },
-        function() {});
+      mapService.checkCurrentLocation();
     };
     dbService.init();
     $rootScope.checkLocation();
     $interval(function() {
-      if ($rootScope.location.status !== 'failed') {
+      if (!$rootScope.location.error) {
         $rootScope.checkLocation();
       }
     }, 10000);

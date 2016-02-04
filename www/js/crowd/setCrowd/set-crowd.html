@@ -7,7 +7,16 @@
     </div>
     <div class="center">{{$root.lang.MAIN_MENU.SET_CROWD}}</div>
   </ons-toolbar>
-  <div ng-if="(((!$root.location.latitude || !$root.location.longitude) && $root.location.status === 'pending') || ($root.location.latitude && $root.location.longitude && nearbyPlaces.status === 'pending'))">
+
+  <div ng-if="!nearbyPlaces">
+    <div style="text-align: center">
+      <br />
+      <br />
+      <button class="button button--quiet" ng-click="checkLocation()">Location Failed. Refresh</button>
+    </div>
+  </div>
+
+  <div ng-if="nearbyPlaces === 'pending'">
     <div class="container text-center">
       <div class="row">
         <div class="col-sm-2" style="width:100%">
@@ -17,68 +26,50 @@
     </div>
   </div>
 
-  <div ng-if="$root.location.status === 'failed'">
-    <div style="text-align: center">
-      <br />
-      <br />
-      <button class="button button--quiet" ng-click="$root.checkLocation()">Location Failed. Refresh</button>
+  <div ng-if="nearbyPlaces && nearbyPlaces !== 'pending'">
+    <div ng-if="nearbyPlaces.length === 0">
+      No nearby places found!
     </div>
-  </div>
-
-
-  <div ng-if="$root.location.latitude && $root.location.longitude">
-    <div ng-if="nearbyPlaces.status === 'failed'">
-      <div style="text-align: center">
-        <br />
-        <br />
-        <button class="button button--quiet">Places Failed. Refresh</button>
+    <ons-toolbar inline ng-if="nearbyPlaces.length > 0">
+      <div class="center">
+        {{$root.lang.SET_CROWD_MENU.SELECT_PLACE}}
       </div>
-    </div>
-    <div ng-if="nearbyPlaces.status === 'done'">
-      <div ng-if="nearbyPlaces.data.length === 0">
-        No nearby places found!
-      </div>
-      <ons-toolbar inline ng-if="nearbyPlaces.data.length > 0">
-        <div class="center">
-          {{$root.lang.SET_CROWD_MENU.SELECT_PLACE}}
-        </div>
-      </ons-toolbar>
-      <ons-list ng-if="nearbyPlaces.data.length > 0">
-        <ons-list-item ng-repeat="place in nearbyPlaces.data" ng-click="selectPlace(place);">{{place.name}}</ons-list-item>
-      </ons-list>
-      <ons-list>
-        <input class="button button--large--quiet" type="button" value="{{$root.lang.SET_CROWD_MENU.ENTER_CUSTOM_PLACE}}" ng-click="selectPlace();" />
-      </ons-list>
+    </ons-toolbar>
+    <ons-list ng-if="nearbyPlaces.length > 0">
+      <ons-list-item ng-repeat="place in nearbyPlaces" ng-click="selectPlace(place);">{{place.name}}</ons-list-item>
+    </ons-list>
+    <ons-list>
+      <input class="button button--large--quiet" type="button" value="{{$root.lang.SET_CROWD_MENU.ENTER_CUSTOM_PLACE}}" ng-click="selectPlace();" />
+    </ons-list>
 
-      <ons-template id="crowd-level.html">
-        <ons-dialog var="dialog" cancelable ng-controller="setCrowdDialogController">
-          <ons-toolbar inline ng-if="selectedPlace !== undefined">
-            <div class="center">
-              {{selectedPlace.name}}
-            </div>
-          </ons-toolbar>
+    <ons-template id="crowd-level.html">
+      <ons-dialog var="dialog" cancelable ng-controller="setCrowdDialogController">
+        <ons-toolbar inline ng-if="selectedPlace !== undefined">
+          <div class="center">
+            {{selectedPlace.name}}
+          </div>
+        </ons-toolbar>
 
-          <input ng-if="selectedPlace === undefined" style="width:100%; height:3em" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName" class="text-input text-input--underbar" />
+        <input ng-if="selectedPlace === undefined" style="width:100%; height:3em" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName" class="text-input text-input--underbar" />
 
-          <ons-list>
-            <ons-list-item modifier="tappable" ng-click="insertCrowd(100, customPlaceName); dialog.hide()">
-              100%
-            </ons-list-item>
-            <ons-list-item modifier="tappable" ng-click="insertCrowd(80, customPlaceName);dialog.hide()">
-              80%
-            </ons-list-item>
-            <ons-list-item modifier="tappable" ng-click="insertCrowd(60, customPlaceName);dialog.hide()">
-              60%
-            </ons-list-item>
-            <ons-list-item modifier="tappable" ng-click="insertCrowd(40, customPlaceName);dialog.hide()">
-              40%
-            </ons-list-item>
-            <ons-list-item modifier="tappable" ng-click="insertCrowd(20, customPlaceName);dialog.hide()">
-              20%
-            </ons-list-item>
-          </ons-list>
-        </ons-dialog>
-      </ons-template>
-    </div>
+        <ons-list>
+          <ons-list-item modifier="tappable" ng-click="insertCrowd(100, customPlaceName); dialog.hide()">
+            100%
+          </ons-list-item>
+          <ons-list-item modifier="tappable" ng-click="insertCrowd(80, customPlaceName);dialog.hide()">
+            80%
+          </ons-list-item>
+          <ons-list-item modifier="tappable" ng-click="insertCrowd(60, customPlaceName);dialog.hide()">
+            60%
+          </ons-list-item>
+          <ons-list-item modifier="tappable" ng-click="insertCrowd(40, customPlaceName);dialog.hide()">
+            40%
+          </ons-list-item>
+          <ons-list-item modifier="tappable" ng-click="insertCrowd(20, customPlaceName);dialog.hide()">
+            20%
+          </ons-list-item>
+        </ons-list>
+      </ons-dialog>
+    </ons-template>
   </div>
 </ons-page>

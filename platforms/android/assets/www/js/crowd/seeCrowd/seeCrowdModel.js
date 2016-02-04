@@ -10,9 +10,11 @@ var seeCrowdModel = function($q, seeCrowdService, mapService, configService,
   var selectedPlaceBasedCrowd;
 
   function setCenterPoint(cp) {
-    centerPoint = cp;
-    boundingBox = mapService.getBoundingBox(centerPoint,
-      configService.SEE_CROWDS_IN_RADIUS);
+    if (cp) {
+      centerPoint = cp;
+      boundingBox = mapService.getBoundingBox(centerPoint,
+        configService.SEE_CROWDS_IN_RADIUS);
+    }
   }
 
   function getCenterPoint() {

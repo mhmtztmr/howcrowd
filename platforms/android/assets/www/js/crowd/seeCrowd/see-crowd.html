@@ -12,7 +12,7 @@
     <div style="text-align: center">
       <br />
       <br />
-      <button class="button button--quiet" ng-click="$root.checkLocation()">Location Failed. Refresh</button>
+      <button class="button button--quiet" ng-click="checkLocation()">Location Failed. Refresh</button>
     </div>
   </div>
 
@@ -29,7 +29,6 @@
   <div ng-if="crowds && crowds !== 'pending'">
     <ons-tabbar>
       <ons-tab page="list.html" label="{{$root.lang.SEE_CROWD_MENU.LIST}}" icon="ion-android-list" active="true"></ons-tab>
-      <!-- <ons-tab page="tags.html" label="Tags" icon="ion-ios-pricetag"></ons-tab> -->
       <ons-tab page="map.html" label="{{$root.lang.SEE_CROWD_MENU.MAP}}" icon="ion-earth"></ons-tab>
     </ons-tabbar>
 
