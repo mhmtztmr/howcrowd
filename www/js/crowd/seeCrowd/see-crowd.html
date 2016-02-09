@@ -33,17 +33,74 @@
     </ons-tabbar>
 
     <ons-template id="list.html">
-      <ons-list ng-if="placeBasedCrowds">
-        <ons-list-item ng-click="selectPlaceBasedCrowd(placeBasedCrowd);" ng-repeat="placeBasedCrowd in placeBasedCrowds">{{placeBasedCrowd.placeName}} Avg:{{placeBasedCrowd.crowdAverage}},LastDate:{{placeBasedCrowd.lastUpdateDate}}
-          <div class="c100 p{{placeBasedCrowd.crowdAverage}} small">
-            <span>{{placeBasedCrowd.crowdAverage}}%</span>
-            <div class="slice">
-              <div class="bar"></div>
-              <div class="fill"></div>
-            </div>
-          </div>
+      <ons-list modifier="inset" class="crowd-items-header" ng-if="placeBasedCrowds">
+        <ons-list-item>
+          <ons-row>
+            <ons-col width="10%">
+              Date
+            </ons-col>
+            <ons-col width="60%" style="padding-left:1em;">
+              Name
+            </ons-col>
+            <ons-col width="15%" style="margin:auto;">
+              Last
+            </ons-col>
+            <ons-col width="15%" style="margin:auto;">
+              Avg
+            </ons-col>
+          </ons-row>
         </ons-list-item>
       </ons-list>
+      <div class="crowd-items-content">
+        <ons-list modifier="inset" ng-if="placeBasedCrowds">
+          <ons-list-item class="crowd-item" ng-click="selectPlaceBasedCrowd(placeBasedCrowd);" ng-repeat="placeBasedCrowd in placeBasedCrowds">
+            <ons-row>
+              <ons-col width="10%" class="crowd-date">
+                {{placeBasedCrowd.lastUpdatePass}} min ago
+              </ons-col>
+              <ons-col width="60%" class="crowd-name">
+                <img width="15" height="15" src="img/sources/{{placeBasedCrowd.placeSource}}.png"/>
+                {{placeBasedCrowd.placeName}}
+              </ons-col>
+              <ons-col width="15%" class="crowd-average-value">
+                <div class="c100 p{{placeBasedCrowd.crowdAverage}} custom">
+                  <!-- <span>{{placeBasedCrowd.crowdAverage}}%</span> -->
+                  <div class="slice">
+                    <div class="bar"></div>
+                    <div class="fill"></div>
+                  </div>
+                </div>
+              </ons-col>
+              <ons-col width="15%" class="crowd-last-value">
+                <div class="c100 p{{placeBasedCrowd.crowdAverage}} custom">
+                  <!-- <span>{{placeBasedCrowd.crowdAverage}}%</span> -->
+                  <div class="slice">
+                    <div class="bar"></div>
+                    <div class="fill"></div>
+                  </div>
+                </div>
+              </ons-col>
+            </ons-row>
+            <!-- <div class="crowd-date">{{placeBasedCrowd.lastUpdatePass}} min ago</div>
+            <div class="crowd-name">{{placeBasedCrowd.placeName}}</div>
+            <div class="crowd-last-value">{{placeBasedCrowd.crowdAverage}}</div>
+            <div class="crowd-average-value">{{placeBasedCrowd.crowdAverage}}</div> -->
+            <!-- <div class="crowd-source"><img src="img/sources/{{placeBasedCrowd.placeSource}}.png"/></div>
+
+
+            <div class="crowd-average-display">
+              <div class="c100 p{{placeBasedCrowd.crowdAverage}} small">
+                <span>{{placeBasedCrowd.crowdAverage}}%</span>
+                <div class="slice">
+                  <div class="bar"></div>
+                  <div class="fill"></div>
+                </div>
+              </div>
+            </div>-->
+          </ons-list-item>
+        </ons-list>
+      </div>
+      <!-- </div> -->
       <button ng-if="!placeBasedCrowds" class="button button--quiet" ng-click="">No recent crowd. Tab to add</button>
     </ons-template>
 

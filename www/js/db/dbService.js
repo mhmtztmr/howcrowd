@@ -8,11 +8,11 @@ var dbService = function(backendlessService) {
     backendlessService.insertCrowd(place, crowd, device, onSuccess, onFailure);
   }
 
-  function getPlace(placeSid, placeSoruce, onSuccess) {
+  function getPlace(placeSid, placeSource, onSuccess) {
     var query = new Parse.Query("Place");
 
     query.equalTo("placeSid", placeSid);
-    query.equalTo("placeSource", placeSoruce);
+    query.equalTo("placeSource", placeSource);
     query.find({
       success: function(results) {
         if (results.length > 0) {

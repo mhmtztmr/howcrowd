@@ -12,3 +12,39 @@
   -ms-filter: blur(1px);
   filter: blur(1px);
 }
+.crowd-items-header {
+  position: fixed !important;
+  z-index: 1;
+  width: 100%;
+  font-size: 0.8em;
+  font-weight: bold;
+  background-color: #ffe2c7 !important;
+  border: none !important;
+}
+.crowd-items-content {
+  margin-top: 44px;
+}
+.crowd-item {}
+.crowd-date {
+  text-align: center;
+  float: left;
+  padding-top: 0.5em;
+  line-height: 1em;
+  font-size: 0.6em;
+  font-weight: bold;
+}
+.crowd-name {
+  float: left;
+  padding-left: 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.crowd-last-value {
+  float: left;
+  margin: auto;
+}
+.crowd-average-value {
+  float: left;
+  margin: auto;
+}

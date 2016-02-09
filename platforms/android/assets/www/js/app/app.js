@@ -75,9 +75,7 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
       }, 10000);
     }
 
-    $rootScope.connection = false;
     if (!myApp.isCordovaApp) {
-      $rootScope.connection = true;
       initAppFncs();
     } else {
       myconnection.getConnectionType(function(connType) {
@@ -91,7 +89,6 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
             }
           });
         } else {
-          $rootScope.connection = true;
           initAppFncs();
           myconnection.addConnectionListener(function() {
             //alert('connected');

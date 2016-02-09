@@ -49,11 +49,11 @@ var backendlessService = function($q) {
     crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
   }
 
-  function getPlace(placeSid, placeSoruce, onSuccess) {
+  function getPlace(placeSid, placeSource, onSuccess) {
     var query = new Parse.Query("Place");
 
     query.equalTo("placeSid", placeSid);
-    query.equalTo("placeSource", placeSoruce);
+    query.equalTo("placeSource", placeSource);
     query.find({
       success: function(results) {
         if (results.length > 0) {
@@ -127,27 +127,28 @@ var backendlessService = function($q) {
     if (filter) {
       if (filter.date) {
         if (filter.date.start) {
-          q += ' and crowdDate >= ' + filter.date.start.valueOf();
+          //q += ' and crowdDate >= ' + filter.date.start.valueOf();
         }
         if (filter.date.end) {
-          q += ' and crowdDate <= ' + filter.date.end.valueOf();
+          //q += ' and crowdDate <= ' + filter.date.end.valueOf();
         }
 
         if (filter.location && filter.location.latitude && filter.location.latitude
           .upper && filter.location.latitude.lower && filter.location.longitude &&
           filter.location.longitude.upper && filter.location.longitude.lower
         ) {
-          q += ' and crowdLocationLatitude >= ' + filter.location.latitude.lower;
-          q += ' and crowdLocationLatitude <= ' + filter.location.latitude.upper;
-          q += ' and crowdLocationLongitude >= ' + filter.location.longitude.lower;
-          q += ' and crowdLocationLongitude <= ' + filter.location.longitude.upper;
+          // q += ' and crowdLocationLatitude >= ' + filter.location.latitude.lower;
+          // q += ' and crowdLocationLatitude <= ' + filter.location.latitude.upper;
+          // q += ' and crowdLocationLongitude >= ' + filter.location.longitude.lower;
+          // q += ' and crowdLocationLongitude <= ' + filter.location.longitude.upper;
         }
       }
     }
 
     var query = new Backendless.DataQuery();
     query.options = {
-      sortBy: 'crowdDate desc'
+      sortBy: 'crowdDate desc',
+      pageSize: 100
     };
     query.condition = q;
 
@@ -156,6 +157,14 @@ var backendlessService = function($q) {
       var i, formattedResults = [];
       for (i = 0; i < result.data.length; i++) {
         formattedResults.push(formatCrowd(result.data[i]));
+      }
+      var nextPage = result._nextPage;
+      while (nextPage) {
+        result = result.nextPage();
+        for (i = 0; i < result.data.length; i++) {
+          formattedResults.push(formatCrowd(result.data[i]));
+        }
+        nextPage = result._nextPage;
       }
       def.resolve(formattedResults);
     }, function(error) {
@@ -169,6 +178,7 @@ var backendlessService = function($q) {
     return {
       placeKey: crowd.placeKey,
       placeName: crowd.placeName,
+      placeSource: crowd.placeSource,
       crowdLocation: {
         latitude: crowd.crowdLocationLatitude,
         longitude: crowd.crowdLocationLongitude

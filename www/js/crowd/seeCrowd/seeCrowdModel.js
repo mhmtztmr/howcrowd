@@ -79,7 +79,7 @@ var seeCrowdModel = function($q, seeCrowdService, mapService, configService,
   }
 
   function loadPlaceBasedCrowds() {
-    var i;
+    var i, now = new Date().getTime();
     placeBasedCrowds = {};
     for (i = 0; i < crowds.length; i++) {
       var crowd = crowds[i];
@@ -98,7 +98,10 @@ var seeCrowdModel = function($q, seeCrowdService, mapService, configService,
         placeBasedCrowds[crowd.placeKey].crowdValue = crowd.crowdValue;
         placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
         placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
+        placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
         placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
+        placeBasedCrowds[crowd.placeKey].lastUpdatePass = Math.round((now -
+          crowd.crowdDate) / (1000 * 60));
       }
       placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
         placeBasedCrowds[crowd.placeKey]
