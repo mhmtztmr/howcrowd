@@ -7,12 +7,21 @@
   },
   "SEE_CROWD_MENU": {
     "LIST": "Liste",
-    "MAP": "Harita"
+    "MAP": "Harita",
+	"DATE": "Zaman",
+	"NAME" : "Yer Adı",
+	"LAST_VALUE": "Son",
+	"AVERAGE_VALUE": "Ort.",
+	"MIN_AGO": "dk. önce",
+	"NO_PLACE": "Yeni bir kalabalık yok. Eklemek için dokun!",
+	"NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin ol ve yenilemek için dokun!"
   },
   "SET_CROWD_MENU": {
-    "SELECT_PLACE": "Yer Seç",
-    "ENTER_CUSTOM_PLACE": "Özel Yer Gir",
-    "PLACE_NAME": "Yer Adı"
+    "SELECT_PLACE": "Yer seç",
+    "ENTER_CUSTOM_PLACE": "Özel yer gir",
+    "PLACE_NAME": "Yer Adı",
+	"NO_PLACE":  "Etrafta bir yer yok. Özel yer girmek için dokun!",
+	"NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin ol ve yenilemek için dokun!"
   },
   "CONFIRM": {
     "CONFIRM": "Onay",
