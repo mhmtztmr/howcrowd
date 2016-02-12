@@ -90,11 +90,10 @@
       <button ng-if="!(placeBasedCrowds && placeBasedCrowds !== {})" class="button button--quiet refresh-button" ui-sref="app.setCrowd">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
     </ons-template>
 
-    <ons-template id="tags.html">
-      <ons-toolbar>
-        <div class="center">Tags</div>
-      </ons-toolbar>
-    </ons-template>
+
+        <ons-template id="map.html">
+          <div ng-controller="seeCrowdInMapController" id="map" style="width:100%; height:100%">
+        </ons-template>
 
     <ons-template id="crowd-detail.html">
       <ons-dialog var="dialog" cancelable ng-controller="seeCrowdDetailDialogController">
@@ -102,8 +101,5 @@
       </ons-dialog>
     </ons-template>
 
-    <ons-template id="map.html">
-      <div ng-controller="seeCrowdInMapController" id="map" style="width:100%; height:100%">
-    </ons-template>
     </div>
 </ons-page>

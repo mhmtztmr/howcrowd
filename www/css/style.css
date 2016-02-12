@@ -63,3 +63,10 @@
 .loading-gif-inner {
   align-self: center;
 }
+.menu-icon {
+  float: left;
+  width: 10%;
+}
+.menu-text {
+  margin-left: 5%;
+}

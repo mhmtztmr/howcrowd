@@ -10,19 +10,36 @@
         <div class="menu-item-generic"></div>
       </ons-list-item>
       <ons-list-item class="menu-item" ui-sref=".seeCrowd" ng-click="menu.closeMenu()">
-        <ons-icon icon="fa-eye"></ons-icon>
-        {{$root.lang.MAIN_MENU.SEE_CROWD}}
+        <div class="menu-icon">
+          <ons-icon icon="fa-eye"></ons-icon>
+        </div>
+        <span class="menu-text">
+          {{$root.lang.MAIN_MENU.SEE_CROWD}}
+        </span>
       </ons-list-item>
       <ons-list-item class="menu-item" ui-sref=".setCrowd" ng-click="menu.closeMenu()">
-        <ons-icon icon="fa-plus"></ons-icon>
-        {{$root.lang.MAIN_MENU.SET_CROWD}}
+        <div class="menu-icon">
+          <ons-icon icon="fa-users"></ons-icon>
+        </div>
+        <span class="menu-text">
+          {{$root.lang.MAIN_MENU.SET_CROWD}}
+        </span>
       </ons-list-item>
       <ons-list-item class="menu-item">
-        <ons-icon icon="fa-settings"></ons-icon>
-        {{$root.lang.MAIN_MENU.SETTINGS}}
+        <div class="menu-icon">
+          <ons-icon icon="fa-cog"></ons-icon>
+        </div>
+        <span class="menu-text">
+          {{$root.lang.MAIN_MENU.SETTINGS}}
+        </span>
       </ons-list-item>
       <ons-list-item class="menu-item" ng-click="exitApp()">
-        {{$root.lang.MAIN_MENU.EXIT}}
+          <div class="menu-icon">
+        <ons-icon icon="fa-sign-out"></ons-icon>
+      </div>
+        <span class="menu-text">
+          {{$root.lang.MAIN_MENU.EXIT}}
+        </span>
       </ons-list-item>
     </ons-list>
   </ons-page>
