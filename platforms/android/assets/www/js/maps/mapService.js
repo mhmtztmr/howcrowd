@@ -51,7 +51,7 @@ var mapService = function($q, $rootScope, googleService) {
           oldLocation: oldLocation
         });
       }, {
-        timeout: 20000
+        timeout: 60000
       });
   }
 
