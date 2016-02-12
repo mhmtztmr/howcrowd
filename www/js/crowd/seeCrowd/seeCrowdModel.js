@@ -102,6 +102,9 @@ var seeCrowdModel = function($q, seeCrowdService, mapService, configService,
         placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
         placeBasedCrowds[crowd.placeKey].lastUpdatePass = Math.round((now -
           crowd.crowdDate) / (1000 * 60));
+        if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
+          placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
+        }
       }
       placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
         placeBasedCrowds[crowd.placeKey]

@@ -8,39 +8,29 @@
     <div class="center">{{$root.lang.MAIN_MENU.SET_CROWD}}</div>
   </ons-toolbar>
 
-  <div ng-if="!nearbyPlaces">
-    <div style="text-align: center">
-      <br />
-      <br />
-      <button class="button button--quiet" ng-click="checkLocation()">Location Failed. Refresh</button>
+  <button ng-if="!nearbyPlaces" class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SET_CROWD_MENU.NO_LOCATION}}</button>
+
+  <div ng-if="nearbyPlaces === 'pending'" class="loading-gif-wrapper">
+    <div class="loading-gif-inner">
+      <div class="sp sp-wave"></div>
     </div>
   </div>
 
-  <div ng-if="nearbyPlaces === 'pending'">
-    <div class="container text-center">
-      <div class="row">
-        <div class="col-sm-2" style="width:100%">
-          <div class="sp sp-wave"></div>
-        </div>
+  <div ng-if="nearbyPlaces && nearbyPlaces !== 'pending'" style="height: 100%;">
+    <button ng-if="nearbyPlaces.length === 0" class="refresh-button button button--quiet" ng-click="selectPlace()">{{$root.lang.SET_CROWD_MENU.NO_PLACE}}</button>
+    <div ng-if="nearbyPlaces.length > 0">
+      <div class="tab-bar">
+        <label class="tab-bar__item"  ng-click="selectPlace()">
+          <input type="radio" name="tab-bar-c" checked="checked">
+          <button class="tab-bar__button">
+            <div class="tab-bar__label">{{$root.lang.SET_CROWD_MENU.ENTER_CUSTOM_PLACE}}</div>
+          </button>
+        </label>
       </div>
+      <ons-list modifier="inset">
+        <ons-list-item ng-repeat="place in nearbyPlaces" ng-click="selectPlace(place)">{{place.name}}</ons-list-item>
+      </ons-list>
     </div>
-  </div>
-
-  <div ng-if="nearbyPlaces && nearbyPlaces !== 'pending'">
-    <div ng-if="nearbyPlaces.length === 0">
-      No nearby places found!
-    </div>
-    <ons-toolbar inline ng-if="nearbyPlaces.length > 0">
-      <div class="center">
-        {{$root.lang.SET_CROWD_MENU.SELECT_PLACE}}
-      </div>
-    </ons-toolbar>
-    <ons-list ng-if="nearbyPlaces.length > 0">
-      <ons-list-item ng-repeat="place in nearbyPlaces" ng-click="selectPlace(place);">{{place.name}}</ons-list-item>
-    </ons-list>
-    <ons-list>
-      <input class="button button--large--quiet" type="button" value="{{$root.lang.SET_CROWD_MENU.ENTER_CUSTOM_PLACE}}" ng-click="selectPlace();" />
-    </ons-list>
 
     <ons-template id="crowd-level.html">
       <ons-dialog var="dialog" cancelable ng-controller="setCrowdDialogController">

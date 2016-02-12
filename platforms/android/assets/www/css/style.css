@@ -16,14 +16,14 @@
   position: fixed !important;
   z-index: 1;
   width: 100%;
-  font-size: 0.8em;
-  font-weight: bold;
+}
+.crowd-items-header-inner {
+  font-size: 0.7em !important;
+  font-weight: bold !important;
   background-color: #ffe2c7 !important;
-  border: none !important;
+  border-color: transparent !important;
 }
-.crowd-items-content {
-  margin-top: 44px;
-}
+.crowd-items-content {}
 .crowd-item {}
 .crowd-date {
   text-align: center;
@@ -35,6 +35,7 @@
 }
 .crowd-name {
   float: left;
+  font-size: 0.7em;
   padding-left: 1em;
   white-space: nowrap;
   overflow: hidden;
@@ -47,4 +48,18 @@
 .crowd-average-value {
   float: left;
   margin: auto;
+}
+.refresh-button {
+  height: 100% !important;
+  width: 100% !important;
+  white-space: normal !important;
+}
+.loading-gif-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.loading-gif-inner {
+  align-self: center;
 }

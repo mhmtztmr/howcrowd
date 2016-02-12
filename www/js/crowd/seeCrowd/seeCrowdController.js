@@ -7,10 +7,25 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
       console.log('see crowd controller initialized');
       $scope.crowds = 'pending';
 
+      $scope.loadCrowds = function(serverRequest, $done) {
+        seeCrowdModel.loadCrowds(undefined, serverRequest).then(function() {
+            $scope.crowds = seeCrowdModel.getCrowds();
+            $scope.placeBasedCrowds = seeCrowdModel.getPlaceBasedCrowds();
+            if ($done) {
+              $done();
+            }
+          },
+          function() {
+            if ($done) {
+              $done();
+            }
+          });
+      };
+
       seeCrowdModel.setCenterPoint(angular.fromJson(localStorage.getItem(
         'location')));
       if (seeCrowdModel.getCenterPoint()) {
-        loadCrowds(true);
+        $scope.loadCrowds(true);
       } else {
         $scope.crowds = undefined;
       }
@@ -21,7 +36,7 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
           if ($rootScope.location && $rootScope.location.latitude &&
             $rootScope.location.longitude) {
             seeCrowdModel.setCenterPoint($rootScope.location);
-            loadCrowds();
+            $scope.loadCrowds();
           } else {
             $scope.crowds = undefined;
           }
@@ -31,15 +46,7 @@ angular.module('seeCrowd', ['map.Service', 'seeCrowd.Model', 'config'])
       $scope.checkLocation = function() {
         $scope.crowds = 'pending';
         $rootScope.checkLocation();
-      }
-
-      function loadCrowds(serverRequest) {
-        seeCrowdModel.loadCrowds(undefined, serverRequest).then(function() {
-            $scope.crowds = seeCrowdModel.getCrowds();
-            $scope.placeBasedCrowds = seeCrowdModel.getPlaceBasedCrowds();
-          },
-          function() {});
-      }
+      };
 
       $scope.selectPlaceBasedCrowd = function(placeBasedCrowd) {
         seeCrowdModel.selectPlaceBasedCrowd(placeBasedCrowd);

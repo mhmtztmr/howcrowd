@@ -11,8 +11,6 @@ angular.module('setCrowd', ['setCrowd.Model', 'seeCrowd.Model', 'map.Model',
       if ($rootScope.location && $rootScope.location.latitude && $rootScope.location
         .longitude) {
         loadNearbyPlaces();
-      } else {
-        $scope.nearbyPlaces = undefined;
       }
 
       $rootScope.$on("locationChanged", function(event, args) {

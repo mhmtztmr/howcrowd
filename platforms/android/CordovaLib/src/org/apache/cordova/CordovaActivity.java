@@ -49,7 +49,7 @@ import android.widget.FrameLayout;
  * html file that contains the application.
  *
  * As an example:
- * 
+ *
  * <pre>
  *     package org.apache.cordova.examples;
  *
@@ -66,8 +66,8 @@ import android.widget.FrameLayout;
  *       }
  *     }
  * </pre>
- * 
- * Cordova xml configuration: Cordova uses a configuration file at 
+ *
+ * Cordova xml configuration: Cordova uses a configuration file at
  * res/xml/config.xml to specify its settings. See "The config.xml File"
  * guide in cordova-docs at http://cordova.apache.org/docs for the documentation
  * for the configuration. The use of the set*Property() methods is
@@ -142,7 +142,7 @@ public class CordovaActivity extends Activity {
             cordovaInterface.restoreInstanceState(savedInstanceState);
         }
     }
-    
+
     protected void init() {
         appView = makeWebView();
         createViews();
@@ -260,7 +260,7 @@ public class CordovaActivity extends Activity {
     protected void onResume() {
         super.onResume();
         LOG.d(TAG, "Resumed the activity.");
-        
+
         if (this.appView == null) {
             return;
         }
