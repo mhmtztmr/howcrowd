@@ -33,7 +33,7 @@
             <ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon>{{$root.lang.SEE_CROWD_MENU.LOADING}}</span>
         </span>
       </ons-pull-hook>
-      <div ng-if="placeBasedCrowds && placeBasedCrowds.length > 0">
+      <div ng-if="placeBasedCrowds && placeBasedCrowds !== {}">
         <div class="crowd-items-header">
           <ons-list modifier="inset" class="crowd-items-header-inner">
             <ons-list-item>
@@ -87,7 +87,7 @@
           </ons-list>
         </div>
       </div>
-      <button ng-if="!(placeBasedCrowds && placeBasedCrowds.length > 0)" class="button button--quiet refresh-button" ui-sref="app.setCrowd">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
+      <button ng-if="!(placeBasedCrowds && placeBasedCrowds !== {})" class="button button--quiet refresh-button" ui-sref="app.setCrowd">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
     </ons-template>
 
     <ons-template id="tags.html">
