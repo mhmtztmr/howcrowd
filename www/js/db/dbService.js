@@ -64,10 +64,15 @@ var dbService = function(backendlessService) {
     return backendlessService.retrieveCrowds(filter);
   }
 
+  function giveFeedback(crowd, isPositive) {
+    backendlessService.giveFeedback(crowd, isPositive);
+  }
+
   return {
     init: init,
     insertCrowd: insertCrowd,
     retrieveCrowds: retrieveCrowds,
+    giveFeedback: giveFeedback,
     insertDevice: insertDevice,
     retrieveDevice: retrieveDevice
   };

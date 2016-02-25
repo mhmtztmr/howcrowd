@@ -11,9 +11,7 @@
   <button ng-if="!nearbyPlaces" class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SET_CROWD_MENU.NO_LOCATION}}</button>
 
   <div ng-if="nearbyPlaces === 'pending'" class="loading-gif-wrapper">
-    <div class="loading-gif-inner">
-      <div class="sp sp-wave"></div>
-    </div>
+    <img class="loading-gif-inner" ng-src="img/loading.gif" />
   </div>
 
   <div ng-if="nearbyPlaces && nearbyPlaces !== 'pending'" style="height: 100%;">

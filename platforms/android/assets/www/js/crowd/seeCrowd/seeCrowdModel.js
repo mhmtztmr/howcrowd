@@ -83,32 +83,31 @@ var seeCrowdModel = function($q, seeCrowdService, mapService, configService,
     placeBasedCrowds = {};
     for (i = 0; i < crowds.length; i++) {
       var crowd = crowds[i];
-      if (placeBasedCrowds[crowd.placeKey]) {
-        placeBasedCrowds[crowd.placeKey].crowdCount = placeBasedCrowds[crowd.placeKey]
-          .crowdCount + 1;
-        placeBasedCrowds[crowd.placeKey].crowdValue = placeBasedCrowds[crowd.placeKey]
-          .crowdValue + crowd.crowdValue;
-        placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
-      } else {
+      crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
+      if (!placeBasedCrowds[crowd.placeKey]) {
         placeBasedCrowds[crowd.placeKey] = {
-          crowds: []
+          crowds: [],
+          crowdCount: 0,
+          crowdValue: 0
         };
-        placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
-        placeBasedCrowds[crowd.placeKey].crowdCount = 1;
-        placeBasedCrowds[crowd.placeKey].crowdValue = crowd.crowdValue;
-        placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
-        placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
-        placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
-        placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
-        placeBasedCrowds[crowd.placeKey].lastUpdatePass = Math.round((now -
-          crowd.crowdDate) / (1000 * 60));
-        if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
-          placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
-        }
       }
+      placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
+      placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
+      placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
+      placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
+      placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
+      if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
+        placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
+      }
+      if (placeBasedCrowds[crowd.placeKey].crowdCount === 0) {
+        crowd.isLast = true;
+      }
+      placeBasedCrowds[crowd.placeKey].crowdCount += 1;
+      placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;
+      placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
       placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
-        placeBasedCrowds[crowd.placeKey]
-        .crowdValue / placeBasedCrowds[crowd.placeKey].crowdCount);
+        placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
+          crowd.placeKey].crowdCount);
     }
   }
 
@@ -150,14 +149,16 @@ var seeCrowdModel = function($q, seeCrowdService, mapService, configService,
   function selectPlaceBasedCrowd(placeBasedCrowd) {
     selectedPlaceBasedCrowd = placeBasedCrowd;
     if (placeBasedCrowd) {
-      ons.createDialog('crowd-detail.html').then(function(dialog) {
-        dialog.show();
-      });
+      app.navi.pushPage('crowd-detail.html');
     }
   }
 
   function getSelectedPlaceBasedCrowd() {
     return selectedPlaceBasedCrowd;
+  }
+
+  function giveFeedback(crowd, isPositive) {
+    seeCrowdService.giveFeedback(crowd, isPositive);
   }
 
   return {
@@ -172,7 +173,8 @@ var seeCrowdModel = function($q, seeCrowdService, mapService, configService,
     setMapBoundingBox: setMapBoundingBox,
     markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
     selectPlaceBasedCrowd: selectPlaceBasedCrowd,
-    getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd
+    getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,
+    giveFeedback: giveFeedback
   };
 };
 

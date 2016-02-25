@@ -14,6 +14,8 @@ angular.module('setCrowd', ['setCrowd.Model', 'seeCrowd.Model', 'map.Model',
       }
 
       $rootScope.$on("locationChanged", function(event, args) {
+        alert('newloc: ' + JSON.stringify($rootScope.location));
+        alert('oldloc: ' + JSON.stringify(args.oldLocation));
         console.log('location change event caught: ' + JSON.stringify(
           $rootScope.location));
         if ($rootScope.location && $rootScope.location.latitude &&

@@ -51,7 +51,56 @@ var mapService = function($q, $rootScope, googleService) {
           oldLocation: oldLocation
         });
       }, {
-        timeout: 60000
+        enableHighAccuracy: true,
+        timeout: 30000
+      });
+
+    var watchId = navigator.geolocation.watchPosition(function(position) {
+        var newLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
+        console.log('location successfully gained: ' + JSON.stringify(
+          newLocation));
+        if (!oldLocation || !oldLocation.latitude || !oldLocation.longitude) {
+          console.log(
+            'old location was undefined so current location is initalized with new one: ' +
+            JSON.stringify(newLocation));
+          $rootScope.location = newLocation;
+          $rootScope.$broadcast('locationChanged', {
+            oldLocation: oldLocation
+          });
+        } else {
+          var distance = getDistanceBetweenLocations(newLocation,
+            oldLocation);
+          console.log(
+            'distance between old and new locations: ' + distance);
+          if (distance > 0.02) { //300 m
+            console.log(
+              'since old/new location distance is more than 300 m current location is updated with new : ' +
+              JSON.stringify(newLocation));
+            $rootScope.location = newLocation;
+            $rootScope.$broadcast('locationChanged', {
+              oldLocation: oldLocation
+            });
+          }
+        }
+        localStorage.setItem('location', angular.toJson($rootScope.location));
+      },
+      function(err) {
+        console.log('location failed...');
+        $rootScope.location = {
+          error: {
+            code: err.code,
+            message: err.message
+          }
+        }
+        $rootScope.$broadcast('locationChanged', {
+          oldLocation: oldLocation
+        });
+      }, {
+        enableHighAccuracy: true,
+        timeout: 30000
       });
   }
 

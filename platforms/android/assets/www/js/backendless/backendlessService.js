@@ -10,9 +10,10 @@ var backendlessService = function($q) {
     this.placeSid = args.placeSid || "";
     this.crowdValue = args.crowdValue || "";
     this.crowdDate = args.crowdDate || "";
-    //this.crowdLocation = args.crowdLocation || "";
     this.crowdLocationLatitude = args.crowdLocationLatitude || "";
     this.crowdLocationLongitude = args.crowdLocationLongitude || "";
+    this.crowdPositiveFeedback = args.crowdPositiveFeedback || 0;
+    this.crowdNegativeFeedback = args.crowdNegativeFeedback || 0;
   }
 
   function Device(args) {
@@ -42,7 +43,6 @@ var backendlessService = function($q) {
       placeSid: place.sid,
       crowdValue: crowd.value,
       crowdDate: crowd.date,
-      //crowdLocation: place.location,
       crowdLocationLatitude: place.location.latitude,
       crowdLocationLongitude: place.location.longitude
     });
@@ -174,17 +174,52 @@ var backendlessService = function($q) {
     return def.promise;
   }
 
+  function giveFeedback(crowd, isPositive) {
+    var counterName = "counter for " + crowd.crowdId + (isPositive ?
+      "positive" : "negative") + " feedback";
+    var successCallback = function(response) {
+      console.log("[ASYNC] counter value is - " + response);
+      var crowdStorage = Backendless.Persistence.of(Crowd);
+      var dbCrowd = crowdStorage.findById(crowd.crowdId);
+      if (isPositive) {
+        dbCrowd.crowdPositiveFeedback = response;
+      } else {
+        dbCrowd.crowdNegativeFeedback = response;
+      }
+      crowdStorage.save(dbCrowd);
+    };
+
+    var failureCallback = function(fault) {
+      console.log("error - " + fault.message);
+    };
+
+    var callback = new Backendless.Async(successCallback, failureCallback);
+
+    // ************************************************
+    // Backendless.Counters.of() approach
+    // ************************************************
+    var myCounter = Backendless.Counters.of(counterName);
+
+    // async call
+    myCounter.incrementAndGet(callback);
+  }
+
   function formatCrowd(crowd) {
     return {
       placeKey: crowd.placeKey,
       placeName: crowd.placeName,
       placeSource: crowd.placeSource,
+      crowdId: crowd.objectId,
       crowdLocation: {
         latitude: crowd.crowdLocationLatitude,
         longitude: crowd.crowdLocationLongitude
       },
       crowdValue: crowd.crowdValue,
-      crowdDate: crowd.crowdDate
+      crowdDate: crowd.crowdDate,
+      crowdFeedback: {
+        positiveFeedback: crowd.crowdPositiveFeedback,
+        negativeFeedback: crowd.crowdNegativeFeedback
+      }
     };
   }
 
@@ -192,6 +227,7 @@ var backendlessService = function($q) {
     init: init,
     insertCrowd: insertCrowd,
     retrieveCrowds: retrieveCrowds,
+    giveFeedback: giveFeedback,
     insertDevice: insertDevice,
     retrieveDevice: retrieveDevice
   };

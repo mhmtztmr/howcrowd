@@ -68,11 +68,11 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
       };
       $rootScope.checkLocation();
 
-      $interval(function() {
-        if (!$rootScope.location.error) {
-          $rootScope.checkLocation();
-        }
-      }, 10000);
+      // $interval(function() {
+      //   if (!$rootScope.location.error) {
+      //     $rootScope.checkLocation();
+      //   }
+      // }, 10000);
     }
 
     if (!myApp.isCordovaApp) {

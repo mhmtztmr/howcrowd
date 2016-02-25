@@ -17,7 +17,8 @@
     "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin ol ve yenilemek için dokun!",
     "PULL_TO_REFRESH": "Yenilemek için aşağı çek",
     "RELEASE_TO_REFRESH": "Yenilemek için bırak",
-    "LOADING": "Yüklüyor..."
+    "LOADING": "Yüklüyor...",
+	"SEARCH": "Ara"
   },
   "SET_CROWD_MENU": {
     "SELECT_PLACE": "Yer seç",

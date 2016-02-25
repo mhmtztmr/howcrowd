@@ -6,8 +6,13 @@ var seeCrowdService = function(dbService) {
     return dbService.retrieveCrowds(filter);
   }
 
+  function giveFeedback(crowd, isPositive) {
+    dbService.giveFeedback(crowd, isPositive);
+  }
+
   return {
-    retrieveCrowds: retrieveCrowds
+    retrieveCrowds: retrieveCrowds,
+    giveFeedback: giveFeedback
   };
 };
 

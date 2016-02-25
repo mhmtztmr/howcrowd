@@ -14,7 +14,8 @@
     "AVERAGE_VALUE": "Avg.",
     "MIN_AGO": "min(s) ago",
     "NO_PLACE": "No recent crowd. Tab to enter one!",
-    "NO_LOCATION": "No location data. Make sure your device's location service is accessible, then tab to refresh!"
+    "NO_LOCATION": "No location data. Make sure your device's location service is accessible, then tab to refresh!",
+	"SEARCH": "Search"
   },
   "SET_CROWD_MENU": {
     "SELECT_PLACE": "Select Place",

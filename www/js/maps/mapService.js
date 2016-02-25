@@ -51,7 +51,8 @@ var mapService = function($q, $rootScope, googleService) {
           oldLocation: oldLocation
         });
       }, {
-        timeout: 60000
+        enableHighAccuracy: true,
+        timeout: 30000
       });
   }
 
