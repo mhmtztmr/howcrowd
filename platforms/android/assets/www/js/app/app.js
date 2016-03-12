@@ -1,48 +1,21 @@
-var app = angular.module('app', ['onsen', 'ui.router', 'seeCrowd', 'setCrowd',
-  'contact', 'about', 'db', 'device.id', 'map.Service', 'lang',
-  'config', 'myconn'
+var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model',
+  'identification', 'map.Model', 'map.Service', 'config', 'connection',
+  'feedback',
+  'date', 'lang', 'db'
 ]);
-
-app.config(function($stateProvider, $urlRouterProvider) {
-  $urlRouterProvider.otherwise("/see-crowd");
-  $stateProvider
-    .state('app', {
-      url: "/",
-      templateUrl: 'js/app/app.html'
-    })
-    .state('app.setCrowd', {
-      url: "set-crowd",
-      templateUrl: "js/crowd/setCrowd/set-crowd.html",
-      controller: "setCrowdController"
-    })
-    .state('app.seeCrowd', {
-      url: "see-crowd",
-      templateUrl: "js/crowd/seeCrowd/see-crowd.html",
-      controller: "seeCrowdController"
-    })
-    .state('app.about', {
-      url: 'about',
-      templateUrl: "js/about/about.html",
-      controller: "aboutController"
-    })
-    .state('app.contact', {
-      url: "contact",
-      templateUrl: "js/contact/contact.html",
-      controller: "contactController"
-    });
-});
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
   'identificationService', 'mapService', '$interval', 'langService',
-  'configService', 'myconnection',
+  'configService', 'connection', 'feedbackModel',
   function($rootScope, $scope, dbService, identificationService,
     mapService, $interval, langService, configService,
-    myconnection) {
+    connection, feedbackModel) {
 
     langService.loadLangData();
     dbService.init();
 
     function initAppFncs() {
+      feedbackModel.loadFeedbacks();
       identificationService.loadDeviceId(true).then(function() {
         var deviceId = identificationService.getDeviceId();
         $rootScope.device = {
@@ -68,17 +41,18 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
       };
       $rootScope.checkLocation();
 
-      // $interval(function() {
-      //   if (!$rootScope.location.error) {
-      //     $rootScope.checkLocation();
-      //   }
-      // }, 10000);
+      $interval(function() {
+        if (!$rootScope.location.error && myApp.isCordovaApp) {
+          //if (myApp.isCordovaApp) {
+          $rootScope.checkLocation();
+        }
+      }, 5000);
     }
 
     if (!myApp.isCordovaApp) {
       initAppFncs();
     } else {
-      myconnection.getConnectionType(function(connType) {
+      connection.getConnectionType(function(connType) {
         if (connType === 'none') {
           ons.notification.alert({
             title: $rootScope.lang.ALERT.ALERT,
@@ -90,7 +64,7 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
           });
         } else {
           initAppFncs();
-          myconnection.addConnectionListener(function() {
+          connection.addConnectionListener(function() {
             //alert('connected');
           }, function() {
             ons.notification.alert({

@@ -11,8 +11,8 @@
   <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
 
   <link rel="stylesheet" type="text/css" href="css/style.css" />
-  <link rel="stylesheet" type="text/css" href="css/loading.css" />
-  <link rel="stylesheet" type="text/css" href="css/circle.css" />
+  <link rel="stylesheet/less" type="text/css" href="css/circle.less" />
+  <link rel="stylesheet/less" type="text/css" href="css/mixins.less" />
   <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
   <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
   <link rel="stylesheet" href="lib/angular/angular-csp.css" />
@@ -25,42 +25,55 @@
   <script type="text/javascript" src="js/index.js"></script>
 
   <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-  <script type="text/javascript" src="lib/angular/angular-ui-router.min.js"></script>
   <script type="text/javascript" src="lib/angular/ready.js"></script>
   <script type="text/javascript" src="lib/angular/filesystem.js"></script>
-  <script type="text/javascript" src="lib/angular/myconnection.js"></script>
+  <script type="text/javascript" src="lib/angular/connection.js"></script>
+  <script type="text/javascript" src="lib/angular/geolocation.js"></script>
   <script type="text/javascript" src="lib/onsen/js/onsenui.js"></script>
   <script type="text/javascript" src="lib/backendless/backendless.min.js"></script>
+  <script type="text/javascript" src="lib/less/less.min.js"></script>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCy30JwIt5TZYreLKIJ-dXin0AU-XK7eIU&libraries=places" async defer></script>
 
   <script type="text/javascript" src="js/app/app.js"></script>
+  <script type="text/javascript" src="js/service/db/dbService.js"></script>
+  <script type="text/javascript" src="js/service/guid/guidService.js"></script>
+  <script type="text/javascript" src="js/service/backendless/backendlessService.js"></script>
+  <script type="text/javascript" src="js/service/map/googleService.js"></script>
+  <script type="text/javascript" src="js/service/map/mapService.js"></script>
+  <script type="text/javascript" src="js/service/identification/identificationService.js"></script>
+  <script type="text/javascript" src="js/service/file/fileService.js"></script>
+  <script type="text/javascript" src="js/service/lang/langService.js"></script>
+  <script type="text/javascript" src="js/service/config/configService.js"></script>
+  <script type="text/javascript" src="js/service/date/dateService.js"></script>
+  <script type="text/javascript" src="js/service/seeCrowd/seeCrowdService.js"></script>
+  <script type="text/javascript" src="js/service/setCrowd/setCrowdService.js"></script>
 
-  <script type="text/javascript" src="js/db/dbService.js"></script>
-  <script type="text/javascript" src="js/util/guidUtil.js"></script>
-  <script type="text/javascript" src="js/backendless/backendlessService.js"></script>
-  <script type="text/javascript" src="js/maps/googleService.js"></script>
-  <script type="text/javascript" src="js/maps/mapModel.js"></script>
-  <script type="text/javascript" src="js/maps/mapService.js"></script>
-  <script type="text/javascript" src="js/device/identificationService.js"></script>
-  <script type="text/javascript" src="js/storage/fileService.js"></script>
-  <script type="text/javascript" src="js/lang/langService.js"></script>
-  <script type="text/javascript" src="js/config/configService.js"></script>
-  <script type="text/javascript" src="js/util/dateUtil.js"></script>
+  <script type="text/javascript" src="js/model/map/mapModel.js"></script>
+  <script type="text/javascript" src="js/model/feedback/feedbackModel.js"></script>
+  <script type="text/javascript" src="js/model/seeCrowd/seeCrowdHereModel.js"></script>
+  <script type="text/javascript" src="js/model/seeCrowd/seeCrowdIncityModel.js"></script>
+  <script type="text/javascript" src="js/model/setCrowd/setCrowdModel.js"></script>
 
-  <script type="text/javascript" src="js/crowd/seeCrowd/seeCrowdController.js"></script>
-  <script type="text/javascript" src="js/crowd/seeCrowd/seeCrowdModel.js"></script>
-  <script type="text/javascript" src="js/crowd/seeCrowd/seeCrowdService.js"></script>
-  <script type="text/javascript" src="js/crowd/setCrowd/setCrowdController.js"></script>
-  <script type="text/javascript" src="js/crowd/setCrowd/setCrowdModel.js"></script>
-  <script type="text/javascript" src="js/crowd/setCrowd/setCrowdService.js"></script>
-  <script type="text/javascript" src="js/contact/contactController.js"></script>
-  <script type="text/javascript" src="js/about/aboutController.js"></script>
+  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdController.js"></script>
+  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdHereController.js"></script>
+  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdIncityController.js"></script>
+  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdInmapController.js"></script>
+  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdDetailController.js"></script>
+  <script type="text/javascript" src="js/controller/seeCrowd/crowdReportController.js"></script>
+  <script type="text/javascript" src="js/controller/setCrowd/setCrowdController.js"></script>
+  <script type="text/javascript" src="js/controller/setCrowd/setCrowdLevelController.js"></script>
+
 </head>
 
 <body>
   <div ng-controller="appController">
-     <div ui-view></div>
-  </div>
+      <ons-sliding-menu menu-page="templates/menu.html" main-page="templates/see-crowd.html" side="left" var="menu" type="reveal" max-slide-distance="220px" swipeable="false">
+      </ons-sliding-menu>
+   </div>
+  <div id="preload">
+   <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />
+   <img src="img/sources/custom.png" width="1" height="1" alt="Image 01" />
+</div>
   <script type="text/javascript">
     myApp.initialize();
   </script>

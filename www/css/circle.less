@@ -1,0 +1,278 @@
+// VARS
+@circle-width: 0.28em;
+@circle-width-hover: 0.1em;
+@level-count: 10;
+
+// colors default
+@primary-color: #307bbb;
+@secondary-color: #ccc;
+@bg-color: #fff; //middle circle
+
+@primary-color-green: #4db53c;
+@primary-color-orange: #dd9d22;
+
+@primary-color-1: #BDBBB9;
+@primary-color-2: #A7DAD8;
+@primary-color-3: #68F2C7;
+@primary-color-4: #68F272;
+@primary-color-5: #D7F268;
+@primary-color-6: #F2CE68;
+@primary-color-7: #F2A768;
+@primary-color-8: #F28668;
+@primary-color-9: #F72424;
+@primary-color-10: #AB0A0A;
+
+
+// colors dark skin
+@primary-color-dark: #c6ff00;
+@secondary-color-dark: #777;
+@bg-color-dark: #666;
+
+@primary-color-green-dark: #5fd400;
+@primary-color-orange-dark: #e08833;
+
+// mixins
+@import "mixins.less";
+
+// CIRCLE
+// classes 2 extend
+.rect-auto {
+    clip: rect(auto, auto, auto, auto);
+}
+
+.pie {
+    position: absolute;
+    border: @circle-width solid @primary-color;
+    width: 1 - (2 * @circle-width);
+    height: 1 - (2 * @circle-width);
+    clip: rect(0em, 0.5em, 1em, 0em);
+    border-radius: 50%;
+    .rotate(0deg);
+}
+
+.pie-fill {
+    .rotate(180deg);
+}
+
+// main
+.c100 {
+
+    *, *:before, *:after {
+        .box-sizing(content-box);
+    }
+
+    position: relative;
+    font-size: 120px;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    float: left;
+    margin: 0 0.1em 0.1em 0;
+    background-color: @secondary-color;
+
+    // center circle to its parent
+    &.center{
+        float: none;
+        margin: 0 auto;
+    }
+
+    // bigger size
+    &.big{
+        font-size: 240px;
+    }
+
+    // smaller size
+    &.small{
+        font-size: 80px;
+    }
+	
+	&.crowd-size {
+		font-size: 30px;
+	  }
+
+    // centered value inside circle
+    > span {
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 5em;
+        line-height: 5em;
+        font-size: 0.2em;
+        color: @secondary-color;
+        display: block;
+        text-align: center;
+        white-space: nowrap;
+        .transition-property(all);
+        .transition-duration(0.2s);
+        .transition-timing-function(ease-out);
+    }
+
+    // background inside the circle
+    &:after{
+        position: absolute;
+        top: @circle-width;
+        left: @circle-width;
+        display: block;
+        content: " ";
+        border-radius: 50%;
+        background-color: @bg-color;
+        width: 1 - (2 * @circle-width);
+        height: 1 - (2 * @circle-width);
+        .transition-property(all);
+        .transition-duration(0.2s);
+        .transition-timing-function(ease-in);
+    }
+
+    // the slice (mask)
+    .slice {
+        position: absolute;
+        width: 1em;
+        height: 1em;
+        clip: rect(0em, 1em, 1em, 0.5em);
+    }
+
+    // circle to show the status
+    .bar {
+        &:extend(.pie);
+    }
+
+    // loop to create all needed elements automatically
+    .generate-elements(@n, @i: 1) when (@i =< @n) {
+        &.p@{i} {
+            & .slice {
+                &:extend(.rect-auto);
+            }
+            & .bar:after{
+                &:extend(.pie-fill);
+            }
+            & .fill{
+                &:extend(.pie);
+                &:extend(.pie-fill);
+            }
+        }
+        .generate-elements(@n, (@i + 1));
+    }
+    // loop to rotate all 100 circles
+    .generate-rotation(@n, @i: 1) when (@i =< @n) {
+        &.p@{i} .bar {
+            @degs: (360/100*@i);
+            .rotate(~"@{degs}deg");
+        }
+        .generate-rotation(@n, (@i + 1));
+    }.generate-color-by-level(@level, @crowd-color) {
+    @level-range: 100 / @level-count;
+    @lower-bound: (@level - 1)* @level-range + 1;
+    @upper-bound: @level * @level-range;
+    .generate-color(@upper-bound, @lower-bound, @crowd-color);
+  }
+  .generate-color(@n, @i: 1, @crowd-color) when (@i =< @n) {
+    &.p@{i} {
+      & .bar {
+        border-color: @crowd-color !important;
+      }
+      & .fill {
+        border-color: @crowd-color !important;
+      }
+    }
+    .generate-color(@n, (@i + 1), @crowd-color);
+  }
+  .generate-elements(100, 51);
+  .generate-rotation(100, 1);
+  .generate-color-by-level(1, @primary-color-1);
+  .generate-color-by-level(2, @primary-color-2);
+  .generate-color-by-level(3, @primary-color-3);
+  .generate-color-by-level(4, @primary-color-4);
+  .generate-color-by-level(5, @primary-color-5);
+  .generate-color-by-level(6, @primary-color-6);
+  .generate-color-by-level(7, @primary-color-7);
+  .generate-color-by-level(8, @primary-color-8);
+  .generate-color-by-level(9, @primary-color-9);
+  .generate-color-by-level(10, @primary-color-10);
+
+    // hover styles
+    &:hover{
+
+        cursor: default;
+
+        > span {
+            width: 3.33em;
+            line-height: 3.33em;
+            font-size: 0.3em;
+            color: @primary-color;
+        }
+
+        &:after{
+            top: @circle-width-hover;
+            left: @circle-width-hover;
+            width: 1 - (2 * @circle-width-hover);
+            height: 1 - (2 * @circle-width-hover);
+        }
+    }
+
+    // override colors for the dark skin
+    &.dark {
+
+        background-color: @secondary-color-dark;
+
+        .bar,
+        .fill{
+            border-color: @primary-color-dark !important;
+        }
+
+        > span {
+            color: @secondary-color-dark;
+        }
+
+
+        &:after{
+            background-color: @bg-color-dark;
+        }
+
+        &:hover{
+
+            > span {
+                color: @primary-color-dark;
+            }
+        }
+    }
+
+    // green skin
+    &.green{
+
+        .bar, .fill { border-color: @primary-color-green !important;}
+
+        &:hover{
+            > span { color: @primary-color-green;}
+        }
+    }
+
+    &.green.dark{
+
+        .bar, .fill { border-color: @primary-color-green-dark !important;}
+
+        &:hover{
+            > span { color: @primary-color-green-dark;}
+        }
+    }
+
+    // orange skin
+    &.orange{
+
+        .bar, .fill { border-color: @primary-color-orange !important;}
+
+        &:hover{
+            > span { color: @primary-color-orange;}
+        }
+    }
+
+    &.orange.dark{
+
+        .bar, .fill { border-color: @primary-color-orange-dark !important;}
+
+        &:hover{
+            > span { color: @primary-color-orange-dark;}
+        }
+    }
+}

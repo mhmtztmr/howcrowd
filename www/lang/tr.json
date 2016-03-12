@@ -3,11 +3,13 @@
     "SEE_CROWD": "Kalabalık Gör",
     "SET_CROWD": "Kalabalık Gir",
     "SETTINGS": "Ayarlar",
-    "EXIT": "Çıkış"
+    "EXIT": "Çıkış",
+    "CLOSE": "Kapat"
   },
   "SEE_CROWD_MENU": {
-    "LIST": "Liste",
-    "MAP": "Harita",
+    "HERE": "Burada",
+    "ON_MAP": "Haritada",
+    "IN_CITY": "Şehirde",
     "DATE": "Zmn.",
     "NAME": "Yer Adı",
     "LAST_VALUE": "Son",
@@ -18,7 +20,7 @@
     "PULL_TO_REFRESH": "Yenilemek için aşağı çek",
     "RELEASE_TO_REFRESH": "Yenilemek için bırak",
     "LOADING": "Yüklüyor...",
-	"SEARCH": "Ara"
+    "SEARCH": "Ara"
   },
   "SET_CROWD_MENU": {
     "SELECT_PLACE": "Yer seç",

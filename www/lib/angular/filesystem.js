@@ -1,6 +1,4 @@
-'use strict';
-
-angular.module('mike360.phonegap.filesystem', ['btford.phonegap.ready'])
+angular.module('filesystem', ['phonegap.ready'])
   .factory('filesystem', function($rootScope, $window, phonegapReady) {
     return {
       requestFileSystem: phonegapReady(function(onSuccess, onError) {

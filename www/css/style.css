@@ -20,7 +20,7 @@
 .crowd-items-header-inner {
   font-size: 12px !important;
   font-weight: bold !important;
-  background-color: #ffe2c7 !important;
+  background-color: #f9f9f9 !important;
   border-color: transparent !important;
 }
 .crowd-items-content {
@@ -31,21 +31,15 @@
   padding-top: 5px !important;
 }
 .crowd-date {
-  /*
-  float: left;
-  padding-top: 0.5em;
-  line-height: 1em;
-  */
   text-align: center;
   font-size: 11px;
   font-weight: bold;
+  line-height: 12px;
+  margin-top: -5px;
+  word-spacing: 100px;
 }
 .crowd-name {
-  /*float: left;
-  padding-left: 1em;
-    */
   white-space: nowrap;
-
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -79,9 +73,23 @@
   width: 90% !important;
 }
 .disabled-icon {
-	-webkit-filter: blur(2px);
-	-moz-filter: blur(5px);
-	-o-filter: blur(5px);
-	-ms-filter: blur(5px);
-	filter: blur(5px);
+  -webkit-filter: blur(2px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
 }
+.positive-feedback {
+  color:green;
+}
+.negative-feedback {
+  color:red;
+}
+.feedback-done {
+  opacity: 0.3;
+}
+.rhs-avg-crowd-indicator {
+  float:right;
+  margin-right: 12px;
+}
+div#preload { display: none; }
