@@ -1,7 +1,6 @@
 var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model',
-  'identification', 'map.Model', 'map.Service', 'config', 'connection',
-  'feedback',
-  'date', 'lang', 'db'
+  'seeCrowd.Service', 'identification', 'map.Model', 'map.Service',
+  'config', 'connection', 'feedback', 'date', 'lang', 'db'
 ]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
@@ -84,6 +83,7 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
       ons.notification.confirm({
         title: $rootScope.lang.CONFIRM.CONFIRM,
         message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
+        modifier: 'material',
         buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang
           .CONFIRM.OK
         ],

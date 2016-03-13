@@ -48,12 +48,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
           });
       }
     }
-    //
-    // $scope.show = function(dlg) {
-    //   ons.createDialog(dlg).then(function(dialog) {
-    //     dialog.show();
-    //   });
-    // };
 
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
@@ -71,14 +65,20 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       fnc: function() {
         //alert('hey');
       }
-    }, {
-      label: 'Bildir',
-      fnc: function() {
-        ons.createDialog('templates/report-crowd.html').then(function(
-          dialog) {
-          dialog.show();
-        });
-      }
     }];
+
+    if ($scope.selectedPlaceBasedCrowd.placeSource === 'custom') {
+      $scope.options.push({
+        label: 'Bildir',
+        fnc: function() {
+          ons.createDialog('templates/report-crowd.html').then(
+            function(
+              dialog) {
+              dialog.selectedPlaceBasedCrowd = $scope.selectedPlaceBasedCrowd;
+              dialog.show();
+            });
+        }
+      });
+    }
   }
 ]);

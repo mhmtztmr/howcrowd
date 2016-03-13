@@ -1,5 +1,6 @@
-app.controller('crowdReportController', ['$scope',
-  function($scope) {
+app.controller('crowdReportController', ['$scope', 'seeCrowdService',
+
+  function($scope, seeCrowdService) {
     $scope.reportReasons = [{
       label: 'Uygunsuz',
       value: 'inappropriate'
@@ -12,7 +13,9 @@ app.controller('crowdReportController', ['$scope',
     }];
 
     $scope.report = function() {
-      alert($scope.reportReason);
+      seeCrowdService.reportCrowd($scope.dialog.selectedPlaceBasedCrowd.crowds[
+        0], $scope.reportReason);
+      app.navi.resetToPage('templates/see-crowd.html');
     };
 
     $scope.reportReason = $scope.reportReasons[0].value;
