@@ -1,3 +1,7 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
 .menu-item-generic-container {
   padding: 0 !important;
 }
@@ -80,16 +84,18 @@
   filter: blur(5px);
 }
 .positive-feedback {
-  color:green;
+  color: green;
 }
 .negative-feedback {
-  color:red;
+  color: red;
 }
 .feedback-done {
   opacity: 0.3;
 }
 .rhs-avg-crowd-indicator {
-  float:right;
+  float: right;
   margin-right: 12px;
 }
-div#preload { display: none; }
+div#preload {
+  display: none;
+}
