@@ -10,9 +10,14 @@ var seeCrowdService = function(dbService) {
     dbService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
   }
 
+  function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
+    dbService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
+  }
+
   return {
     retrieveCrowds: retrieveCrowds,
-    giveFeedback: giveFeedback
+    giveFeedback: giveFeedback,
+    reportCrowd: reportCrowd
   };
 };
 

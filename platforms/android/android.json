@@ -23,6 +23,10 @@
                         {
                             "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SocialSharing\"><param name=\"android-package\" value=\"nl.xservices.plugins.SocialSharing\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -40,7 +44,7 @@
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
-                            "count": 1
+                            "count": 2
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
@@ -75,6 +79,9 @@
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
         "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova-plugin-x-socialsharing": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         }
     },
@@ -285,6 +292,14 @@
             "clobbers": [
                 "Connection"
             ]
+        },
+        {
+            "file": "plugins/cordova-plugin-x-socialsharing/www/SocialSharing.js",
+            "id": "cordova-plugin-x-socialsharing.SocialSharing",
+            "pluginId": "cordova-plugin-x-socialsharing",
+            "clobbers": [
+                "window.plugins.socialsharing"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -292,6 +307,7 @@
         "cordova-plugin-geolocation": "1.0.1",
         "cordova-plugin-file": "3.0.0",
         "cordova-plugin-globalization": "1.0.2",
-        "cordova-plugin-network-information": "1.2.1-dev"
+        "cordova-plugin-network-information": "1.2.1-dev",
+        "cordova-plugin-x-socialsharing": "5.0.11"
     }
 }

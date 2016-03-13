@@ -1,4 +1,4 @@
-var backendlessService = function($q) {
+var backendlessService = function($q, crowdRest) {
 
   function Crowd(args) {
     args = args || {};
@@ -14,6 +14,7 @@ var backendlessService = function($q) {
     this.crowdLocationLongitude = args.crowdLocationLongitude || "";
     this.crowdPositiveFeedback = args.crowdPositiveFeedback || 0;
     this.crowdNegativeFeedback = args.crowdNegativeFeedback || 0;
+    this.crowdReportReason = args.crowdReportReason || '';
   }
 
   function Device(args) {
@@ -21,6 +22,16 @@ var backendlessService = function($q) {
     this.deviceId = args.deviceId || "";
     this.positiveFeedback = args.positiveFeedback || 1;
     this.negativeFeedback = args.negativeFeedback || 0;
+  }
+
+  function Place(args) {
+    args = args || {};
+    this.placeKey = args.placeKey || "";
+    this.placeName = args.placeName || "";
+    this.placeSource = args.placeSource || "";
+    this.placeSid = args.placeSid || "";
+    this.placeLocationLatitude = args.placeLocationLatitude || "";
+    this.placeLocationLongitude = args.placeLocationLongitude || "";
   }
 
   function init() {
@@ -49,48 +60,45 @@ var backendlessService = function($q) {
     crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
   }
 
-  function getPlace(placeSid, placeSource, onSuccess) {
-    var query = new Parse.Query("Place");
-
-    query.equalTo("placeSid", placeSid);
-    query.equalTo("placeSource", placeSource);
-    query.find({
-      success: function(results) {
-        if (results.length > 0) {
-          onSuccess(results[0]);
-        } else {
-          onSuccess();
-        }
-      },
-      error: function(error) {
-        alert("Error: " + error.code + " " + error.message);
+  function retrievePlace(placeKey, onSuccess) {
+    var def = $q.defer();
+    var places = Backendless.Persistence.of(Place);
+    var query = new Backendless.DataQuery();
+    query.condition = "placeKey = '" + placeKey + "'";
+    places.find(query, new Backendless.Async(function(result) {
+      if (result.data.length > 0) {
+        def.resolve(result.data[0]);
+      } else {
+        def.resolve(undefined);
       }
-    });
+    }, function(error) {
+      def.resolve(undefined);
+    }));
+    return def.promise;
   }
 
   function insertPlace(place, onSuccess, onFailure) {
 
-    getPlace(place.sid, place.source, function(existingPlaceObject) {
-      if (existingPlaceObject) {
-        onSuccess(existingPlaceObject);
-      } else {
-        var PlaceObject = Parse.Object.extend("Place");
-
-        placeObject = new PlaceObject();
-        placeObject.set('palceSid', place.sid);
-        placeObject.set('placeName', place.name);
-        placeObject.set('placeLocation', new Parse.GeoPoint(place.location));
-        placeObject.set('placeSource', place.source);
-        placeObject.save(null, {
-          success: function(savedPlaceObject) {
-            onSuccess(savedPlaceObject);
-          },
-          error: function(model, error) {
-            onFailure();
-          }
-        });
-      }
-    });
+    retrievePlace(place.placeKey).then(function(existingPlace) {
+        if (existingPlace) {
+          onSuccess(existingPlace);
+        } else {
+          var places = Backendless.Persistence.of(Place);
+          var placeObject = new Place({
+            placeKey: place.key,
+            placeName: place.name,
+            placeSource: place.source,
+            placeSid: place.sid,
+            placeLocationLatitude: place.location.latitude,
+            placeLocationLongitude: place.location.longitude
+          });
+          places.save(placeObject, new Backendless.Async(onSuccess,
+            onFailure));
+        }
+      },
+      function() {
+        def.reject;
+      });
   }
 
   function insertDevice(device, onSuccess, onFailure) {
@@ -144,6 +152,8 @@ var backendlessService = function($q) {
         }
       }
     }
+
+    q += ' and crowdReportReason is null';
 
     var query = new Backendless.DataQuery();
     query.options = {
@@ -206,12 +216,36 @@ var backendlessService = function($q) {
     myCounter.incrementAndGet(callback);
   }
 
+  function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
+    // var crowds = Backendless.Persistence.of(Crowd);
+    // var crowdObject = new Crowd({
+    //   deviceId: device.id,
+    //   deviceReliability: device.positiveFeedback / (device.positiveFeedback +
+    //     device.negativeFeedback),
+    //   placeKey: place.key,
+    //   placeName: place.name,
+    //   placeSource: place.source,
+    //   placeSid: place.sid,
+    //   crowdValue: crowd.value,
+    //   crowdDate: crowd.date,
+    //   crowdLocationLatitude: place.location.latitude,
+    //   crowdLocationLongitude: place.location.longitude
+    // });
+    // crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
+    crowdRest.update({
+      placeKey: crowd.placeKey
+    }, {
+      crowdReportReason: reportReason
+    });
+  }
+
   function formatCrowd(crowd) {
     return {
       deviceId: crowd.deviceId,
       placeKey: crowd.placeKey,
       placeName: crowd.placeName,
       placeSource: crowd.placeSource,
+      placeSid: crowd.placeSid,
       crowdId: crowd.objectId,
       crowdLocation: {
         latitude: crowd.crowdLocationLatitude,
@@ -232,9 +266,11 @@ var backendlessService = function($q) {
     retrieveCrowds: retrieveCrowds,
     giveFeedback: giveFeedback,
     insertDevice: insertDevice,
-    retrieveDevice: retrieveDevice
+    retrieveDevice: retrieveDevice,
+    insertPlace: insertPlace,
+    reportCrowd: reportCrowd
   };
 };
 
-angular.module('backendless', [])
-  .factory('backendlessService', ['$q', backendlessService]);
+angular.module('backendless', ['rest'])
+  .factory('backendlessService', ['$q', 'crowdRest', backendlessService]);

@@ -48,18 +48,14 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
           });
       }
     }
-    //
-    // $scope.show = function(dlg) {
-    //   ons.createDialog(dlg).then(function(dialog) {
-    //     dialog.show();
-    //   });
-    // };
 
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
     }).then(function(popover) {
       $scope.popover = popover;
     });
+
+    $scope.dialogs = {};
 
     $scope.options = [{
       label: 'Bilgi / Harita',
@@ -69,16 +65,39 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     }, {
       label: 'Paylaş',
       fnc: function() {
-        //alert('hey');
-      }
-    }, {
-      label: 'Bildir',
-      fnc: function() {
-        ons.createDialog('templates/report-crowd.html').then(function(
-          dialog) {
-          dialog.show();
-        });
+        var dlg = 'templates/share-crowd.html';
+        if (!$scope.dialogs[dlg]) {
+          ons.createDialog(dlg).then(
+            function(
+              dialog) {
+              $scope.dialogs[dlg] = dialog;
+              dialog.selectedPlaceBasedCrowd = $scope.selectedPlaceBasedCrowd;
+              dialog.show();
+            });
+        } else {
+          $scope.dialogs[dlg].show();
+        }
       }
     }];
+
+    if ($scope.selectedPlaceBasedCrowd.placeSource === 'custom') {
+      $scope.options.push({
+        label: 'Bildir',
+        fnc: function() {
+          var dlg = 'templates/report-crowd.html';
+          if (!$scope.dialogs[dlg]) {
+            ons.createDialog(dlg).then(
+              function(
+                dialog) {
+                $scope.dialogs[dlg] = dialog;
+                dialog.selectedPlaceBasedCrowd = $scope.selectedPlaceBasedCrowd;
+                dialog.show();
+              });
+          } else {
+            $scope.dialogs[dlg].show();
+          }
+        }
+      });
+    }
   }
 ]);

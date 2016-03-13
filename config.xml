@@ -44,7 +44,7 @@
   <gap:plugin name="org.apache.cordova.network-information"/>
   <gap:plugin name="org.apache.cordova.splashscreen"/>
   <gap:plugin name="org.apache.cordova.vibration"/>
-    <!--
+  <!--
   <platform name="android">
         <icon src="www/res/icon/android/icon-36-ldpi.png" density="ldpi" />
         <icon src="www/res/icon/android/icon-48-mdpi.png" density="mdpi"/>
@@ -54,10 +54,10 @@
   -->
 
   <icon src="icon.png"/>
-  <icon gap:platform="android" gap:qualifier="ldpi" gap:density="ldpi" src="www/res/icon/android/icon-36-ldpi.png"/>
-  <icon gap:platform="android" gap:qualifier="mdpi" gap:density="mdpi" src="www/res/icon/android/icon-48-mdpi.png"/>
-  <icon gap:platform="android" gap:qualifier="hdpi" gap:density="hdpi" src="www/res/icon/android/icon-72-hdpi.png"/>
-  <icon gap:platform="android" gap:qualifier="xhdpi" gap:density="xhdpi" src="www/res/icon/android/icon-96-xhdpi.png"/>
+  <icon gap:density="ldpi" gap:platform="android" gap:qualifier="ldpi" src="www/res/icon/android/icon-36-ldpi.png"/>
+  <icon gap:density="mdpi" gap:platform="android" gap:qualifier="mdpi" src="www/res/icon/android/icon-48-mdpi.png"/>
+  <icon gap:density="hdpi" gap:platform="android" gap:qualifier="hdpi" src="www/res/icon/android/icon-72-hdpi.png"/>
+  <icon gap:density="xhdpi" gap:platform="android" gap:qualifier="xhdpi" src="www/res/icon/android/icon-96-xhdpi.png"/>
   <icon gap:platform="blackberry" src="www/res/icon/blackberry/icon-80.png"/>
   <icon gap:platform="blackberry" gap:state="hover" src="www/res/icon/blackberry/icon-80.png"/>
   <icon gap:platform="ios" height="57" src="www/res/icon/ios/icon-57.png" width="57"/>
@@ -105,6 +105,12 @@
   </feature>
   <feature name="NetworkStatus">
     <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager"/>
+  </feature>
+  <feature name="SocialSharing">
+    <param name="ios-package" value="SocialSharing"/>
+  </feature>
+  <feature name="SocialSharing">
+    <param name="android-package" value="nl.xservices.plugins.SocialSharing"/>
   </feature>
 
   <allow-intent href="http://*/*"/>

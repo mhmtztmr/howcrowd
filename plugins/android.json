@@ -21,6 +21,9 @@
         },
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova-plugin-x-socialsharing": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
         }
     },
     "dependent_plugins": {}
