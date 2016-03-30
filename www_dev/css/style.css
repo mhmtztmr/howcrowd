@@ -1,0 +1,101 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.menu-item-generic-container {
+  padding: 0 !important;
+}
+.menu-item-generic {
+  height: 7em;
+  background-image: url('../img/crowd.png');
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -o-filter: blur(1px);
+  -ms-filter: blur(1px);
+  filter: blur(1px);
+}
+.crowd-items-header {
+  position: fixed !important;
+  z-index: 1;
+  width: 100%;
+}
+.crowd-items-header-inner {
+  font-size: 12px !important;
+  font-weight: bold !important;
+  background-color: #f9f9f9 !important;
+  border-color: transparent !important;
+}
+.crowd-items-content {
+  position: relative;
+}
+.crowd-item {
+  line-height: 10px !important;
+  padding-top: 5px !important;
+}
+.crowd-date {
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 12px;
+  margin-top: -5px;
+  word-spacing: 100px;
+}
+.crowd-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.crowd-last-value {
+  float: left;
+  margin: auto;
+}
+.crowd-average-value {
+  float: left;
+  margin: auto;
+}
+.refresh-button {
+  height: 100% !important;
+  width: 100% !important;
+  white-space: normal !important;
+}
+.loading-gif-wrapper {
+  text-align: center;
+}
+.loading-gif-inner {
+  margin-top: 50px;
+}
+.menu-icon {
+  float: left;
+  width: 10%;
+}
+.menu-text {
+  margin-left: 5%;
+}
+.crowd-detail-dialog {
+  width: 90% !important;
+}
+.disabled-icon {
+  -webkit-filter: blur(2px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
+.positive-feedback {
+  color: green;
+}
+.negative-feedback {
+  color: red;
+}
+.feedback-done {
+  opacity: 0.3;
+}
+.rhs-avg-crowd-indicator {
+  float: right;
+  margin-right: 12px;
+}
+div#preload {
+  display: none;
+}

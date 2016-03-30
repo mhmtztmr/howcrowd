@@ -1,15 +1,15 @@
 <div ng-controller="seeCrowdIncityController">
   <ons-page>
-  <div ng-if="!crowds">
-    <button class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
-  </div>
-  <div ng-if="crowds === 'pending'" class="loading-gif-wrapper">
-    <img class="loading-gif-inner" ng-src="img/loading.gif" />
-  </div>
-  <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0">
-    <button class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
-  </div>
-  <div ng-if="crowds && crowds !== 'pending'">
+
+    <button ng-if="!crowds" class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+
+    <div ng-if="crowds === 'pending'" class="loading-gif-wrapper">
+      <img class="loading-gif-inner" ng-src="img/loading.gif" />
+    </div>
+
+    <button ng-if="crowds && crowds !== 'pending' && crowds.length === 0" class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
+
+    <div ng-if="crowds && crowds !== 'pending'">
       <div class="navigation-bar">
         <div class="navigation-bar__center">
           <input ng-model="searchInput" ng-change="searchInputChange(searchInput)" type="text" class="search-input" style="width: 96%; margin: 6px auto 6px auto;" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH}}" />
@@ -41,8 +41,7 @@
                 {{item.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
               </ons-col>
               <ons-col class="crowd-name">
-                <img ng-src="img/sources/{{item.placeSource}}.png" />
-                 {{item.placeName}}
+                <img ng-src="img/sources/{{item.placeSource}}.png" /> {{item.placeName}}
               </ons-col>
               <ons-col width="40px" class="crowd-average-value">
                 <div class="c100 p{{item.crowdLast}} crowd-size center">
@@ -64,6 +63,6 @@
           </ons-list-item>
         </ons-list>
       </div>
-  </div>
-</ons-page>
+    </div>
+  </ons-page>
 </div>

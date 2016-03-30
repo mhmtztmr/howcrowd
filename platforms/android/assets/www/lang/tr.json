@@ -22,6 +22,22 @@
     "LOADING": "Yüklüyor...",
     "SEARCH": "Ara"
   },
+  "SEE_CROWD_DETAIL_POPOVER_MENU": {
+    "INFO": "Bilgi",
+    "SHARE": "Paylaş",
+    "REPORT": "Bildir"
+  },
+  "CROWD_SHARE_MENU": {
+    "WHATSAPP": "WhatsApp",
+    "MESSAGE": "Mesaj",
+    "EMAIL": "E-Posta"
+  },
+  "CROWD_REPORT_MENU": {
+    "REPORT": "Bildir",
+    "INAPPROPRIATE": "Uygunsuz",
+    "PRIVATE": "Kişisel",
+    "MISLEADING": "Yanıltıcı"
+  },
   "SET_CROWD_MENU": {
     "SELECT_PLACE": "Yer seç",
     "ENTER_CUSTOM_PLACE": "Özel yer gir",

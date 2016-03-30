@@ -28,7 +28,7 @@
     <ons-list>
       <ons-list-item ng-repeat="crowd in selectedPlaceBasedCrowd.crowds">
         <ons-row align="center">
-          <ons-col class="crowd-last-value">
+          <ons-col>
             {{crowd.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
           </ons-col>
           <ons-col width="40px" ng-class="{'feedback-done' : !$first || crowdType !== 'here' || $root.device.id === crowd.deviceId, 'positive-feedback' : true}">

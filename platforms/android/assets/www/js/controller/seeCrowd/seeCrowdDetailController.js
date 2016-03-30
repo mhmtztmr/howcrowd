@@ -58,12 +58,14 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     $scope.dialogs = {};
 
     $scope.options = [{
-      label: 'Bilgi / Harita',
+      label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
       fnc: function() {
-        app.navi.pushPage('templates/see-crowd-inmap.html');
+        app.navi.pushPage('templates/crowd-place-detail.html', {
+          selectedPlaceBasedCrowd: $scope.selectedPlaceBasedCrowd
+        });
       }
     }, {
-      label: 'Paylaş',
+      label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
       fnc: function() {
         var dlg = 'templates/share-crowd.html';
         if (!$scope.dialogs[dlg]) {
@@ -82,7 +84,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
 
     if ($scope.selectedPlaceBasedCrowd.placeSource === 'custom') {
       $scope.options.push({
-        label: 'Bildir',
+        label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.REPORT,
         fnc: function() {
           var dlg = 'templates/report-crowd.html';
           if (!$scope.dialogs[dlg]) {

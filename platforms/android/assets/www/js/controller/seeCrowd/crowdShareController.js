@@ -1,9 +1,7 @@
 app.controller('crowdShareController', ['$scope',
   function($scope) {
-
-
     $scope.shareChannels = [{
-      label: 'WhatsApp',
+      label: $rootScope.lang.CROWD_SHARE_MENU.WHATSAPP,
       fnc: function() {
         var selectedPlaceBasedCrowd = $scope.dialog.selectedPlaceBasedCrowd;
         window.plugins.socialsharing.shareViaWhatsApp(
