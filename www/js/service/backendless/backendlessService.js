@@ -192,7 +192,14 @@ var backendlessService = function($q, crowdRest, formatterService) {
   }
 
   function retrieveNearbyPlaces(filter) {
-    return retrieveCrowdsAndFormat(filter, formatterService.formatPlaceToSet);
+    var def = $q.defer(), uniquePlaces = {};
+    retrieveCrowdsAndFormat(filter, formatterService.formatPlaceToSet).then(function(entries){
+      for(i = 0; i < entries.length; i++){
+        uniquePlaces[entries[i].sid] = entries[i];
+      }
+      def.resolve( Object.keys(uniquePlaces).map(function (key) {return uniquePlaces[key]}));
+    });
+    return def.promise;
   }
 
   function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
