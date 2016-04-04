@@ -43,8 +43,9 @@ var dbService = function(backendlessService) {
     giveFeedback: giveFeedback,
     insertDevice: insertDevice,
     retrieveDevice: retrieveDevice,
-    insertPlace: insertPlace,
-    reportCrowd: reportCrowd
+    //insertPlace: insertPlace,
+    reportCrowd: reportCrowd,
+    retrieveNearbyPlaces: retrieveNearbyPlaces
   };
 };
 

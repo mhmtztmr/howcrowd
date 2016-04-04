@@ -154,7 +154,7 @@ var backendlessService = function($q, crowdRest, formatterService) {
       }
     }
 
-    q += ' and crowdReportReason is null';
+    q += " and (crowdReportReason is null or crowdReportReason = '')";
 
     var query = new Backendless.DataQuery();
     query.options = {
@@ -167,14 +167,14 @@ var backendlessService = function($q, crowdRest, formatterService) {
     crowds.find(query, new Backendless.Async(function(result) {
       var i, formattedResults = [];
       for (i = 0; i < result.data.length; i++) {
-        formattedResults.push(formatterService.formatCrowdToSee(result.data[
+        formattedResults.push(formatterFunction(result.data[
           i]));
       }
       var nextPage = result._nextPage;
       while (nextPage) {
         result = result.nextPage();
         for (i = 0; i < result.data.length; i++) {
-          formattedResults.push(formatterService.formatCrowdToSee(
+          formattedResults.push(formatterFunction(
             result.data[i]));
         }
         nextPage = result._nextPage;
@@ -191,20 +191,9 @@ var backendlessService = function($q, crowdRest, formatterService) {
     return retrieveCrowdsAndFormat(filter, formatterService.formatCrowdToSee);
   }
 
-  function retrieveNearbyPLaces(filter) {
-    return retrieveCrowdsAndFormat(filter, formatterService.formatCrowdToSet);
+  function retrieveNearbyPlaces(filter) {
+    return retrieveCrowdsAndFormat(filter, formatterService.formatPlaceToSet);
   }
-
-
-  var nearPlace = {
-    sid: place.place_id,
-    name: place.name,
-    location: {
-      latitude: place.geometry.location.lat(),
-      longitude: place.geometry.location.lng()
-    },
-    source: 'google'
-  };
 
   function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
     var counterName = "counter for " + crowd.crowdId + (isPositive ?
@@ -249,9 +238,10 @@ var backendlessService = function($q, crowdRest, formatterService) {
     insertDevice: insertDevice,
     retrieveDevice: retrieveDevice,
     //insertPlace: insertPlace,
-    reportCrowd: reportCrowd
+    reportCrowd: reportCrowd,
+    retrieveNearbyPlaces: retrieveNearbyPlaces
   };
 };
 
 angular.module('backendless', ['rest', 'formatter'])
-  .factory('backendlessService', ['$q', 'crowdRest', backendlessService]);
+  .factory('backendlessService', ['$q', 'crowdRest', 'formatterService', backendlessService]);

@@ -22,6 +22,7 @@ var setCrowdModel = function($q, setCrowdService, mapService) {
       services = [mapService, setCrowdService];
 
     if (serverRequest === true) {
+      nearbyPlaces = [];
       loadStatus = '';
     }
     if (loadStatus === 'loaded') {
@@ -34,7 +35,9 @@ var setCrowdModel = function($q, setCrowdService, mapService) {
       angular.forEach(services, function(value, key) {
         servicePromiseArray.push(value.retrieveNearbyPlaces(location).then(
           function(entries) {
-            nearbyPlaces.push(entries[0]);
+            if(entries && entries.length > 0) {
+              Array.prototype.push.apply(nearbyPlaces,entries);
+            }
           }));
       });
 

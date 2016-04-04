@@ -1,4 +1,4 @@
-var setCrowdService = function(dbService) {
+var setCrowdService = function( dbService, dateService, mapService) {
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
     dbService.insertCrowd(place, crowd, device, onSuccess, onFailure);
@@ -10,7 +10,7 @@ var setCrowdService = function(dbService) {
     function getFilter() {
       var now = dateService.getDBDate(new Date());
       var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
-      var boundingBox = mapService.getBoundingBox($rootScope.location);
+      var boundingBox = mapService.getBoundingBox(location);
 
       return {
         date: {
@@ -21,21 +21,7 @@ var setCrowdService = function(dbService) {
       };
     }
 
-    var nearPlace = {
-      sid: place.place_id,
-      name: place.name,
-      location: {
-        latitude: place.geometry.location.lat(),
-        longitude: place.geometry.location.lng()
-      },
-      source: 'google'
-    };
-
-    dbService.retrieveNearbyPlaces(getFilter()).then(function() {
-
-    }, function() {
-
-    });
+    return dbService.retrieveNearbyPlaces(getFilter());
   }
 
   return {
@@ -44,5 +30,5 @@ var setCrowdService = function(dbService) {
   };
 };
 
-angular.module('setCrowd.Service', ['db'])
-  .factory('setCrowdService', ['dbService', setCrowdService]);
+angular.module('setCrowd.Service', ['db', 'date', 'map.Service'])
+  .factory('setCrowdService', ['dbService', 'dateService', 'mapService', setCrowdService]);

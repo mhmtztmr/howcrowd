@@ -6,7 +6,7 @@
     <div class="center">
       <div ng-if="selectedPlace !== undefined">
         <div class="crowd-name">
-          <img ng-src="img/sources/google.png" /> {{selectedPlace.name}}
+          <img ng-src="img/sources/{{selectedPlace.source}}.png" /> {{selectedPlace.name}}
         </div>
       </div>
       <input ng-if="selectedPlace === undefined" style="width:100%; height:3em" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName" class="text-input text-input--underbar" />

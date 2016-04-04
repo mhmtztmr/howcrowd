@@ -22,7 +22,7 @@
           <ons-list modifier="inset">
             <ons-list-item ng-repeat="place in nearbyPlaces" ng-click="selectPlace(place)">
               <div class="crowd-name">
-                <img ng-src="img/sources/google.png" /> {{place.name}}
+                <img ng-src="img/sources/{{place.source}}.png" /> {{place.name}}
               </div>
             </ons-list-item>
           </ons-list>
