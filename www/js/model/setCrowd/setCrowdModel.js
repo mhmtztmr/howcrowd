@@ -1,5 +1,7 @@
-var setCrowdModel = function($q, setCrowdService) {
+var setCrowdModel = function($q, setCrowdService, mapService) {
   var selectedPlace;
+  var nearbyPlaces = [];
+  var loadStatus = '';
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
     setCrowdService.insertCrowd(place, crowd, device, onSuccess, onFailure);
@@ -14,12 +16,56 @@ var setCrowdModel = function($q, setCrowdService) {
     return selectedPlace;
   }
 
+  function loadNearbyPlaces(location, serverRequest) {
+    var def = $q.defer(),
+      servicePromiseArray = [],
+      services = [mapService, setCrowdService];
+
+    if (serverRequest === true) {
+      nearbyPlaces = [];
+      loadStatus = '';
+    }
+    if (loadStatus === 'loaded') {
+      def.resolve(nearbyPlaces);
+    } else if (loadStatus === 'pending') {
+      def.resolve([]);
+    } else {
+      loadStatus = 'pending';
+
+      angular.forEach(services, function(value, key) {
+        servicePromiseArray.push(value.retrieveNearbyPlaces(location).then(
+          function(entries) {
+            if(entries && entries.length > 0) {
+              Array.prototype.push.apply(nearbyPlaces,entries);
+            }
+          }));
+      });
+
+      $q.all(servicePromiseArray).then(function() {
+          loadStatus = 'loaded';
+          def.resolve(nearbyPlaces);
+        },
+        function() {
+          def.resolve(nearbyPlaces);
+        });
+      return def.promise;
+    }
+    return def.promise;
+  }
+
+  function getNearbyPlaces() {
+    return nearbyPlaces;
+  }
   return {
     insertCrowd: insertCrowd,
     selectPlace: selectPlace,
-    getSelectedPlace: getSelectedPlace
+    getSelectedPlace: getSelectedPlace,
+    getNearbyPlaces: getNearbyPlaces,
+    loadNearbyPlaces: loadNearbyPlaces
   };
 };
 
-angular.module('setCrowd.Model', ['setCrowd.Service'])
-  .factory('setCrowdModel', ['$q', 'setCrowdService', setCrowdModel]);
+angular.module('setCrowd.Model', ['setCrowd.Service', 'map.Service'])
+  .factory('setCrowdModel', ['$q', 'setCrowdService', 'mapService',
+    setCrowdModel
+  ]);

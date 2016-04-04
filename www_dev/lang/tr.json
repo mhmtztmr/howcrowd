@@ -1,0 +1,63 @@
+{
+  "MAIN_MENU": {
+    "SEE_CROWD": "Kalabalık Gör",
+    "SET_CROWD": "Kalabalık Gir",
+    "SETTINGS": "Ayarlar",
+    "EXIT": "Çıkış",
+    "CLOSE": "Kapat"
+  },
+  "SEE_CROWD_MENU": {
+    "HERE": "Burada",
+    "ON_MAP": "Haritada",
+    "IN_CITY": "Şehirde",
+    "DATE": "Zmn.",
+    "NAME": "Yer Adı",
+    "LAST_VALUE": "Son",
+    "AVERAGE_VALUE": "Ort.",
+    "MIN_AGO": "dk. önce",
+    "NO_PLACE": "Yeni bir kalabalık yok. Eklemek için dokun!",
+    "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin ol ve yenilemek için dokun!",
+    "PULL_TO_REFRESH": "Yenilemek için aşağı çek",
+    "RELEASE_TO_REFRESH": "Yenilemek için bırak",
+    "LOADING": "Yüklüyor...",
+    "SEARCH": "Ara"
+  },
+  "SEE_CROWD_DETAIL_POPOVER_MENU": {
+    "INFO": "Bilgi",
+    "SHARE": "Paylaş",
+    "REPORT": "Bildir"
+  },
+  "CROWD_SHARE_MENU": {
+    "WHATSAPP": "WhatsApp",
+    "MESSAGE": "Mesaj",
+    "EMAIL": "E-Posta"
+  },
+  "CROWD_REPORT_MENU": {
+    "REPORT": "Bildir",
+    "INAPPROPRIATE": "Uygunsuz",
+    "PRIVATE": "Kişisel",
+    "MISLEADING": "Yanıltıcı"
+  },
+  "SET_CROWD_MENU": {
+    "SELECT_PLACE": "Yer seç",
+    "ENTER_CUSTOM_PLACE": "Özel yer gir",
+    "PLACE_NAME": "Yer Adı",
+    "NO_PLACE": "Etrafta bir yer yok. Özel yer girmek için dokun!",
+    "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin ol ve yenilemek için dokun!"
+  },
+  "CONFIRM": {
+    "CONFIRM": "Onay",
+    "QUIT_CONFIRM": "Çıkmak istediğine emin misin?",
+    "OK": "Tamam",
+    "CANCEL": "İptal"
+  },
+  "ALERT": {
+    "ALERT": "Uyarı",
+    "SUCCESS": "Başarılı!",
+    "FAIL": "Başarısız!",
+    "OK": "Tamam"
+  },
+  "ERROR": {
+
+  }
+}

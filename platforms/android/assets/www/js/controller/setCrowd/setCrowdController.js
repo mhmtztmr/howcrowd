@@ -38,9 +38,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
     });
 
     function loadNearbyPlaces() {
-      mapModel.loadNearbyPlaces($rootScope.location, true).then(
+      setCrowdModel.loadNearbyPlaces($rootScope.location, true).then(
         function() {
-          $scope.nearbyPlaces = mapModel.getNearbyPlaces();
+          $scope.nearbyPlaces = setCrowdModel.getNearbyPlaces();
         },
         function() {
           $scope.nearbyPlaces = [];

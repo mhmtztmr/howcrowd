@@ -8,9 +8,9 @@ var dbService = function(backendlessService) {
     backendlessService.insertCrowd(place, crowd, device, onSuccess, onFailure);
   }
 
-  function insertPlace(place, onSuccess, onFailure) {
-    backendlessService.insertPlace(place, onSuccess, onFailure);
-  }
+  // function insertPlace(place, onSuccess, onFailure) {
+  //   backendlessService.insertPlace(place, onSuccess, onFailure);
+  // }
 
   function retrieveDevice(deviceId) {
     return backendlessService.retrieveDevice(deviceId);
@@ -22,6 +22,10 @@ var dbService = function(backendlessService) {
 
   function retrieveCrowds(filter) {
     return backendlessService.retrieveCrowds(filter);
+  }
+
+  function retrieveNearbyPlaces(filter) {
+    return backendlessService.retrieveNearbyPlaces(filter);
   }
 
   function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
@@ -39,8 +43,9 @@ var dbService = function(backendlessService) {
     giveFeedback: giveFeedback,
     insertDevice: insertDevice,
     retrieveDevice: retrieveDevice,
-    insertPlace: insertPlace,
-    reportCrowd: reportCrowd
+    //insertPlace: insertPlace,
+    reportCrowd: reportCrowd,
+    retrieveNearbyPlaces: retrieveNearbyPlaces
   };
 };
 

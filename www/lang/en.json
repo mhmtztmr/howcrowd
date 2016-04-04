@@ -19,6 +19,22 @@
     "NO_LOCATION": "No location data. Make sure your device's location service is accessible, then tab to refresh!",
     "SEARCH": "Search"
   },
+  "SEE_CROWD_DETAIL_POPOVER_MENU": {
+    "INFO": "Info",
+    "SHARE": "Share",
+    "REPORT": "Report"
+  },
+  "CROWD_SHARE_MENU": {
+    "WHATSAPP": "WhatsApp",
+    "MESSAGE": "Message",
+    "EMAIL": "E-Mail"
+  },
+  "CROWD_REPORT_MENU": {
+    "REPORT": "Report",
+    "INAPPROPRIATE": "Inappropriate",
+    "PRIVATE": "Private",
+    "MISLEADING": "Misleading"
+  },
   "SET_CROWD_MENU": {
     "SELECT_PLACE": "Select Place",
     "ENTER_CUSTOM_PLACE": "Enter Custom Place",

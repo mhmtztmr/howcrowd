@@ -1,14 +1,15 @@
-app.controller('crowdReportController', ['$scope', 'seeCrowdService',
+app.controller('crowdReportController', ['$rootScope', '$scope',
+  'seeCrowdService',
 
-  function($scope, seeCrowdService) {
+  function($rootScope, $scope, seeCrowdService) {
     $scope.reportReasons = [{
-      label: 'Uygunsuz',
+      label: $rootScope.lang.CROWD_REPORT_MENU.INAPPROPRIATE,
       value: 'inappropriate'
     }, {
-      label: 'Kişisel',
+      label: $rootScope.lang.CROWD_REPORT_MENU.PRIVATE,
       value: 'private'
     }, {
-      label: 'Yanıltıcı',
+      label: $rootScope.lang.CROWD_REPORT_MENU.MISLEADING,
       value: 'misleading'
     }];
 
