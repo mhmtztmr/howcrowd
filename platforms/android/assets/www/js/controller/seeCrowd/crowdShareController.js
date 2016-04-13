@@ -1,5 +1,5 @@
-app.controller('crowdShareController', ['$scope',
-  function($scope) {
+app.controller('crowdShareController', ['$scope','$rootScope',
+  function($scope, $rootScope) {
     $scope.shareChannels = [{
       label: $rootScope.lang.CROWD_SHARE_MENU.WHATSAPP,
       fnc: function() {

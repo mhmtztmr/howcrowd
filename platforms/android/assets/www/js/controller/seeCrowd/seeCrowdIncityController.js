@@ -2,14 +2,17 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
   'seeCrowdIncityModel',
   function($rootScope, $scope, $filter, seeCrowdIncityModel) {
     console.log('see crowd incity controller initialized');
+
     var placeBasedCrowdsArray;
-    $scope.crowds = 'pending';
+    modal.show();
+
     $scope.filteredPlaceBasedCrowdsArray = [];
 
     $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
       seeCrowdIncityModel.loadCrowds(undefined, serverRequest).then(
         function() {
           $scope.crowds = seeCrowdIncityModel.getCrowds();
+          modal.hide();
           var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
           placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
             function(key) {
@@ -21,6 +24,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
           }
         },
         function() {
+          modal.hide();
           if (onFailure) {
             onFailure();
           }
@@ -55,7 +59,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
     });
 
     $scope.checkLocation = function() {
-      $scope.crowds = 'pending';
+      $scope.crowds = undefined;
       $rootScope.checkLocation();
     };
 
@@ -84,5 +88,14 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
       },
       destroyItemScope: function(index, scope) {}
     };
+
+    if(!localStorage.getItem('guide_incityDefinition')){
+        ons.createDialog('templates/guide.html').then(
+          function(dialog) {
+            dialog.selectedPlaceBasedCrowd = $scope.selectedPlaceBasedCrowd;
+            dialog.show();
+          });
+      localStorage.setItem('guide_incityDefinition', true);
+    }
   }
 ]);

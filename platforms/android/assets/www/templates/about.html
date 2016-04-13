@@ -1,0 +1,29 @@
+<div ng-controller="aboutController">
+    <ons-page>
+        <ons-toolbar fixed-style>
+            <div class="left">
+                <ons-toolbar-button ng-click="menu.toggle()">
+                    <ons-icon icon="ion-navicon" size="28px" fixed-width="false"></ons-icon>
+                </ons-toolbar-button>
+            </div>
+            <div class="center">{{$root.lang.MAIN_MENU.ABOUT}}</div>
+        </ons-toolbar>
+        <div class="profile-card">
+            <img src="img/crowd.png" class="about-image">
+            <div class="about-name">Crowd</div>
+            <div class="about-desc">{{$root.lang.ABOUT.DESCRIPTION}}</div>
+        </div>
+        <div class="about-text">
+            <div class="about-title-1">{{$root.lang.ABOUT.SET_CROWD.TITLE}}</div>
+            <div class="about-description">{{$root.lang.ABOUT.SET_CROWD.DESCRIPTION}}</div>
+            <div class="about-title-1">{{$root.lang.ABOUT.SEE_CROWD.TITLE}}</div>
+            <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.IN_CITY.TITLE}}</div>
+            <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.IN_CITY.DESCRIPTION}}</div>
+            <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.HERE.TITLE}}</div>
+            <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.HERE.DESCRIPTION}}</div>
+            <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.ON_MAP.TITLE}}</div>
+            <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.ON_MAP.DESCRIPTION}}</div>
+        </div>
+
+    </ons-page>
+</div>

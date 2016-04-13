@@ -2,86 +2,94 @@
 <html ng-app="app">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="msapplication-tap-highlight" content="no" />
-  <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
 
-  <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+    <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
 
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
-  <link rel="stylesheet/less" type="text/css" href="css/circle.less" />
-  <link rel="stylesheet/less" type="text/css" href="css/mixins.less" />
-  <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
-  <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
-  <link rel="stylesheet" href="lib/angular/angular-csp.css" />
-  <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet/less" type="text/css" href="css/circle.less" />
+    <link rel="stylesheet/less" type="text/css" href="css/mixins.less" />
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
+    <link rel="stylesheet" href="lib/angular/angular-csp.css" />
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
 
-  <title>Crowd</title>
+    <title>Crowd</title>
 
-  <script type="text/javascript" src="cordova.js"></script>
-  <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
 
-  <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-  <script type="text/javascript" src="lib/angular/angular-resource.min.js"></script>
-  <script type="text/javascript" src="lib/angular/ready.js"></script>
-  <script type="text/javascript" src="lib/angular/filesystem.js"></script>
-  <script type="text/javascript" src="lib/angular/connection.js"></script>
-  <script type="text/javascript" src="lib/angular/geolocation.js"></script>
-  <script type="text/javascript" src="lib/onsen/js/onsenui.js"></script>
-  <script type="text/javascript" src="lib/backendless/backendless.min.js"></script>
-  <script type="text/javascript" src="lib/less/less.min.js"></script>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCy30JwIt5TZYreLKIJ-dXin0AU-XK7eIU&libraries=places" async defer></script>
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/angular/angular-resource.min.js"></script>
+    <script type="text/javascript" src="lib/angular/ready.js"></script>
+    <script type="text/javascript" src="lib/angular/filesystem.js"></script>
+    <script type="text/javascript" src="lib/angular/connection.js"></script>
+    <script type="text/javascript" src="lib/angular/geolocation.js"></script>
+    <script type="text/javascript" src="lib/onsen/js/onsenui.js"></script>
+    <script type="text/javascript" src="lib/backendless/backendless.min.js"></script>
+    <script type="text/javascript" src="lib/less/less.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCy30JwIt5TZYreLKIJ-dXin0AU-XK7eIU&libraries=places" async defer></script>
 
-  <script type="text/javascript" src="js/app/app.js"></script>
-  <script type="text/javascript" src="js/service/rest/restService.js"></script>
-  <script type="text/javascript" src="js/service/db/dbService.js"></script>
-  <script type="text/javascript" src="js/service/guid/guidService.js"></script>
-  <script type="text/javascript" src="js/service/backendless/backendlessService.js"></script>
-  <script type="text/javascript" src="js/service/backendless/formatterService.js"></script>
-  <script type="text/javascript" src="js/service/map/googleService.js"></script>
-  <script type="text/javascript" src="js/service/map/mapService.js"></script>
-  <script type="text/javascript" src="js/service/identification/identificationService.js"></script>
-  <script type="text/javascript" src="js/service/file/fileService.js"></script>
-  <script type="text/javascript" src="js/service/lang/langService.js"></script>
-  <script type="text/javascript" src="js/service/config/configService.js"></script>
-  <script type="text/javascript" src="js/service/date/dateService.js"></script>
-  <script type="text/javascript" src="js/service/seeCrowd/seeCrowdService.js"></script>
-  <script type="text/javascript" src="js/service/setCrowd/setCrowdService.js"></script>
+    <script type="text/javascript" src="js/app/app.js"></script>
+    <script type="text/javascript" src="js/service/rest/restService.js"></script>
+    <script type="text/javascript" src="js/service/db/dbService.js"></script>
+    <script type="text/javascript" src="js/service/guid/guidService.js"></script>
+    <script type="text/javascript" src="js/service/backendless/backendlessService.js"></script>
+    <script type="text/javascript" src="js/service/backendless/formatterService.js"></script>
+    <script type="text/javascript" src="js/service/map/googleService.js"></script>
+    <script type="text/javascript" src="js/service/map/mapService.js"></script>
+    <script type="text/javascript" src="js/service/identification/identificationService.js"></script>
+    <script type="text/javascript" src="js/service/file/fileService.js"></script>
+    <script type="text/javascript" src="js/service/lang/defaultLanguageModel.js"></script>
+    <script type="text/javascript" src="js/service/lang/langService.js"></script>
+    <script type="text/javascript" src="js/service/config/configService.js"></script>
+    <script type="text/javascript" src="js/service/date/dateService.js"></script>
+    <script type="text/javascript" src="js/service/seeCrowd/seeCrowdService.js"></script>
+    <script type="text/javascript" src="js/service/setCrowd/setCrowdService.js"></script>
 
-  <script type="text/javascript" src="js/model/map/mapModel.js"></script>
-  <script type="text/javascript" src="js/model/feedback/feedbackModel.js"></script>
-  <script type="text/javascript" src="js/model/seeCrowd/seeCrowdHereModel.js"></script>
-  <script type="text/javascript" src="js/model/seeCrowd/seeCrowdIncityModel.js"></script>
-  <script type="text/javascript" src="js/model/setCrowd/setCrowdModel.js"></script>
+    <script type="text/javascript" src="js/model/map/mapModel.js"></script>
+    <script type="text/javascript" src="js/model/feedback/feedbackModel.js"></script>
+    <script type="text/javascript" src="js/model/seeCrowd/seeCrowdHereModel.js"></script>
+    <script type="text/javascript" src="js/model/seeCrowd/seeCrowdIncityModel.js"></script>
+    <script type="text/javascript" src="js/model/setCrowd/setCrowdModel.js"></script>
 
-  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdController.js"></script>
-  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdHereController.js"></script>
-  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdIncityController.js"></script>
-  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdInmapController.js"></script>
-  <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdDetailController.js"></script>
-  <script type="text/javascript" src="js/controller/seeCrowd/crowdReportController.js"></script>
-  <script type="text/javascript" src="js/controller/seeCrowd/crowdShareController.js"></script>
-  <script type="text/javascript" src="js/controller/seeCrowd/crowdPlaceDetailController.js"></script>
-  <script type="text/javascript" src="js/controller/setCrowd/setCrowdController.js"></script>
-  <script type="text/javascript" src="js/controller/setCrowd/setCrowdLevelController.js"></script>
+    <script type="text/javascript" src="js/controller/splash/splashController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdHereController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdIncityController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdInmapController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/seeCrowdDetailController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/crowdReportController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/crowdShareController.js"></script>
+    <script type="text/javascript" src="js/controller/seeCrowd/crowdPlaceDetailController.js"></script>
+    <script type="text/javascript" src="js/controller/setCrowd/setCrowdController.js"></script>
+    <script type="text/javascript" src="js/controller/setCrowd/setCrowdLevelController.js"></script>
+    <script type="text/javascript" src="js/controller/about/aboutController.js"></script>
 
 </head>
 
 <body>
-  <div ng-controller="appController">
-      <ons-sliding-menu menu-page="templates/menu.html" main-page="templates/see-crowd.html" side="left" var="menu" type="reveal" max-slide-distance="220px" swipeable="false">
-      </ons-sliding-menu>
-   </div>
-  <div id="preload">
-   <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />
-   <img src="img/sources/custom.png" width="1" height="1" alt="Image 01" />
-</div>
-  <script type="text/javascript">
-    myApp.initialize();
-  </script>
+    <div ng-controller="appController">
+        <ons-modal var="modal">
+            <ons-icon icon="ion-load-c" spin="true"></ons-icon>
+            <br>
+            <br> {{$root.lang.MAIN_MENU.LOADING}}
+        </ons-modal>
+        <ons-sliding-menu menu-page="templates/menu.html" main-page="templates/splash.html" side="left" var="menu" type="push" max-slide-distance="220px" swipeable="false">
+        </ons-sliding-menu>
+    </div>
+    <div id="preload">
+        <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />
+        <img src="img/sources/custom.png" width="1" height="1" alt="Image 01" />
+    </div>
+    <script type="text/javascript">
+        myApp.initialize();
+    </script>
 </body>
 
 </html>

@@ -21,7 +21,7 @@ var langService = function($q, $http, $rootScope) {
 
   function getLangFile(lang) {
     if (!lang) {
-      prefLang = "en";
+      $rootScope.lang = defaultLanguageModel;
     } else {
       prefLang = lang.substring(0, 2);
     }
@@ -37,5 +37,5 @@ var langService = function($q, $http, $rootScope) {
   };
 };
 
-angular.module('lang', [])
+angular.module('lang')
   .factory('langService', ['$q', '$http', '$rootScope', langService]);

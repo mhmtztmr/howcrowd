@@ -7,7 +7,7 @@
     </div>
   </ons-toolbar>
   <ons-list class="menu-list">
-    <ons-list-item class="menu-item" onclick="menu.setMainPage('templates/see-crowd.html', {closeMenu: true})">
+    <ons-list-item class="menu-item" onclick="modal.show(); menu.setMainPage('templates/see-crowd.html', {closeMenu: true})">
       <div class="menu-icon">
         <ons-icon icon="ion-ios-search-strong"></ons-icon>
       </div>
@@ -15,7 +15,7 @@
         {{$root.lang.MAIN_MENU.SEE_CROWD}}
       </span>
     </ons-list-item>
-    <ons-list-item class="menu-item" onclick="menu.setMainPage('templates/set-crowd.html', {closeMenu: true})">
+    <ons-list-item class="menu-item" onclick="modal.show(); menu.setMainPage('templates/set-crowd.html', {closeMenu: true})">
       <div class="menu-icon">
         <ons-icon icon="ion-ios-people"></ons-icon>
       </div>
@@ -23,7 +23,9 @@
         {{$root.lang.MAIN_MENU.SET_CROWD}}
       </span>
     </ons-list-item>
-    <ons-list-item class="menu-item">
+  </ons-list>
+  <ons-list class="bottom-menu-list bottom-menu-list-bottom ">
+    <ons-list-item class="bottom-menu-item">
       <div class="menu-icon">
         <ons-icon icon="ion-gear-b"></ons-icon>
       </div>
@@ -31,7 +33,15 @@
         {{$root.lang.MAIN_MENU.SETTINGS}}
       </span>
     </ons-list-item>
-    <ons-list-item class="menu-item" ng-click="exitApp()">
+    <ons-list-item class="bottom-menu-item" onclick="modal.show(); menu.setMainPage('templates/about.html', {closeMenu: true})">
+      <div class="menu-icon">
+        <ons-icon icon="ion-ios-information-outline"></ons-icon>
+      </div>
+      <span class="menu-text">
+        {{$root.lang.MAIN_MENU.ABOUT}}
+      </span>
+    </ons-list-item>
+    <ons-list-item class="bottom-menu-item" ng-click="exitApp()">
       <div class="menu-icon">
         <ons-icon icon="ion-android-exit"></ons-icon>
       </div>

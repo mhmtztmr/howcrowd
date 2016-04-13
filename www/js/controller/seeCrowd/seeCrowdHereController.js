@@ -4,7 +4,7 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
     mapService) {
     console.log('see crowd here controller initialized');
     var placeBasedCrowdsArray;
-    $scope.crowds = 'pending';
+    modal.show();
     $scope.filteredPlaceBasedCrowdsArray = [];
 
     function getFilter() {
@@ -35,11 +35,13 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
               });
             $scope.filteredPlaceBasedCrowdsArray =
               placeBasedCrowdsArray;
+              modal.hide();
             if (onSuccess) {
               onSuccess();
             }
           },
           function() {
+            modal.hide();
             if (onFailure) {
               onFailure();
             }
@@ -52,7 +54,7 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
     };
 
     $scope.checkLocation = function() {
-      $scope.crowds = 'pending';
+      $scope.crowds = undefined;
       $rootScope.checkLocation();
     }
 
