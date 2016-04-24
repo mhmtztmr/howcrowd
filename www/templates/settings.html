@@ -10,10 +10,10 @@
         </ons-toolbar>
 
       <ons-list>
-        <ons-list-header>Crowd Settings</ons-list-header>
+        <ons-list-header>{{$root.lang.SETTINGS.CONTENT_SETTINGS}}</ons-list-header>
         <ons-list-item>
-          Özel yerleri göster
-          <ons-switch modifier="list-item"></ons-switch>
+          {{$root.lang.SETTINGS.DISPLAY_CUSTOM_PLACES}}
+          <ons-switch ng-model="$root.settings.isCustomPlacesEnabled" ng-click="saveChanges()" modifier="list-item"></ons-switch>
         </ons-list-item>
       </ons-list>
 

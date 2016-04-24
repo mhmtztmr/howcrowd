@@ -3,9 +3,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
     function($rootScope, $scope, $timeout, mapModel, mapService,
         setCrowdModel) {
         modal.show();
-
+        $scope.nearbyPlaces = 'pending';
         $scope.checkLocation = function() {
-            $scope.nearbyPlaces = undefined;
+            $scope.nearbyPlaces = 'pending';
             $rootScope.checkLocation();
         };
 
@@ -16,7 +16,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             $scope.checkLocation();
         }
 
-        $rootScope.$on("locationChanged", function(event, args) {
+        $scope.$on('$destroy',$rootScope.$on("locationChanged", function(event, args) {
             var newLocation = $rootScope.location,
                 oldLocation = args.oldLocation;
             if (newLocation && newLocation.latitude && newLocation.longitude) {
@@ -34,7 +34,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
                     $scope.nearbyPlaces = undefined;
                 }
             }
-        });
+        }));
 
         function loadNearbyPlaces() {
             setCrowdModel.loadNearbyPlaces($rootScope.location, true).then(

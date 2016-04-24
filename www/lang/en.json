@@ -69,6 +69,10 @@
             "DESCRIPTION": "Uygulamanın ana modüllerinden biri kalabalık bilgilerini başkalarıyla paylaşabileceğiniz kısımdır. Yakınınızda, Google Maps'in sağladığı ya da diğer kullanıcıların paylaştığı yerlerden istediğiniz için bir yoğunluk değeri girebilirsiniz."
         }
     },
+    "SETTINGS": {
+        "CONTENT_SETTINGS": "Content Settings",
+        "DISPLAY_CUSTOM_PLACES": "Display custom places"
+    },
     "CONFIRM": {
         "CONFIRM": "Confirm",
         "QUIT_CONFIRM": "Are you sure you want to quit?",

@@ -1,66 +1,65 @@
 <div ng-controller="seeCrowdHereController">
-  <div ng-if="!crowds">
-    <button class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
-  </div>
-  <div ng-if="crowds === 'pending'" class="loading-gif-wrapper">
-    <img class="loading-gif-inner" ng-src="img/loading.gif" />
-  </div>
-  <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0">
-    <button class="refresh-button button button--quiet" onclick="menu.setMainPage('templates/set-crowd.html')">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
-  </div>
-  <div ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
-      <div class="navigation-bar">
-        <div class="navigation-bar__center">
-          <input ng-model="searchInput" ng-change="searchInputChange(searchInput)" type="text" class="search-input" style="width: 96%; margin: 6px auto 6px auto;" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH}}" />
+    <ons-page>
+        <div ng-if="!crowds" style="height: 100%;">
+            <button class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
         </div>
-      </div>
-      <ons-list modifier="inset" class="crowd-items-header-inner">
-        <ons-list-item>
-          <ons-row align="center">
-            <ons-col width="40px" style="text-align:center;">
-              {{$root.lang.SEE_CROWD_MENU.DATE}}
-            </ons-col>
-            <ons-col style="padding-left:1em;">
-              {{$root.lang.SEE_CROWD_MENU.NAME}}
-            </ons-col>
-            <ons-col width="40px" style="text-align:center;">
-              {{$root.lang.SEE_CROWD_MENU.LAST_VALUE}}
-            </ons-col>
-            <ons-col width="40px" style="text-align:center;">
-              {{$root.lang.SEE_CROWD_MENU.AVERAGE_VALUE}}
-            </ons-col>
-          </ons-row>
-        </ons-list-item>
-      </ons-list>
-      <div class="crowd-items-content">
-        <ons-list modifier="inset" ons-lazy-repeat="MyDelegate">
-          <ons-list-item ng-click="selectPlaceBasedCrowd(item);">
-            <ons-row align="center">
-              <ons-col width="40px" class="crowd-date">
-                {{item.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
-              </ons-col>
-              <ons-col class="crowd-name">
-                <img ng-src="img/sources/{{item.placeSource}}.png" /> {{item.placeName}}
-              </ons-col>
-              <ons-col width="40px" class="crowd-average-value">
-                <div class="c100 p{{item.crowdLast}} crowd-size center">
-                  <div class="slice">
-                    <div class="bar"></div>
-                    <div class="fill"></div>
-                  </div>
+        <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0" style="height: 100%;">
+            <button class="refresh-button button button--quiet" onclick="menu.setMainPage('templates/set-crowd.html')">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
+        </div>
+        <div ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
+            <div class="navigation-bar">
+                <div class="navigation-bar__center">
+                    <input ng-model="searchInput" ng-change="searchInputChange(searchInput)" type="text" class="search-input" style="width: 96%; margin: 6px auto 6px auto;" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH}}" />
                 </div>
-              </ons-col>
-              <ons-col width="40px" class="crowd-last-value">
-                <div class="c100 p{{item.crowdAverage}} crowd-size center">
-                  <div class="slice">
-                    <div class="bar"></div>
-                    <div class="fill"></div>
-                  </div>
-                </div>
-              </ons-col>
-            </ons-row>
-          </ons-list-item>
-        </ons-list>
-      </div>
-  </div>
+            </div>
+            <ons-list modifier="inset" class="crowd-items-header-inner">
+                <ons-list-item>
+                    <ons-row align="center">
+                        <ons-col width="40px" style="text-align:center;">
+                            {{$root.lang.SEE_CROWD_MENU.DATE}}
+                        </ons-col>
+                        <ons-col style="padding-left:1em;">
+                            {{$root.lang.SEE_CROWD_MENU.NAME}}
+                        </ons-col>
+                        <ons-col width="40px" style="text-align:center;">
+                            {{$root.lang.SEE_CROWD_MENU.LAST_VALUE}}
+                        </ons-col>
+                        <ons-col width="40px" style="text-align:center;">
+                            {{$root.lang.SEE_CROWD_MENU.AVERAGE_VALUE}}
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+            </ons-list>
+            <div class="crowd-items-content">
+                <ons-list modifier="inset" ons-lazy-repeat="MyDelegate">
+                    <ons-list-item ng-click="selectPlaceBasedCrowd(item);" ng-if="$root.settings.isCustomPlacesEnabled === true || item.source !== 'custom'">
+                        <ons-row align="center">
+                            <ons-col width="40px" class="crowd-date">
+                                {{item.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+                            </ons-col>
+                            <ons-col class="crowd-name">
+                                <img ng-src="img/sources/{{item.placeSource}}.png" /> {{item.placeName}}
+                            </ons-col>
+                            <ons-col width="40px" class="crowd-average-value">
+                                <div class="c100 p{{item.crowdLast}} crowd-size center">
+                                    <div class="slice">
+                                        <div class="bar"></div>
+                                        <div class="fill"></div>
+                                    </div>
+                                </div>
+                            </ons-col>
+                            <ons-col width="40px" class="crowd-last-value">
+                                <div class="c100 p{{item.crowdAverage}} crowd-size center">
+                                    <div class="slice">
+                                        <div class="bar"></div>
+                                        <div class="fill"></div>
+                                    </div>
+                                </div>
+                            </ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+        </div>
+    </ons-page>
 </div>
