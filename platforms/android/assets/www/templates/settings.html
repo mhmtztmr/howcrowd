@@ -1,0 +1,21 @@
+<div ng-controller="settingsController">
+    <ons-page>
+        <ons-toolbar fixed-style>
+            <div class="left">
+                <ons-toolbar-button ng-click="menu.toggle()">
+                    <ons-icon icon="ion-navicon" size="28px" fixed-width="false"></ons-icon>
+                </ons-toolbar-button>
+            </div>
+            <div class="center">{{$root.lang.MAIN_MENU.SETTINGS}}</div>
+        </ons-toolbar>
+
+      <ons-list>
+        <ons-list-header>{{$root.lang.SETTINGS.CONTENT_SETTINGS}}</ons-list-header>
+        <ons-list-item>
+          {{$root.lang.SETTINGS.DISPLAY_CUSTOM_PLACES}}
+          <ons-switch ng-model="$root.settings.isCustomPlacesEnabled" ng-click="saveChanges()" modifier="list-item"></ons-switch>
+        </ons-list-item>
+      </ons-list>
+
+    </ons-page>
+</div>
