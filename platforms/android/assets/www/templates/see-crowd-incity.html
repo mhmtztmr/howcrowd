@@ -5,13 +5,13 @@
                 <input ng-model="searchInput" ng-change="searchInputChange(searchInput)" type="text" class="search-input" style="width: 96%; margin: 6px auto 6px auto;" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH}}" />
             </div>
         </ons-toolbar>
-        <div ng-if="!crowds">
+        <div ng-if="!crowds" style="height: 100%;">
             <button class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
         </div>
-        <div ng-if="crowds && crowds.length === 0">
-            <button class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
+        <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0" style="height: 100%;">
+            <button class="refresh-button button button--quiet" onclick="menu.setMainPage('templates/set-crowd.html')">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
         </div>
-        <div ng-if="crowds && crowds.length > 0">
+        <div ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
             <ons-list modifier="inset" class="crowd-items-header-inner">
                 <ons-list-item>
                     <ons-row align="center">
@@ -32,7 +32,7 @@
             </ons-list>
             <div class="crowd-items-content">
                 <ons-list modifier="inset" ons-lazy-repeat="MyDelegate">
-                    <ons-list-item ng-click="selectPlaceBasedCrowd(item);">
+                    <ons-list-item ng-click="selectPlaceBasedCrowd(item);" ng-if="$root.settings.isCustomPlacesEnabled === true || item.source !== 'custom'">
                         <ons-row align="center">
                             <ons-col width="40px" class="crowd-date">
                                 {{item.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
