@@ -1492,7 +1492,7 @@ angular.module('db', ['backendless'])
 
 var fileService = function(filesystem) {
 
-  var dataFile = '.crwd.txt';
+  var dataFile = '.crwd';
 
   function writeData(data, onSuccess, onFailure) {
     filesystem.requestFileSystem(
