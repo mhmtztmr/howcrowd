@@ -1,7 +1,7 @@
 <div ng-controller="setCrowdController">
-    <ons-navigator animation="simpleslide" var="app.navi">
+    <ons-navigator var="app.navi">
         <ons-page>
-            <ons-toolbar fixed-style>
+            <ons-toolbar>
                 <div class="left">
                     <ons-toolbar-button ng-click="menu.toggle()">
                         <ons-icon icon="ion-navicon" size="28px" fixed-width="false"></ons-icon>
@@ -15,7 +15,7 @@
             <div ng-if="nearbyPlaces && nearbyPlaces !== 'pending'" style="height: 100%;">
                 <button ng-if="nearbyPlaces.length === 0" class="refresh-button button button--quiet" ng-click="selectPlace()">{{$root.lang.SET_CROWD_MENU.NO_PLACE}}</button>
                 <div ng-if="nearbyPlaces.length > 0">
-                    <ons-list modifier="inset">
+                    <ons-list>
                         <ons-list-item ng-repeat="place in nearbyPlaces" ng-if="$root.settings.isCustomPlacesEnabled === true || place.source !== 'custom'" ng-click="selectPlace(place)">
                             <div class="crowd-name">
                                 <img ng-src="img/sources/{{place.source}}.png" /> {{place.name}}

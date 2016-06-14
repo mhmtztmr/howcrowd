@@ -1,13 +1,13 @@
 <ons-page modifier="menu-page">
   <ons-toolbar modifier="transparent">
     <div class="right">
-      <ons-toolbar-button class="menu-closeMenu" ng-click="menu.closeMenu()">
+      <ons-toolbar-button ng-click="menu.closeMenu()">
       </ons-icon>{{$root.lang.MAIN_MENU.CLOSE}}
       </ons-toolbar-button>
     </div>
   </ons-toolbar>
-  <ons-list class="menu-list">
-    <ons-list-item class="menu-item" onclick="modal.show(); menu.setMainPage('templates/see-crowd.html', {closeMenu: true})">
+  <ons-list>
+    <ons-list-item onclick="modal.show(); menu.setMainPage('templates/see-crowd.html', {closeMenu: true})">
       <div class="menu-icon">
         <ons-icon icon="ion-ios-search-strong"></ons-icon>
       </div>
@@ -15,7 +15,7 @@
         {{$root.lang.MAIN_MENU.SEE_CROWD}}
       </span>
     </ons-list-item>
-    <ons-list-item class="menu-item" onclick="modal.show(); menu.setMainPage('templates/set-crowd.html', {closeMenu: true})">
+    <ons-list-item onclick="modal.show(); menu.setMainPage('templates/set-crowd.html', {closeMenu: true})">
       <div class="menu-icon">
         <ons-icon icon="ion-ios-people"></ons-icon>
       </div>
@@ -24,8 +24,8 @@
       </span>
     </ons-list-item>
   </ons-list>
-  <ons-list class="bottom-menu-list bottom-menu-list-bottom">
-    <ons-list-item class="bottom-menu-item" onclick="modal.show(); menu.setMainPage('templates/settings.html', {closeMenu: true})">
+  <ons-list class="bottom-menu-list-bottom">
+    <ons-list-item onclick="menu.setMainPage('templates/settings.html', {closeMenu: true})">
       <div class="menu-icon">
         <ons-icon icon="ion-gear-b"></ons-icon>
       </div>
@@ -33,7 +33,7 @@
         {{$root.lang.MAIN_MENU.SETTINGS}}
       </span>
     </ons-list-item>
-    <ons-list-item class="bottom-menu-item" onclick="modal.show(); menu.setMainPage('templates/about.html', {closeMenu: true})">
+    <ons-list-item onclick="menu.setMainPage('templates/about.html', {closeMenu: true})">
       <div class="menu-icon">
         <ons-icon icon="ion-ios-information-outline"></ons-icon>
       </div>
@@ -41,7 +41,7 @@
         {{$root.lang.MAIN_MENU.ABOUT}}
       </span>
     </ons-list-item>
-    <ons-list-item class="bottom-menu-item" ng-click="exitApp()">
+    <ons-list-item ng-click="exitApp()">
       <div class="menu-icon">
         <ons-icon icon="ion-android-exit"></ons-icon>
       </div>

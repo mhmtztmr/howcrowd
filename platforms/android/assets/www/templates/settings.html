@@ -1,6 +1,6 @@
 <div ng-controller="settingsController">
     <ons-page>
-        <ons-toolbar fixed-style>
+        <ons-toolbar>
             <div class="left">
                 <ons-toolbar-button ng-click="menu.toggle()">
                     <ons-icon icon="ion-navicon" size="28px" fixed-width="false"></ons-icon>
@@ -12,8 +12,13 @@
       <ons-list>
         <ons-list-header>{{$root.lang.SETTINGS.CONTENT_SETTINGS}}</ons-list-header>
         <ons-list-item>
+        <div class="center">
           {{$root.lang.SETTINGS.DISPLAY_CUSTOM_PLACES}}
-          <ons-switch ng-model="$root.settings.isCustomPlacesEnabled" ng-click="saveChanges()" modifier="list-item"></ons-switch>
+        </div>
+        <div class="right">
+          <ons-switch id="custom-place-switch" ng-model="$root.settings.isCustomPlacesEnabled" change="saveChanges()"></ons-switch>
+        </div>
+           <!-- <ons-switch " ></ons-switch> -->
         </ons-list-item>
       </ons-list>
 

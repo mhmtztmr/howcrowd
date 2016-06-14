@@ -96,8 +96,8 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
             });
         };
 
-        ons.setDefaultDeviceBackButtonListener(function() {
-            $scope.exitApp();
-        });
+        // ons.setDefaultDeviceBackButtonListener(function() {
+        //     $scope.exitApp();
+        // });
     }
 ]);

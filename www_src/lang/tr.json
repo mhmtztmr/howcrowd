@@ -19,7 +19,11 @@
         "MIN_AGO": "dk. önce",
         "NO_PLACE": "Yeni bir kalabalık yok. Eklemek için dokun!",
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin ol ve yenilemek için dokun!",
-        "SEARCH": "Ara"
+        "SEARCH_INCITY": "Ara: Son 1 saat, 15 km civarında",
+        "SEARCH_HERE": "Ara: Son 1 Saat, 50 m civarında"
+    },
+    "SEE_CROWD_POPOVER_MENU": {
+        "DISPLAY_TYPE": "Görüntüleme Tipi"
     },
     "SEE_CROWD_DETAIL_POPOVER_MENU": {
         "INFO": "Bilgi",

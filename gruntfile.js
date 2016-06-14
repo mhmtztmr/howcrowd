@@ -21,19 +21,21 @@ module.exports = function(grunt) {
             },
             libjs: {
                 src: ['www_src/lib/angular/angular.min.js',
+                 'www_src/lib/onsen/js/onsenui.js',
+                     'www_src/lib/onsen/js/angular-onsenui.js',
                     'www_src/lib/angular/angular-resource.min.js',
                     'www_src/lib/angular/ready.js',
                     'www_src/lib/angular/filesystem.js',
                     'www_src/lib/angular/connection.js',
                     'www_src/lib/angular/geolocation.js',
-                    'www_src/lib/onsen/js/onsenui.min.js',
+                   
                     'www_src/lib/backendless/backendless.min.js',
                     'www_src/lib/less/less.min.js'
                 ],
                 dest: 'www/js/lib.js'
             },
             libcss: {
-                src: ['www_src/lib/onsen/css/onsenui.css', 'www_src/lib/onsen/css/onsen-css-components.min.css'],
+                src: ['www_src/lib/onsen/css/onsenui.css', 'www_src/lib/onsen/css/onsen-css-components.css'],
                 dest: 'www/css/lib.css'
             }
         },
@@ -73,6 +75,11 @@ module.exports = function(grunt) {
                     cwd: 'www_src/lib/onsen/css/font_awesome',
                     src: '**',
                     dest: 'www/css/font_awesome',
+                    expand: true
+                }, {
+                    cwd: 'www_src/lib/onsen/css/material-design-iconic-font',
+                    src: '**',
+                    dest: 'www/css/material-design-iconic-font',
                     expand: true
                 }]
             }

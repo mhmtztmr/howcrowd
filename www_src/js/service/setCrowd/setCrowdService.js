@@ -1,4 +1,4 @@
-var setCrowdService = function( dbService, dateService, mapService) {
+var setCrowdService = function($rootScope, dbService, dateService, mapService) {
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
     dbService.insertCrowd(place, crowd, device, onSuccess, onFailure);
@@ -10,14 +10,15 @@ var setCrowdService = function( dbService, dateService, mapService) {
     function getFilter() {
       var now = dateService.getDBDate(new Date());
       var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
-      var boundingBox = mapService.getBoundingBox(location);
+      var boundingBox = mapService.getBoundingBox($rootScope.location, 0.05);
 
       return {
         date: {
           start: oneHourAgo,
           end: now
         },
-        location: boundingBox
+        location: boundingBox,
+        sources: ['custom']
       };
     }
 
@@ -31,4 +32,4 @@ var setCrowdService = function( dbService, dateService, mapService) {
 };
 
 angular.module('setCrowd.Service', ['db', 'date', 'map.Service'])
-  .factory('setCrowdService', ['dbService', 'dateService', 'mapService', setCrowdService]);
+  .factory('setCrowdService', ['$rootScope' ,'dbService', 'dateService', 'mapService', setCrowdService]);

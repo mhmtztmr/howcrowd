@@ -101,5 +101,9 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         }
       });
     }
+
+    $scope.onSwipeLeft= function() {
+      app.navi.popPage();
+    };
   }
 ]);

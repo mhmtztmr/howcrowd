@@ -96,15 +96,16 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
             });
         };
 
-        ons.setDefaultDeviceBackButtonListener(function() {
-            $scope.exitApp();
-        });
+        // ons.setDefaultDeviceBackButtonListener(function() {
+        //     $scope.exitApp();
+        // });
     }
 ]);
 
 app.controller('aboutController', ['$scope', function($scope) {
   modal.hide();
 }]);
+
 
 app.controller('crowdPlaceDetailController', ['$scope', 'mapService',
 
@@ -167,7 +168,20 @@ app.controller('crowdShareController', ['$scope','$rootScope',
   }
 ]);
 
-app.controller('seeCrowdController', ['$scope', function($scope) {}]);
+app.controller('seeCrowdController', ['$rootScope','$scope', function($rootScope, $scope) {
+	ons.createPopover('templates/popover.html', {
+      parentScope: $scope
+    }).then(function(popover) {
+      $scope.popover = popover;
+    });
+
+    $scope.options = [{
+      label: $rootScope.lang.SEE_CROWD_POPOVER_MENU.DISPLAY_TYPE,
+      fnc: function() {
+        app.navi.pushPage('templates/crowd-display-type.html', { animation : 'lift'});
+      }
+    }];
+}]);
 
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
   'seeCrowdHereModel', 'seeCrowdIncityModel', 'feedbackModel',
@@ -272,6 +286,10 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         }
       });
     }
+
+    $scope.onSwipeLeft= function() {
+      app.navi.popPage();
+    };
   }
 ]);
 
@@ -487,7 +505,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
                 itemScope.item = $scope.filteredPlaceBasedCrowdsArray[index];
             },
             calculateItemHeight: function(index) {
-                return 44;
+                return 128;
             },
             countItems: function() {
                 return $scope.filteredPlaceBasedCrowdsArray.length;
@@ -501,13 +519,15 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$timeout',
     'mapService', 'seeCrowdIncityModel',
     function($rootScope, $scope, $timeout, mapService, seeCrowdIncityModel) {
     console.log('see crowd in map');
-    var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
-    if (locationFromStorage) {
-        $scope.map = true;
-        var boundingBox = mapService.getBoundingBox(locationFromStorage, 0.1);
-        seeCrowdIncityModel.loadMap('map', boundingBox);
-        seeCrowdIncityModel.markPlaceBasedCrowdsOnMap();
-    }
+    $timeout(function(){
+        var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
+        if (locationFromStorage) {
+            $scope.map = true;
+            var boundingBox = mapService.getBoundingBox(locationFromStorage, 0.1);
+            seeCrowdIncityModel.loadMap('map', boundingBox);
+            seeCrowdIncityModel.markPlaceBasedCrowdsOnMap();
+        }
+    }, 100);
 }]);
 
 app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
@@ -517,6 +537,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
         modal.show();
         $scope.nearbyPlaces = 'pending';
         $scope.checkLocation = function() {
+            modal.show();
             $scope.nearbyPlaces = 'pending';
             $rootScope.checkLocation();
         };
@@ -544,6 +565,10 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             } else {
                 if (oldLocation && oldLocation.latitude && oldLocation.longitude) {} else {
                     $scope.nearbyPlaces = undefined;
+                    if (!$scope.$$phase) {
+                        $scope.$apply();
+                    }
+                    modal.hide();
                 }
             }
         }));
@@ -658,10 +683,10 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
 
 app.controller('settingsController', ['$scope', '$rootScope', 'settingsService', function($scope, $rootScope, settingsService) {
 
-  $scope.saveChanges = function() {
-    settingsService.saveSettings();
-  };
-  modal.hide();
+	document.getElementById('custom-place-switch').addEventListener('change', function(e) {
+		settingsService.saveSettings();
+	});
+	modal.hide();
 }]);
 
 app.controller('splashController', [function() {
@@ -1232,7 +1257,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
 
     function retrieveCrowdsAndFormat(filter, formatterFunction) {
         var def = $q.defer();
-        var q = '1 = 1';
+        var q = '1 = 1', j;
 
         if (filter) {
             if (filter.date) {
@@ -1252,6 +1277,16 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
                     q += ' and crowdLocationLongitude >= ' + filter.location.longitude.lower;
                     q += ' and crowdLocationLongitude <= ' + filter.location.longitude.upper;
                 }
+            }
+            if(filter.sources && filter.sources.length > 0) {
+                q += ' and (';
+                for (j = 0; j < filter.sources.length; j++) {
+                    q += " placeSource = '" + filter.sources[j] + "'";
+                    if(j !==  filter.sources.length - 1) {
+                        q += " or ";
+                    }
+                }
+                q += ")";
             }
         }
 
@@ -1694,7 +1729,11 @@ var defaultLanguageModel = function() {
             "MIN_AGO": "min(s) ago",
             "NO_PLACE": "No recent crowd. Tab to enter one!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible, then tab to refresh!",
-            "SEARCH": "Search"
+            "SEARCH_INCITY": "Search: Last One Hour, Around 15 kilometers",
+            "SEARCH_HERE": "Search: Last One Hour, Around 50 meters"
+        },
+        "SEE_CROWD_POPOVER_MENU": {
+            "DISPLAY_TYPE": "Display Type"
         },
         "SEE_CROWD_DETAIL_POPOVER_MENU": {
             "INFO": "Info",
@@ -1943,8 +1982,8 @@ var googleService = function() {
       position: latLng,
       icon: {
         url: 'img/markers/' + (Math.ceil(crowdValue / 10) * 10) + '.png',
-        anchor: new google.maps.Point(7, 35),
-        scaledSize: new google.maps.Size(14, 35)
+        anchor: new google.maps.Point(7, 40),
+        scaledSize: new google.maps.Size(14, 40)
       }
     });
     google.maps.event.addListener(marker, 'click', clickEvent);
@@ -2233,7 +2272,7 @@ var seeCrowdService = function(dbService) {
 angular.module('seeCrowd.Service', ['db'])
   .factory('seeCrowdService', ['dbService', seeCrowdService]);
 
-var setCrowdService = function( dbService, dateService, mapService) {
+var setCrowdService = function($rootScope, dbService, dateService, mapService) {
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
     dbService.insertCrowd(place, crowd, device, onSuccess, onFailure);
@@ -2245,14 +2284,15 @@ var setCrowdService = function( dbService, dateService, mapService) {
     function getFilter() {
       var now = dateService.getDBDate(new Date());
       var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
-      var boundingBox = mapService.getBoundingBox(location);
+      var boundingBox = mapService.getBoundingBox($rootScope.location, 0.05);
 
       return {
         date: {
           start: oneHourAgo,
           end: now
         },
-        location: boundingBox
+        location: boundingBox,
+        sources: ['custom']
       };
     }
 
@@ -2266,7 +2306,7 @@ var setCrowdService = function( dbService, dateService, mapService) {
 };
 
 angular.module('setCrowd.Service', ['db', 'date', 'map.Service'])
-  .factory('setCrowdService', ['dbService', 'dateService', 'mapService', setCrowdService]);
+  .factory('setCrowdService', ['$rootScope' ,'dbService', 'dateService', 'mapService', setCrowdService]);
 
 var settingsService = function($rootScope) {
     function loadSettings() {

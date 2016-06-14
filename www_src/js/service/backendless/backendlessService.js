@@ -131,7 +131,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
 
     function retrieveCrowdsAndFormat(filter, formatterFunction) {
         var def = $q.defer();
-        var q = '1 = 1';
+        var q = '1 = 1', j;
 
         if (filter) {
             if (filter.date) {
@@ -151,6 +151,16 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
                     q += ' and crowdLocationLongitude >= ' + filter.location.longitude.lower;
                     q += ' and crowdLocationLongitude <= ' + filter.location.longitude.upper;
                 }
+            }
+            if(filter.sources && filter.sources.length > 0) {
+                q += ' and (';
+                for (j = 0; j < filter.sources.length; j++) {
+                    q += " placeSource = '" + filter.sources[j] + "'";
+                    if(j !==  filter.sources.length - 1) {
+                        q += " or ";
+                    }
+                }
+                q += ")";
             }
         }
 

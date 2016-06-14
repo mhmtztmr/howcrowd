@@ -1,0 +1,130 @@
+/*.plan-list {
+  border-top: none;
+  background-image: none !important;
+}
+
+.plan {
+  line-height: 1;
+  padding: 0;
+}
+
+.plan-left {
+  text-align: right;
+  padding: 10px 10px 10px 0;
+}
+
+.plan-center {
+  background-color: #3399ff;
+  opacity: 0.5;
+}
+
+.plan-right {
+  padding: 10px 40px 10px 10px;
+  overflow: hidden
+}
+
+.plan-date {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.plan-duration {
+  font-size: 11px;
+  opacity: 0.4;
+}
+
+.plan-name {
+  font-size: 17px;
+  margin-bottom: 8px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden
+}
+
+.plan-info {
+  opacity: 0.4;
+  font-size: 12px;
+  line-height: 1.4;
+  }*/
+
+  .crowd-item {
+    width: 400px;
+    height: 100px;
+    background-color: white;
+  }
+  .crowd-main-body{
+    height: 80px;
+  }
+  .crowd-left {
+    float:left;
+    width: 10%;
+  }
+  .crowd-source-icon {
+
+  }
+  .crowd-center {
+    float:left;
+    width: 70%;
+  }
+  .crowd-place-name {
+white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  }
+  .crowd-city {
+    font-size: 14px;
+  }
+  .crowd-time {
+     font-size: 12px;
+  }
+  .crowd-right {
+    float:left;
+  }
+  .crowd-last-value {
+    font-size: 12px;
+  }
+  .crowd-circle {
+
+  }
+  .crowd-feedbacks{
+    font-size: 12px;
+  }
+  .crowd-positive-feedback {
+    float: left;
+    width: 50%;
+    color: green;
+  }
+  .crowd-negative-feedback {
+    float: right;
+    color: red;
+  }
+  .crowd-average-container {
+    height: 20px;
+    width: 100%;
+  }
+  .crowd-average-text {
+    width: 20%;
+    float: left;
+    font-size: 12px;
+  }
+  .crowd-average-indicator {
+    width: 80%;
+    height: 20px;
+    float:left;
+    background-color: transparent;
+  } 
+  .crowd-average-bar {
+    border-radius: 25px;
+    width: 90%;
+    height: 5px;
+    background-color: lightgray;
+    margin-top: 6px;
+  }
+  .crowd-average-fill {
+    border-radius: 25px;
+    height: 100%;
+    width: 40%;
+    background-color:red;
+  }

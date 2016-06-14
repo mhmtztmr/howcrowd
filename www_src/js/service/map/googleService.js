@@ -118,8 +118,8 @@ var googleService = function() {
       position: latLng,
       icon: {
         url: 'img/markers/' + (Math.ceil(crowdValue / 10) * 10) + '.png',
-        anchor: new google.maps.Point(7, 35),
-        scaledSize: new google.maps.Size(14, 35)
+        anchor: new google.maps.Point(7, 40),
+        scaledSize: new google.maps.Size(14, 40)
       }
     });
     google.maps.event.addListener(marker, 'click', clickEvent);

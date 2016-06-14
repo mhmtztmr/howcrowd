@@ -1,0 +1,13 @@
+.positive-feedback {
+  color: green;
+}
+.negative-feedback {
+  color: red;
+}
+.feedback-done {
+  opacity: 0.3;
+}
+.rhs-avg-crowd-indicator {
+  float: right;
+  margin-right: 12px;
+}

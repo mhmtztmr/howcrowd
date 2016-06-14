@@ -1,0 +1,13 @@
+.bottom-menu-list-bottom {
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  font-size: 14px;
+}
+.menu-icon {
+  float: left;
+  width: 10%;
+}
+.menu-text {
+  margin-left: 5%;
+}

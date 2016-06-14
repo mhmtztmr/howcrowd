@@ -5,6 +5,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
         modal.show();
         $scope.nearbyPlaces = 'pending';
         $scope.checkLocation = function() {
+            modal.show();
             $scope.nearbyPlaces = 'pending';
             $rootScope.checkLocation();
         };
@@ -32,6 +33,10 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             } else {
                 if (oldLocation && oldLocation.latitude && oldLocation.longitude) {} else {
                     $scope.nearbyPlaces = undefined;
+                    if (!$scope.$$phase) {
+                        $scope.$apply();
+                    }
+                    modal.hide();
                 }
             }
         }));

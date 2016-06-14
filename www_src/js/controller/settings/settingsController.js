@@ -1,7 +1,7 @@
 app.controller('settingsController', ['$scope', '$rootScope', 'settingsService', function($scope, $rootScope, settingsService) {
 
-  $scope.saveChanges = function() {
-    settingsService.saveSettings();
-  };
-  modal.hide();
+	document.getElementById('custom-place-switch').addEventListener('change', function(e) {
+		settingsService.saveSettings();
+	});
+	modal.hide();
 }]);

@@ -1,6 +1,6 @@
 <div ng-controller="seeCrowdDetailController">
   <ons-page>
-    <ons-toolbar fixed-style>
+    <ons-toolbar>
       <div class="left">
         <ons-back-button></ons-back-button>
       </div>
@@ -9,16 +9,6 @@
           <img ng-src="img/sources/{{selectedPlaceBasedCrowd.placeSource}}.png" /> {{selectedPlaceBasedCrowd.placeName}}
         </div>
       </div>
-      <!-- <div class="right">
-      <div class="rhs-avg-crowd-indicator">
-        <div class="c100 p{{selectedPlaceBasedCrowd.crowdAverage}} crowd-size" style="margin-top: 7px;">
-          <div class="slice">
-            <div class="bar"></div>
-            <div class="fill"></div>
-          </div>
-        </div>
-      </div>
-    </div> -->
       <div class="right">
         <ons-toolbar-button ng-click="popover.show($event)">
           <ons-icon icon="ion-android-more-vertical"></ons-icon>
