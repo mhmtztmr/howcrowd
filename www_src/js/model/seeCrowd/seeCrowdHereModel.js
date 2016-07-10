@@ -44,10 +44,11 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
             placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
             placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
             placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
-            placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
-            placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
             if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
-                placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
+                placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
+                // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
+                // placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
+                // placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
             }
             placeBasedCrowds[crowd.placeKey].crowdCount += 1;
             placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;

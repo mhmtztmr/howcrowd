@@ -116,6 +116,8 @@
     <param name="android-package" value="nl.xservices.plugins.SocialSharing"/>
   </feature>
 
+  <allow-navigation href="http://*/*" />
+  
   <allow-intent href="http://*/*"/>
   <allow-intent href="https://*/*"/>
   <allow-intent href="tel:*"/>

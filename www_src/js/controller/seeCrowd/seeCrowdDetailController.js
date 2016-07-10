@@ -1,8 +1,8 @@
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdHereModel', 'seeCrowdIncityModel', 'feedbackModel',
+  'seeCrowdHereModel', 'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
   function($rootScope, $scope, seeCrowdHereModel, seeCrowdIncityModel,
-    feedbackModel) {
-    $scope.crowdType = app.navi.getCurrentPage().options.crowdType;
+    feedbackModel, seeCrowdService) {
+    $scope.crowdType = app.navi.topPage.pushedOptions.crowdType;
     if ($scope.crowdType === 'here') {
       $scope.selectedPlaceBasedCrowd = seeCrowdHereModel.getSelectedPlaceBasedCrowd();
     } else {
@@ -49,14 +49,33 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       }
     }
 
+
+
+    $scope.dialogs = {
+      'templates/share-crowd.html': {},
+      'templates/report-crowd.html': {}
+    };
+    ons.createDialog('templates/share-crowd.html',  {
+      parentScope: $scope
+    }).then(
+    function(
+      dialog) {
+      $scope.dialogs['templates/share-crowd.html'] = dialog;
+    });
+    ons.createDialog('templates/report-crowd.html',  {
+      parentScope: $scope
+    }).then(
+    function(
+      dialog) {
+      $scope.dialogs['templates/report-crowd.html'] = dialog;
+    });
+
+
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
     }).then(function(popover) {
       $scope.popover = popover;
     });
-
-    $scope.dialogs = {};
-
     $scope.options = [{
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
       fnc: function() {
@@ -67,43 +86,50 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     }, {
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
       fnc: function() {
-        var dlg = 'templates/share-crowd.html';
-        if (!$scope.dialogs[dlg]) {
-          ons.createDialog(dlg).then(
-            function(
-              dialog) {
-              $scope.dialogs[dlg] = dialog;
-              dialog.selectedPlaceBasedCrowd = $scope.selectedPlaceBasedCrowd;
-              dialog.show();
-            });
-        } else {
-          $scope.dialogs[dlg].show();
-        }
+        $scope.dialogs['templates/share-crowd.html'].show();
       }
     }];
-
     if ($scope.selectedPlaceBasedCrowd.placeSource === 'custom') {
       $scope.options.push({
         label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.REPORT,
         fnc: function() {
-          var dlg = 'templates/report-crowd.html';
-          if (!$scope.dialogs[dlg]) {
-            ons.createDialog(dlg).then(
-              function(
-                dialog) {
-                $scope.dialogs[dlg] = dialog;
-                dialog.selectedPlaceBasedCrowd = $scope.selectedPlaceBasedCrowd;
-                dialog.show();
-              });
-          } else {
-            $scope.dialogs[dlg].show();
-          }
+          $scope.dialogs['templates/report-crowd.html'].show();
         }
       });
     }
 
-    $scope.onSwipeLeft= function() {
-      app.navi.popPage();
+    $scope.shareChannels = [{
+      label: $rootScope.lang.CROWD_SHARE_MENU.WHATSAPP,
+      fnc: function() {
+        window.plugins.socialsharing.shareViaWhatsApp(
+          $scope.selectedPlaceBasedCrowd.placeName + ' last crowd value: ' +
+          $scope.selectedPlaceBasedCrowd.crowdLast, null /* img */ , null /* url */ ,
+          function() {
+            console.log('share ok');
+          },
+          function(errormsg) {
+            alert(errormsg);
+          });
+      }
+    }];
+
+    $scope.reportReasons = [{
+      label: $rootScope.lang.CROWD_REPORT_MENU.INAPPROPRIATE,
+      value: 'inappropriate'
+    }, {
+      label: $rootScope.lang.CROWD_REPORT_MENU.PRIVATE,
+      value: 'private'
+    }, {
+      label: $rootScope.lang.CROWD_REPORT_MENU.MISLEADING,
+      value: 'misleading'
+    }];
+
+    $scope.report = function() {
+      seeCrowdService.reportCrowd($scope.selectedPlaceBasedCrowd.crowds[
+        0], $scope.reportReason);
+      app.navi.resetToPage('templates/see-crowd.html');
     };
+
+    $scope.reportReason = $scope.reportReasons[0].value;
   }
-]);
+  ]);

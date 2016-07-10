@@ -1,20 +1,20 @@
-<div ng-controller="seeCrowdController">
+  <div ng-controller="seeCrowdController">
   <ons-navigator var="app.navi">
     <ons-page>
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="menu.toggle()">
-            <ons-icon icon="ion-navicon" size="28px" fixed-width="false"></ons-icon>
+            <ons-icon icon="ion-navicon"></ons-icon>
           </ons-toolbar-button>
         </div>
-        <div class="right">
-        <ons-toolbar-button ng-click="popover.show($event)">
-          <ons-icon icon="ion-android-more-vertical" size="28px" fixed-width="false"></ons-icon>
-        </ons-toolbar-button>
-      </div>
+<!--         <div class="right">
+          <ons-toolbar-button ng-click="popover.show($event);">
+            <ons-icon icon="ion-android-more-vertical"></ons-icon>
+          </ons-toolbar-button>
+        </div> -->
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
       </ons-toolbar>
-      <ons-tabbar var="myTabbar">
+      <ons-tabbar var="myTabbar" position="bottom" animation="slide" id="seeCrowdTabbar">
         <ons-tab page="templates/see-crowd-here.html">
           <ons-icon icon="ion-location"></ons-icon>
           <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.HERE}}</span>

@@ -17,9 +17,10 @@
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="css/crowd.css" />
 
+    <script type="text/javascript" src="js/lib.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCy30JwIt5TZYreLKIJ-dXin0AU-XK7eIU&libraries=places" async defer></script>
-    <script type="text/javascript" src="js/lib.js"></script>
+
     <script type="text/javascript" src="js/crowd.js"></script>
 </head>
 
@@ -27,8 +28,8 @@
     <div ng-controller="appController">
        <ons-modal var="modal">
             <ons-icon icon="ion-load-c" spin="true"></ons-icon>
-            <br>
-            <br> {{$root.lang.MAIN_MENU.LOADING}}
+            <!-- <br>
+            <br> {{$root.lang.MAIN_MENU.LOADING}} -->
         </ons-modal>
         <ons-sliding-menu menu-page="templates/menu.html" main-page="templates/splash.html" side="left" var="menu" type="overlay" max-slide-distance="220px" swipe-target-width="0px" swipeable="true">
         </ons-sliding-menu> 

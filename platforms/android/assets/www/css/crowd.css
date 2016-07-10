@@ -103,12 +103,10 @@
   }*/
 
   .crowd-item {
-    width: 400px;
-    height: 100px;
-    background-color: white;
   }
   .crowd-main-body{
-    height: 80px;
+    height: 60px;
+    width: 100%;
   }
   .crowd-left {
     float:left;
@@ -122,9 +120,9 @@
     width: 70%;
   }
   .crowd-place-name {
-white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .crowd-city {
     font-size: 14px;
@@ -133,7 +131,8 @@ white-space: nowrap;
      font-size: 12px;
   }
   .crowd-right {
-    float:left;
+    float: right;
+    margin-right: 10px;
   }
   .crowd-last-value {
     font-size: 12px;
@@ -143,6 +142,9 @@ white-space: nowrap;
   }
   .crowd-feedbacks{
     font-size: 12px;
+    position: absolute;
+    width: 44px;
+    bottom: 33px;
   }
   .crowd-positive-feedback {
     float: left;
@@ -208,6 +210,9 @@ white-space: nowrap;
   margin-left: 5%;
 }
 
+.list__item__center {
+	max-width: 100% !important;
+}
 .popover__content {
 	min-height: 0 !important;
 }
@@ -215,7 +220,7 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
-.crowd-item {
+/*.crowd-item {
   line-height: 10px !important;
   padding-top: 5px !important;
 }
@@ -239,7 +244,7 @@ html, body {
 .crowd-average-value {
   float: left;
   margin: auto;
-}
+}*/
 .refresh-button {
   height: 100% !important;
   width: 100% !important;

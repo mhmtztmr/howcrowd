@@ -50,12 +50,10 @@
   }*/
 
   .crowd-item {
-    width: 400px;
-    height: 100px;
-    background-color: white;
   }
   .crowd-main-body{
-    height: 80px;
+    height: 60px;
+    width: 100%;
   }
   .crowd-left {
     float:left;
@@ -69,9 +67,9 @@
     width: 70%;
   }
   .crowd-place-name {
-white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .crowd-city {
     font-size: 14px;
@@ -80,7 +78,8 @@ white-space: nowrap;
      font-size: 12px;
   }
   .crowd-right {
-    float:left;
+    float: right;
+    margin-right: 10px;
   }
   .crowd-last-value {
     font-size: 12px;
@@ -90,6 +89,9 @@ white-space: nowrap;
   }
   .crowd-feedbacks{
     font-size: 12px;
+    position: absolute;
+    width: 44px;
+    bottom: 33px;
   }
   .crowd-positive-feedback {
     float: left;

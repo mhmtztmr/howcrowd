@@ -1,4 +1,4 @@
-<ons-dialog var="dialog" cancelable ng-controller="crowdShareController">
+<ons-dialog var="dialog" cancelable>
   <ons-list modifier="tappable">
     <ons-list-item ng-repeat="shareChannel in shareChannels" ng-click="dialog.hide(); shareChannel.fnc();">
       {{shareChannel.label}}

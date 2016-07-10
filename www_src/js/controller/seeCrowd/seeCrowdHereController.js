@@ -109,7 +109,7 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
                 itemScope.item = $scope.filteredPlaceBasedCrowdsArray[index];
             },
             calculateItemHeight: function(index) {
-                return 44;
+                return 108;
             },
             countItems: function() {
                 return $scope.filteredPlaceBasedCrowdsArray.length;

@@ -1,9 +1,10 @@
-<ons-dialog var="dialog" cancelable ng-controller="crowdReportController">
+<ons-dialog var="dialog" cancelable>
   <ons-list>
     <ons-list-item ng-repeat="rr in reportReasons" modifier="tappable">
-      <label class="radio-button radio-button--list-item">
-        <input type="radio" ng-model="$parent.reportReason" name="report-reasons" value="{{rr.value}}"/>
-        <div class="radio-button__checkmark radio-button--list-item__checkmark"></div>
+      <label class="left">
+        <ons-input name="report-reasons" type="radio" input-id="radio-{{rr.value}}" ng-model="$parent.reportReason" value="{{rr.value}}"></ons-input>
+      </label>
+      <label for="radio-{{rr.value}}" class="center">
         {{rr.label}}
       </label>
     </ons-list-item>

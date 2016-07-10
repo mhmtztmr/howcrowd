@@ -1,4 +1,5 @@
 app.controller('seeCrowdController', ['$rootScope','$scope', function($rootScope, $scope) {
+  modal.show();
 	ons.createPopover('templates/popover.html', {
       parentScope: $scope
     }).then(function(popover) {

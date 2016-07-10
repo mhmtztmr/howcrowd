@@ -20,10 +20,11 @@ module.exports = function(grunt) {
                 dest: 'www/css/crowd.less'
             },
             libjs: {
-                src: ['www_src/lib/angular/angular.min.js',
-                 'www_src/lib/onsen/js/onsenui.js',
-                     'www_src/lib/onsen/js/angular-onsenui.js',
+                src: ['www_src/lib/angular/angular-1.5.7.js',
+                    'www_src/lib/onsen/js/onsenui.js',
+                    'www_src/lib/onsen/js/angular-onsenui.js',
                     'www_src/lib/angular/angular-resource.min.js',
+                    'www_src/lib/angular/ng-cordova.js',
                     'www_src/lib/angular/ready.js',
                     'www_src/lib/angular/filesystem.js',
                     'www_src/lib/angular/connection.js',

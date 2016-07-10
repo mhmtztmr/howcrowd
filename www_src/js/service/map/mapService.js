@@ -1,10 +1,6 @@
-var mapService = function($q, $rootScope, googleService, geolocation) {
+var mapService = function($q, $rootScope, googleService) {
 
     function checkCurrentLocation() {
-        var geoService = geolocation;
-        if (!myApp.isCordovaApp) {
-            geoService = navigator.geolocation;
-        }
         var watchId, newLocation, oldLocation;
         if (!$rootScope.location) {
             $rootScope.location = {};
@@ -12,11 +8,11 @@ var mapService = function($q, $rootScope, googleService, geolocation) {
         oldLocation = $rootScope.location;
         console.log('checking location...location was: ' + JSON.stringify(
             oldLocation));
-        geoService.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function(position) {
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
             }
-            watchId = geoService.watchPosition(function() {});
+            watchId = navigator.geolocation.watchPosition(function() {});
             newLocation = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
@@ -158,11 +154,8 @@ var mapService = function($q, $rootScope, googleService, geolocation) {
         googleService.setMapBoundingBox(map, swLat, swLng, neLat, neLng);
     }
 
-    function markPlaceOnMap(map, latitude, longitude, crowdValue,
-        clickEvent) {
-        googleService.markPlaceOnMap(map, latitude, longitude,
-            crowdValue,
-            clickEvent);
+    function markPlaceOnMap(map, placeBasedCrowd, clickEvent) {
+        googleService.markPlaceOnMap(map, placeBasedCrowd, clickEvent);
     }
 
     function retrieveNearbyPlaces(location) {
@@ -187,7 +180,6 @@ var mapService = function($q, $rootScope, googleService, geolocation) {
     };
 };
 
-angular.module('map.Service', ['google', 'geolocation'])
-    .factory('mapService', ['$q', '$rootScope', 'googleService', 'geolocation',
-        mapService
+angular.module('map.Service', ['google'])
+    .factory('mapService', ['$q', '$rootScope', 'googleService', mapService
     ]);

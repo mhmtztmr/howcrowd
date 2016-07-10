@@ -46,9 +46,10 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
             placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
             placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
             if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
-                placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
-                placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
-                placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
+                placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
+                // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
+                // placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
+                // placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
             }
             placeBasedCrowds[crowd.placeKey].crowdCount += 1;
             placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;
@@ -80,8 +81,7 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
             placeBasedCrowd = placeBasedCrowds[placeBasedCrowdKey];
 
             (function(placeBasedCrowd) {
-                mapService.markPlaceOnMap(map, placeBasedCrowd.crowdLocation.latitude,
-                    placeBasedCrowd.crowdLocation.longitude, placeBasedCrowd.crowdAverage,
+                mapService.markPlaceOnMap(map, placeBasedCrowd,
                     function() {
                         selectPlaceBasedCrowd(placeBasedCrowd);
                     });

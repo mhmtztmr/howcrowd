@@ -1,18 +1,20 @@
-var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model',
+var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
     'seeCrowd.Service', 'identification', 'map.Model', 'map.Service',
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings'
 ]);
 
+app.run(['langService', 'dbService', 'settingsService', function(langService, dbService, settingsService){
+    langService.loadLangData();
+    dbService.init();
+    settingsService.loadSettings();
+}]);
+
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
     'identificationService', 'mapService', '$interval', 'langService',
-    'configService', 'connection', 'feedbackModel', 'settingsService',
+    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation',
     function($rootScope, $scope, dbService, identificationService,
         mapService, $interval, langService, configService,
-        connection, feedbackModel, settingsService) {
-
-        langService.loadLangData();
-        dbService.init();
-        settingsService.loadSettings();
+        connection, feedbackModel, settingsService, $cordovaGeolocation) {
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
@@ -81,6 +83,7 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
         }
 
         $scope.exitApp = function() {
+            menu.closeMenu();
             ons.notification.confirm({
                 title: $rootScope.lang.CONFIRM.CONFIRM,
                 message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
