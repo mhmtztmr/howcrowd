@@ -17,7 +17,9 @@ var formatterService = function() {
       crowdFeedback: {
         positiveFeedback: crowd.crowdPositiveFeedback,
         negativeFeedback: crowd.crowdNegativeFeedback
-      }
+      },
+      placeVicinity: crowd.placeVicinity,
+      placeDistrict: crowd.placeDistrict
     };
   }
 
@@ -29,7 +31,9 @@ var formatterService = function() {
         latitude: crowd.crowdLocationLatitude,
         longitude: crowd.crowdLocationLongitude
       },
-      source: crowd.placeSource
+      source: crowd.placeSource,
+      vicinity: crowd.placeVicinity,
+      district: crowd.placeDistrict
     };
   }
 

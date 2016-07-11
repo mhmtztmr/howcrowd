@@ -51,57 +51,6 @@
   padding-bottom: 5px;
   text-align: justify;
 }
-/*.plan-list {
-  border-top: none;
-  background-image: none !important;
-}
-
-.plan {
-  line-height: 1;
-  padding: 0;
-}
-
-.plan-left {
-  text-align: right;
-  padding: 10px 10px 10px 0;
-}
-
-.plan-center {
-  background-color: #3399ff;
-  opacity: 0.5;
-}
-
-.plan-right {
-  padding: 10px 40px 10px 10px;
-  overflow: hidden
-}
-
-.plan-date {
-  font-size: 14px;
-  opacity: 0.8;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.plan-duration {
-  font-size: 11px;
-  opacity: 0.4;
-}
-
-.plan-name {
-  font-size: 17px;
-  margin-bottom: 8px;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden
-}
-
-.plan-info {
-  opacity: 0.4;
-  font-size: 12px;
-  line-height: 1.4;
-  }*/
-
   .crowd-item {
   }
   .crowd-main-body{
@@ -126,6 +75,9 @@
   }
   .crowd-city {
     font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .crowd-time {
      font-size: 12px;

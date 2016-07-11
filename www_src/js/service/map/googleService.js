@@ -203,13 +203,19 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 							latitude: place.geometry.location.lat(),
 							longitude: place.geometry.location.lng()
 						},
-						source: 'google'
+						source: 'google',
+						vicinity: place.vicinity,
+						district: getDistrictFromVicinity(place.vicinity)
 					};
 					nearPlaces.push(nearPlace);
 				}
 			}
 			onSuccess(nearPlaces);
 		});
+	}
+
+	function getDistrictFromVicinity(vicinity){
+		return vicinity.replace("No, ", "").replace("No", "");
 	}
 
 	return {

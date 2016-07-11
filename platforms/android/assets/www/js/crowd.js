@@ -868,6 +868,7 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
             placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
             placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
             placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
+            placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
             if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                 placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
                 // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
@@ -971,6 +972,7 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
             placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
             placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
             placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
+            placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
             if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                 placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
                 // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
@@ -1141,6 +1143,8 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.crowdPositiveFeedback = args.crowdPositiveFeedback || 0;
         this.crowdNegativeFeedback = args.crowdNegativeFeedback || 0;
         this.crowdReportReason = args.crowdReportReason || '';
+        this.placeVicinity = args.placeVicinity || '';
+        this.placeDistrict = args.placeDistrict || '';
     }
 
     function Device(args) {
@@ -1158,6 +1162,8 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.placeSid = args.placeSid || "";
         this.placeLocationLatitude = args.placeLocationLatitude || "";
         this.placeLocationLongitude = args.placeLocationLongitude || "";
+        this.placeVicinity = args.placeVicinity || '';
+        this.placeDistrict = args.placeDistrict || '';
     }
     /* DB Models ******/
 
@@ -1174,7 +1180,9 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
             crowdValue: crowd.value,
             crowdDate: crowd.date,
             crowdLocationLatitude: place.location.latitude,
-            crowdLocationLongitude: place.location.longitude
+            crowdLocationLongitude: place.location.longitude,
+            placeVicinity: place.vicinity,
+            placeDistrict: place.district
         });
         crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
     }
@@ -1407,7 +1415,9 @@ var formatterService = function() {
       crowdFeedback: {
         positiveFeedback: crowd.crowdPositiveFeedback,
         negativeFeedback: crowd.crowdNegativeFeedback
-      }
+      },
+      placeVicinity: crowd.placeVicinity,
+      placeDistrict: crowd.placeDistrict
     };
   }
 
@@ -1419,7 +1429,9 @@ var formatterService = function() {
         latitude: crowd.crowdLocationLatitude,
         longitude: crowd.crowdLocationLongitude
       },
-      source: crowd.placeSource
+      source: crowd.placeSource,
+      vicinity: crowd.placeVicinity,
+      district: crowd.placeDistrict
     };
   }
 
@@ -2059,13 +2071,19 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 							latitude: place.geometry.location.lat(),
 							longitude: place.geometry.location.lng()
 						},
-						source: 'google'
+						source: 'google',
+						vicinity: place.vicinity,
+						district: getDistrictFromVicinity(place.vicinity)
 					};
 					nearPlaces.push(nearPlace);
 				}
 			}
 			onSuccess(nearPlaces);
 		});
+	}
+
+	function getDistrictFromVicinity(vicinity){
+		return vicinity.replace("No, ", "").replace("No", "");
 	}
 
 	return {

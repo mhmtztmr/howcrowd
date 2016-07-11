@@ -23,6 +23,8 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.crowdPositiveFeedback = args.crowdPositiveFeedback || 0;
         this.crowdNegativeFeedback = args.crowdNegativeFeedback || 0;
         this.crowdReportReason = args.crowdReportReason || '';
+        this.placeVicinity = args.placeVicinity || '';
+        this.placeDistrict = args.placeDistrict || '';
     }
 
     function Device(args) {
@@ -40,6 +42,8 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.placeSid = args.placeSid || "";
         this.placeLocationLatitude = args.placeLocationLatitude || "";
         this.placeLocationLongitude = args.placeLocationLongitude || "";
+        this.placeVicinity = args.placeVicinity || '';
+        this.placeDistrict = args.placeDistrict || '';
     }
     /* DB Models ******/
 
@@ -56,7 +60,9 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
             crowdValue: crowd.value,
             crowdDate: crowd.date,
             crowdLocationLatitude: place.location.latitude,
-            crowdLocationLongitude: place.location.longitude
+            crowdLocationLongitude: place.location.longitude,
+            placeVicinity: place.vicinity,
+            placeDistrict: place.district
         });
         crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
     }
