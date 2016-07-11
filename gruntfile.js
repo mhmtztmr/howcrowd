@@ -108,8 +108,15 @@ module.exports = function(grunt) {
                     from: /<%=MAPS_KEY%>/g,
                     to: '<%= grunt.option(\"credentials\").googleMaps.key %>'
                 }]
+            },
+            reportIssue: {
+                src: ['www/templates/menu.html'],
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: /<%=REPORT_ISSUE%>/g,
+                    to: '<%= grunt.option(\"reportIssue\") %>'
+                }]
             }
-
         },
         uglify: {
             options: {
@@ -189,8 +196,20 @@ module.exports = function(grunt) {
         }
         grunt.option("credentials", global.credentials);
     });
+
+     grunt.registerTask('setReportIssue', 'asdfg', function(t) {
+        if (t === 'alpha') {
+            global.reportIssue = true;
+        } else if (t === 'prod') {
+            global.reportIssue = false;
+        } else {
+            global.reportIssue = true;
+        }
+        grunt.option("reportIssue", global.reportIssue);
+    });
+
     grunt.registerTask('delete', ['clean']);
-    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'concat', 'copy', 'replace']);
-	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'concat', 'copy', 'replace']);
-	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'concat', 'copy', 'replace']);
+    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'concat', 'copy', 'replace']);
+	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace']);
+	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace']);
 };

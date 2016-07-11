@@ -5,6 +5,7 @@ var defaultLanguageModel = function() {
             "SET_CROWD": "Set Crowd",
             "SETTINGS": "Settings",
             "ABOUT": "About",
+            "REPORT_ISSUE": "Report Issue",
             "EXIT": "Exit",
             "CLOSE": "Close",
             "LOADING": "Loading..."
