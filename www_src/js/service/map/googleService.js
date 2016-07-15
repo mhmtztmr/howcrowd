@@ -207,6 +207,9 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 						vicinity: place.vicinity,
 						district: getDistrictFromVicinity(place.vicinity)
 					};
+					if(place.photos){
+						nearPlace.photo = place.photos[0].getUrl({'maxWidth': 600, 'maxHeight': 600});
+					}
 					nearPlaces.push(nearPlace);
 				}
 			}
@@ -215,7 +218,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 	}
 
 	function getDistrictFromVicinity(vicinity){
-		return vicinity.replace("No, ", "").replace("No", "");
+		return vicinity.replace("No:", "<notoreplaceback>").replace("No, ", "").replace("No", "").replace("<notoreplaceback>", "No:");
 	}
 
 	return {

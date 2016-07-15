@@ -25,6 +25,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.crowdReportReason = args.crowdReportReason || '';
         this.placeVicinity = args.placeVicinity || '';
         this.placeDistrict = args.placeDistrict || '';
+        this.placePhoto = args.placePhoto || '';
     }
 
     function Device(args) {
@@ -44,6 +45,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.placeLocationLongitude = args.placeLocationLongitude || "";
         this.placeVicinity = args.placeVicinity || '';
         this.placeDistrict = args.placeDistrict || '';
+        this.placePhoto = args.placePhoto || '';
     }
     /* DB Models ******/
 
@@ -62,7 +64,8 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
             crowdLocationLatitude: place.location.latitude,
             crowdLocationLongitude: place.location.longitude,
             placeVicinity: place.vicinity,
-            placeDistrict: place.district
+            placeDistrict: place.district,
+            placePhoto: place.photo
         });
         crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
     }

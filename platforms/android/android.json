@@ -50,7 +50,9 @@
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
                             "count": 1
                         }
-                    ]
+                    ],
+                    "/manifest/application": [],
+                    "/manifest": []
                 }
             },
             "config.xml": {

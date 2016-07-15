@@ -224,6 +224,6 @@ module.exports.metadata =
     "cordova-plugin-globalization": "1.0.2",
     "cordova-plugin-network-information": "1.2.1-dev",
     "cordova-plugin-x-socialsharing": "5.0.11"
-}
+};
 // BOTTOM OF METADATA
 });

@@ -19,7 +19,8 @@ var formatterService = function() {
         negativeFeedback: crowd.crowdNegativeFeedback
       },
       placeVicinity: crowd.placeVicinity,
-      placeDistrict: crowd.placeDistrict
+      placeDistrict: crowd.placeDistrict,
+      placePhoto: crowd.placePhoto
     };
   }
 
@@ -33,7 +34,8 @@ var formatterService = function() {
       },
       source: crowd.placeSource,
       vicinity: crowd.placeVicinity,
-      district: crowd.placeDistrict
+      district: crowd.placeDistrict,
+      photo: crowd.placePhoto
     };
   }
 

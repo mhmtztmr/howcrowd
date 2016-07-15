@@ -45,6 +45,7 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
             placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
             placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
             placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
+            placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
             if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                 placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
                 // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;

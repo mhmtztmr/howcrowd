@@ -41,6 +41,14 @@
         {{$root.lang.MAIN_MENU.ABOUT}}
       </span>
     </ons-list-item>
+    <ons-list-item ng-show="true" onclick="menu.setMainPage('templates/report-issue.html', {closeMenu: true})">
+      <div class="menu-icon">
+        <ons-icon icon="ion-alert-circled"></ons-icon>
+      </div>
+      <span class="menu-text">
+        {{$root.lang.MAIN_MENU.REPORT_ISSUE}}
+      </span>
+    </ons-list-item>
     <ons-list-item ng-click="exitApp()">
       <div class="menu-icon">
         <ons-icon icon="ion-android-exit"></ons-icon>
