@@ -3,10 +3,33 @@ var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCro
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings'
 ]);
 
-app.run(['langService', 'dbService', 'settingsService', function(langService, dbService, settingsService){
+app.run(['langService', 'dbService', 'settingsService', '$rootScope', function(langService, dbService, settingsService, $rootScope) {
     langService.loadLangData();
     dbService.init();
     settingsService.loadSettings();
+
+    $rootScope.exitApp = function() {
+        menu.closeMenu();
+        ons.notification.confirm({
+            title: $rootScope.lang.CONFIRM.CONFIRM,
+            message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
+            modifier: 'material',
+            buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang
+                .CONFIRM.OK
+            ],
+            callback: function(answer) {
+                if (answer === 1) { // OK button
+                    navigator.app.exitApp(); // Close the app
+                }
+            }
+        });
+    };
+
+    ons.ready(function() {
+        ons.setDefaultDeviceBackButtonListener(function() {
+            $rootScope.exitApp();
+        });
+    });
 }]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
@@ -81,27 +104,6 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                 }
             });
         }
-
-        $scope.exitApp = function() {
-            menu.closeMenu();
-            ons.notification.confirm({
-                title: $rootScope.lang.CONFIRM.CONFIRM,
-                message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
-                modifier: 'material',
-                buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang
-                    .CONFIRM.OK
-                ],
-                callback: function(answer) {
-                    if (answer === 1) { // OK button
-                        navigator.app.exitApp(); // Close the app
-                    }
-                }
-            });
-        };
-
-        // ons.setDefaultDeviceBackButtonListener(function() {
-        //     $scope.exitApp();
-        // });
     }
 ]);
 
@@ -123,13 +125,12 @@ app.controller('reportIssueController', ['$scope', function($scope) {
 	};
 }]);
 
-
 app.controller('crowdPlaceDetailController', ['$scope', 'mapService', '$timeout',
 
   function($scope, mapService, $timeout) {
     $scope.selectedPlaceBasedCrowd = app.navi.topPage.pushedOptions.selectedPlaceBasedCrowd;
     var boundingBox = mapService.getBoundingBox($scope.selectedPlaceBasedCrowd.crowdLocation, 0.1);
-     $timeout(function(){
+    $timeout(function(){
 	    var map = mapService.initMap('single-map', boundingBox.latitude.lower,
 	      boundingBox.longitude.lower, boundingBox.latitude.upper,
 	      boundingBox.longitude.upper);
@@ -139,22 +140,6 @@ app.controller('crowdPlaceDetailController', ['$scope', 'mapService', '$timeout'
 	},100);
   }
 ]);
-
-app.controller('seeCrowdController', ['$rootScope','$scope', function($rootScope, $scope) {
-  modal.show();
-	ons.createPopover('templates/popover.html', {
-      parentScope: $scope
-    }).then(function(popover) {
-      $scope.popover = popover;
-    });
-
-    $scope.options = [{
-      label: $rootScope.lang.SEE_CROWD_POPOVER_MENU.DISPLAY_TYPE,
-      fnc: function() {
-        app.navi.pushPage('templates/crowd-display-type.html', { animation : 'lift'});
-      }
-    }];
-}]);
 
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
   'seeCrowdHereModel', 'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
@@ -207,8 +192,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       }
     }
 
-
-
     $scope.dialogs = {
       'templates/share-crowd.html': {},
       'templates/report-crowd.html': {}
@@ -227,7 +210,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       dialog) {
       $scope.dialogs['templates/report-crowd.html'] = dialog;
     });
-
 
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
@@ -290,7 +272,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
 
     $scope.reportReason = $scope.reportReasons[0].value;
   }
-  ]);
+]);
 
 app.controller('seeCrowdHereController', ['$rootScope', '$scope',
     '$filter', 'seeCrowdHereModel', 'dateService', 'mapService',

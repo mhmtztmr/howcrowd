@@ -49,8 +49,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       }
     }
 
-
-
     $scope.dialogs = {
       'templates/share-crowd.html': {},
       'templates/report-crowd.html': {}
@@ -69,7 +67,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       dialog) {
       $scope.dialogs['templates/report-crowd.html'] = dialog;
     });
-
 
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
@@ -132,4 +129,4 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
 
     $scope.reportReason = $scope.reportReasons[0].value;
   }
-  ]);
+]);

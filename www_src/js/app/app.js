@@ -3,10 +3,33 @@ var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCro
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings'
 ]);
 
-app.run(['langService', 'dbService', 'settingsService', function(langService, dbService, settingsService){
+app.run(['langService', 'dbService', 'settingsService', '$rootScope', function(langService, dbService, settingsService, $rootScope) {
     langService.loadLangData();
     dbService.init();
     settingsService.loadSettings();
+
+    $rootScope.exitApp = function() {
+        menu.closeMenu();
+        ons.notification.confirm({
+            title: $rootScope.lang.CONFIRM.CONFIRM,
+            message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
+            modifier: 'material',
+            buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang
+                .CONFIRM.OK
+            ],
+            callback: function(answer) {
+                if (answer === 1) { // OK button
+                    navigator.app.exitApp(); // Close the app
+                }
+            }
+        });
+    };
+
+    ons.ready(function() {
+        ons.setDefaultDeviceBackButtonListener(function() {
+            $rootScope.exitApp();
+        });
+    });
 }]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
@@ -81,26 +104,5 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                 }
             });
         }
-
-        $scope.exitApp = function() {
-            menu.closeMenu();
-            ons.notification.confirm({
-                title: $rootScope.lang.CONFIRM.CONFIRM,
-                message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
-                modifier: 'material',
-                buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang
-                    .CONFIRM.OK
-                ],
-                callback: function(answer) {
-                    if (answer === 1) { // OK button
-                        navigator.app.exitApp(); // Close the app
-                    }
-                }
-            });
-        };
-
-        // ons.setDefaultDeviceBackButtonListener(function() {
-        //     $scope.exitApp();
-        // });
     }
 ]);
