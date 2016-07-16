@@ -128,7 +128,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		scope.placeBasedCrowd = placeBasedCrowd;
 
 		var contentString = '<div ng-controller="seeCrowdInmapController">'+
-		'<div class="crowd-main-body" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +
+		'<div class="crowd-main-body crowd-info-window" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +
 		'<div class="crowd-left">' +
 		'<div class="crowd-source-icon">' +
 		'<img ng-src="img/sources/{{placeBasedCrowd.placeSource}}.png" />' +
@@ -136,10 +136,11 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		'</div>' +
 		'<div class="crowd-center">' +
 		'<div class="crowd-place-name">{{placeBasedCrowd.placeName}}</div>' +
-		'<div class="crowd-time">{{placeBasedCrowd.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
+		'<div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== \'\'"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>' +
+		'<div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
 		'</div>' +
 		'<div class="crowd-right">' +
-		'<div class="crowd-last-value">Last {{placeBasedCrowd.crowdLast.crowdValue}}%</div>' +
+		'<div class="crowd-last-value">{{$root.lang.SEE_CROWD_MENU.LAST_VALUE}} {{item.crowdLast.crowdValue}}%</div>' +
 		'<div class="crowd-circle">' +
 		'<div class="c100 p{{placeBasedCrowd.crowdLast.crowdValue}} crowd-size center">' +
 		'<div class="slice">' +
@@ -155,7 +156,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		'</div>' +
 		'</div>'+
 		'<div class="crowd-average-container">'+
-		'<div class="crowd-average-text">Avg. {{placeBasedCrowd.crowdAverage}}%</div>'+
+		'<div class="crowd-average-text">{{$root.lang.SEE_CROWD_MENU.AVERAGE_VALUE}} {{placeBasedCrowd.crowdAverage}}%</div>'+
 		'<div class="crowd-average-indicator">'+
 		'<div class="crowd-average-bar">'+
 		'<div class="crowd-average-fill" style="width: {{placeBasedCrowd.crowdAverage}}%"></div>'+
