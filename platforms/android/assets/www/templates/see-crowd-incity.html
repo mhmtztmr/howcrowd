@@ -13,7 +13,7 @@
         </div>
         <div ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
             <ons-list ons-lazy-repeat="MyDelegate">
-              <ons-list-item modifier="longdivider" ng-click="selectPlaceBasedCrowd(item)">
+              <ons-list-item ng-click="selectPlaceBasedCrowd(item)">
                 <div class="crowd-main-body">
                   <div class="crowd-left">
                     <div class="crowd-source-icon">
@@ -22,8 +22,8 @@
                   </div>
                   <div class="crowd-center">
                     <div class="crowd-place-name">{{item.placeName}}</div>
-                    <div class="crowd-city">{{item.placeDistrict}}</div>
-                    <div class="crowd-time">{{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>
+                    <div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== ''"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>
+                    <div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>
                   </div>
                   <div class="crowd-right">
                     <div class="crowd-last-value">Last {{item.crowdLast.crowdValue}}%</div>
@@ -36,8 +36,8 @@
                       </div>
                     </div>
                     <div class="crowd-feedbacks">
-                      <div ng-if="item.crowdLast.crowdFeedback.negativeFeedback !== 0" class="crowd-negative-feedback">{{item.crowdLast.crowdFeedback.negativeFeedback}}</div>
-                      <div ng-if="item.crowdLast.crowdFeedback.positiveFeedback !== 0" class="crowd-positive-feedback">{{item.crowdLast.crowdFeedback.positiveFeedback}}</div>
+                      <div ng-if="item.crowdLast.crowdFeedback.positiveFeedback !== 0" class="crowd-positive-feedback">+{{item.crowdLast.crowdFeedback.positiveFeedback}}</div>
+                      <div ng-if="item.crowdLast.crowdFeedback.negativeFeedback !== 0" class="crowd-negative-feedback">-{{item.crowdLast.crowdFeedback.negativeFeedback}}</div>
                     </div>
                   </div>
                 </div>

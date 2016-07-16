@@ -66,7 +66,7 @@
   }
   .crowd-center {
     float:left;
-    width: 70%;
+    width: 65%;
   }
   .crowd-place-name {
     white-space: nowrap;
@@ -84,55 +84,51 @@
   }
   .crowd-right {
     float: right;
-    margin-right: 10px;
+    width: 60px;
   }
   .crowd-last-value {
     font-size: 12px;
   }
   .crowd-circle {
-
+    float:left;
   }
   .crowd-feedbacks{
     font-size: 12px;
-    position: absolute;
-    width: 44px;
-    bottom: 33px;
+    float: left;
+    padding-left: 3px;
+    height: 30px;
   }
   .crowd-positive-feedback {
-    float: left;
-    width: 50%;
     color: green;
+    height: 15px;
   }
   .crowd-negative-feedback {
-    float: right;
     color: red;
+    height: 15px;
   }
   .crowd-average-container {
     height: 20px;
     width: 100%;
   }
   .crowd-average-text {
-    width: 20%;
     float: left;
     font-size: 12px;
   }
   .crowd-average-indicator {
-    width: 80%;
+    width: 100%;
     height: 20px;
     float:left;
     background-color: transparent;
   } 
   .crowd-average-bar {
     border-radius: 25px;
-    width: 90%;
-    height: 5px;
+    width: 100%;
+    height: 1px;
     background-color: lightgray;
-    margin-top: 6px;
   }
   .crowd-average-fill {
     border-radius: 25px;
     height: 100%;
-    width: 40%;
     background-color:red;
   }
 .positive-feedback {
@@ -172,31 +168,6 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
-/*.crowd-item {
-  line-height: 10px !important;
-  padding-top: 5px !important;
-}
-.crowd-date {
-  text-align: center;
-  font-size: 11px;
-  font-weight: bold;
-  line-height: 12px;
-  margin-top: -5px;
-  word-spacing: 100px;
-}
-.crowd-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.crowd-last-value {
-  float: left;
-  margin: auto;
-}
-.crowd-average-value {
-  float: left;
-  margin: auto;
-}*/
 .refresh-button {
   height: 100% !important;
   width: 100% !important;

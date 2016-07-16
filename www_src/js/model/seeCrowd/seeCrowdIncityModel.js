@@ -34,6 +34,8 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
         placeBasedCrowds = {};
         for (i = 0; i < crowds.length; i++) {
             var crowd = crowds[i];
+            // crowd.crowdFeedback.negativeFeedback = 3;
+            // crowd.crowdFeedback.positiveFeedback = 5;
             crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
             if (!placeBasedCrowds[crowd.placeKey]) {
                 placeBasedCrowds[crowd.placeKey] = {
