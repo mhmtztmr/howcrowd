@@ -169,6 +169,10 @@ var mapService = function($q, $rootScope, googleService) {
         return def.promise;
     }
 
+    function getAddressByLocation(location, onSuccess){
+        googleService.getAddressByLocation(location, onSuccess);
+    }
+
     return {
         getBoundingBox: getBoundingBox,
         retrieveNearbyPlaces: retrieveNearbyPlaces,
@@ -176,7 +180,8 @@ var mapService = function($q, $rootScope, googleService) {
         initMap: initMap,
         setMapBoundingBox: setMapBoundingBox,
         markPlaceOnMap: markPlaceOnMap,
-        getDistanceBetweenLocations: getDistanceBetweenLocations
+        getDistanceBetweenLocations: getDistanceBetweenLocations,
+        getAddressByLocation: getAddressByLocation
     };
 };
 

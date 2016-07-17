@@ -1,6 +1,6 @@
 app.controller('setCrowdLevelController', ['$rootScope', '$scope',
-  'setCrowdModel', 'guidService', 'dateService',
-  function($rootScope, $scope, setCrowdModel, guidService, dateService) {
+  'setCrowdModel', 'guidService', 'dateService', 'mapService',
+  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService) {
 
     $scope.levels = [{
       value: 100,
@@ -40,6 +40,7 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
     $scope.selectedPlace = setCrowdModel.getSelectedPlace();
 
     $scope.insertCrowd = function(crowdValue, customPlaceName) {
+      var locationForCustomVicinity = $rootScope.location;
       if (!$scope.selectedPlace) {
         if (customPlaceName) {
           var id = guidService.get();
@@ -68,21 +69,32 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
           disagree: 0
         };
 
-        setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
-          function() {
-            ons.notification.alert({
-              title: $rootScope.lang.ALERT.ALERT,
-              message: $rootScope.lang.ALERT.SUCCESS,
-              buttonLabel: $rootScope.lang.ALERT.OK,
-            });
-          },
-          function() {
-            ons.notification.alert({
-              title: $rootScope.lang.ALERT.ALERT,
-              message: $rootScope.lang.ALERT.FAIL,
-              buttonLabel: $rootScope.lang.ALERT.OK,
-            });
-          });
+        //TODO: To be discussed if needed or not
+        if($scope.selectedPlace.source !== 'custom') {
+          locationForCustomVicinity = undefined;
+        }
+
+        mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
+            if(vicinity) {
+              place.vicinity = vicinity;
+            }
+            setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
+              function() {
+                ons.notification.alert({
+                  title: $rootScope.lang.ALERT.ALERT,
+                  message: $rootScope.lang.ALERT.SUCCESS,
+                  buttonLabel: $rootScope.lang.ALERT.OK,
+                });
+              },
+              function() {
+                ons.notification.alert({
+                  title: $rootScope.lang.ALERT.ALERT,
+                  message: $rootScope.lang.ALERT.FAIL,
+                  buttonLabel: $rootScope.lang.ALERT.OK,
+                });
+              });
+        });
+
       }
     };
   }

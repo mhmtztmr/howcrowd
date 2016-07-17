@@ -61,12 +61,18 @@
     float:left;
     width: 10%;
   }
+  .crowd-info-window .crowd-left {
+    width: 30px !important;
+  }
   .crowd-source-icon {
 
   }
   .crowd-center {
     float:left;
-    width: 65%;
+    width: 70%;
+  }
+  .crowd-info-window .crowd-center {
+    width: 180px !important;
   }
   .crowd-place-name {
     white-space: nowrap;
@@ -85,6 +91,9 @@
   .crowd-right {
     float: right;
     width: 60px;
+  }
+  .crowd-info-window .crowd-right {
+    width: 60px !important;
   }
   .crowd-last-value {
     font-size: 12px;

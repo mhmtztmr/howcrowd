@@ -222,10 +222,33 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		return vicinity.replace("No:", "<notoreplaceback>").replace("No, ", "").replace("No", "").replace("<notoreplaceback>", "No:");
 	}
 
+	function getAddressByLocation(location, onSuccess){
+		if(location) {
+			var geocoder = new google.maps.Geocoder;
+
+			var latlng = {lat: location.latitude, lng: location.longitude};
+			  geocoder.geocode({'location': latlng}, function(results, status) {
+			    if (status === google.maps.GeocoderStatus.OK) {
+			      if (results[1]) {
+			      	onSuccess(results[1].formatted_address);
+			      } else {
+			        onSuccess();
+			      }
+			    } else {
+			      onSuccess();
+			    }
+			  });
+		 }
+		 else {
+		 	onSuccess();
+		 }
+	}
+
 	return {
 		initMap: initMap,
 		setMapBoundingBox: setMapBoundingBox,
 		markPlaceOnMap: markPlaceOnMap,
-		getNearbyPlaces: getNearbyPlaces
+		getNearbyPlaces: getNearbyPlaces,
+		getAddressByLocation: getAddressByLocation
 	};
 }]);

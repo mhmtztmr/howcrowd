@@ -581,8 +581,8 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
 ]);
 
 app.controller('setCrowdLevelController', ['$rootScope', '$scope',
-  'setCrowdModel', 'guidService', 'dateService',
-  function($rootScope, $scope, setCrowdModel, guidService, dateService) {
+  'setCrowdModel', 'guidService', 'dateService', 'mapService',
+  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService) {
 
     $scope.levels = [{
       value: 100,
@@ -622,6 +622,7 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
     $scope.selectedPlace = setCrowdModel.getSelectedPlace();
 
     $scope.insertCrowd = function(crowdValue, customPlaceName) {
+      var locationForCustomVicinity = $rootScope.location;
       if (!$scope.selectedPlace) {
         if (customPlaceName) {
           var id = guidService.get();
@@ -650,21 +651,32 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
           disagree: 0
         };
 
-        setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
-          function() {
-            ons.notification.alert({
-              title: $rootScope.lang.ALERT.ALERT,
-              message: $rootScope.lang.ALERT.SUCCESS,
-              buttonLabel: $rootScope.lang.ALERT.OK,
-            });
-          },
-          function() {
-            ons.notification.alert({
-              title: $rootScope.lang.ALERT.ALERT,
-              message: $rootScope.lang.ALERT.FAIL,
-              buttonLabel: $rootScope.lang.ALERT.OK,
-            });
-          });
+        //TODO: To be discussed if needed or not
+        if($scope.selectedPlace.source !== 'custom') {
+          locationForCustomVicinity = undefined;
+        }
+
+        mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
+            if(vicinity) {
+              place.vicinity = vicinity;
+            }
+            setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
+              function() {
+                ons.notification.alert({
+                  title: $rootScope.lang.ALERT.ALERT,
+                  message: $rootScope.lang.ALERT.SUCCESS,
+                  buttonLabel: $rootScope.lang.ALERT.OK,
+                });
+              },
+              function() {
+                ons.notification.alert({
+                  title: $rootScope.lang.ALERT.ALERT,
+                  message: $rootScope.lang.ALERT.FAIL,
+                  buttonLabel: $rootScope.lang.ALERT.OK,
+                });
+              });
+        });
+
       }
     };
   }
@@ -2004,7 +2016,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		scope.placeBasedCrowd = placeBasedCrowd;
 
 		var contentString = '<div ng-controller="seeCrowdInmapController">'+
-		'<div class="crowd-main-body" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +
+		'<div class="crowd-main-body crowd-info-window" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +
 		'<div class="crowd-left">' +
 		'<div class="crowd-source-icon">' +
 		'<img ng-src="img/sources/{{placeBasedCrowd.placeSource}}.png" />' +
@@ -2012,10 +2024,11 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		'</div>' +
 		'<div class="crowd-center">' +
 		'<div class="crowd-place-name">{{placeBasedCrowd.placeName}}</div>' +
-		'<div class="crowd-time">{{placeBasedCrowd.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
+		'<div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== \'\'"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>' +
+		'<div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
 		'</div>' +
 		'<div class="crowd-right">' +
-		'<div class="crowd-last-value">Last {{placeBasedCrowd.crowdLast.crowdValue}}%</div>' +
+		'<div class="crowd-last-value">{{$root.lang.SEE_CROWD_MENU.LAST_VALUE}} {{item.crowdLast.crowdValue}}%</div>' +
 		'<div class="crowd-circle">' +
 		'<div class="c100 p{{placeBasedCrowd.crowdLast.crowdValue}} crowd-size center">' +
 		'<div class="slice">' +
@@ -2031,7 +2044,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		'</div>' +
 		'</div>'+
 		'<div class="crowd-average-container">'+
-		'<div class="crowd-average-text">Avg. {{placeBasedCrowd.crowdAverage}}%</div>'+
+		'<div class="crowd-average-text">{{$root.lang.SEE_CROWD_MENU.AVERAGE_VALUE}} {{placeBasedCrowd.crowdAverage}}%</div>'+
 		'<div class="crowd-average-indicator">'+
 		'<div class="crowd-average-bar">'+
 		'<div class="crowd-average-fill" style="width: {{placeBasedCrowd.crowdAverage}}%"></div>'+
@@ -2097,11 +2110,34 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		return vicinity.replace("No:", "<notoreplaceback>").replace("No, ", "").replace("No", "").replace("<notoreplaceback>", "No:");
 	}
 
+	function getAddressByLocation(location, onSuccess){
+		if(location) {
+			var geocoder = new google.maps.Geocoder;
+
+			var latlng = {lat: location.latitude, lng: location.longitude};
+			  geocoder.geocode({'location': latlng}, function(results, status) {
+			    if (status === google.maps.GeocoderStatus.OK) {
+			      if (results[1]) {
+			      	onSuccess(results[1].formatted_address);
+			      } else {
+			        onSuccess();
+			      }
+			    } else {
+			      onSuccess();
+			    }
+			  });
+		 }
+		 else {
+		 	onSuccess();
+		 }
+	}
+
 	return {
 		initMap: initMap,
 		setMapBoundingBox: setMapBoundingBox,
 		markPlaceOnMap: markPlaceOnMap,
-		getNearbyPlaces: getNearbyPlaces
+		getNearbyPlaces: getNearbyPlaces,
+		getAddressByLocation: getAddressByLocation
 	};
 }]);
 var mapService = function($q, $rootScope, googleService) {
@@ -2275,6 +2311,10 @@ var mapService = function($q, $rootScope, googleService) {
         return def.promise;
     }
 
+    function getAddressByLocation(location, onSuccess){
+        googleService.getAddressByLocation(location, onSuccess);
+    }
+
     return {
         getBoundingBox: getBoundingBox,
         retrieveNearbyPlaces: retrieveNearbyPlaces,
@@ -2282,7 +2322,8 @@ var mapService = function($q, $rootScope, googleService) {
         initMap: initMap,
         setMapBoundingBox: setMapBoundingBox,
         markPlaceOnMap: markPlaceOnMap,
-        getDistanceBetweenLocations: getDistanceBetweenLocations
+        getDistanceBetweenLocations: getDistanceBetweenLocations,
+        getAddressByLocation: getAddressByLocation
     };
 };
 
