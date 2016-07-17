@@ -10,11 +10,21 @@
         </div>
       </div>
     </ons-toolbar>
-    <div id="single-map" style="width:100%; height:30%"></div>
-    <div>
-      <div>{{selectedPlaceBasedCrowd.placeName}}</div>
-      <div>{{selectedPlaceBasedCrowd.placeDistrict}}</div>
+    <div style="padding: 8px; text-align: center;">
+      <div ng-if="selectedPlaceBasedCrowd.placePhoto && selectedPlaceBasedCrowd.placePhoto !== ''" style="padding: 8px;">
+        <img style="max-width: 100%" ng-src="{{selectedPlaceBasedCrowd.placePhoto}}" />
+       </div>
+       <div style="padding: 8px; word-break: break-word;">
+           <ons-list>
+              <ons-list-item>
+                {{selectedPlaceBasedCrowd.placeName}}
+              </ons-list-item>
+               <ons-list-item>
+                {{selectedPlaceBasedCrowd.placeDistrict}}
+              </ons-list-item>
+          </ons-list>
+       </div>
     </div>
-    <img style="max-width: 100%" ng-src="{{selectedPlaceBasedCrowd.placePhoto}}" />
+     <div id="single-map" style="width:90%; height:30%; margin: 0 auto;"></div>
   </ons-page>
 </div>
