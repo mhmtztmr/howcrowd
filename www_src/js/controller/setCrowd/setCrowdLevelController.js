@@ -75,8 +75,11 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
         }
 
         mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
+
+            //TODO: To be discussed if needed or not
             if(vicinity) {
               place.vicinity = vicinity;
+              place.district = vicinity;
             }
             setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
               function() {
