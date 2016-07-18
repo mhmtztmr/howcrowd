@@ -10,7 +10,7 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService) {
     function getFilter() {
       var now = dateService.getDBDate(new Date());
       var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
-      var boundingBox = mapService.getBoundingBox($rootScope.location, 0.05);
+      var boundingBox = mapService.getBoundingBox($rootScope.location, 0.03);
 
       return {
         date: {

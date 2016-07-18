@@ -136,11 +136,11 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		'</div>' +
 		'<div class="crowd-center">' +
 		'<div class="crowd-place-name">{{placeBasedCrowd.placeName}}</div>' +
-		'<div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== \'\'"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>' +
-		'<div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
+		'<div class="crowd-city" ng-show="placeBasedCrowd.placeDistrict"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{placeBasedCrowd.placeDistrict}}</div>' +
+		'<div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{placeBasedCrowd.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
 		'</div>' +
 		'<div class="crowd-right">' +
-		'<div class="crowd-last-value">{{$root.lang.SEE_CROWD_MENU.LAST_VALUE}} {{item.crowdLast.crowdValue}}%</div>' +
+		'<div class="crowd-last-value">{{$root.lang.SEE_CROWD_MENU.LAST_VALUE}} {{placeBasedCrowd.crowdLast.crowdValue}}%</div>' +
 		'<div class="crowd-circle">' +
 		'<div class="c100 p{{placeBasedCrowd.crowdLast.crowdValue}} crowd-size center">' +
 		'<div class="slice">' +
@@ -190,7 +190,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		var service = new google.maps.places.PlacesService(map);
 		var nearbyRequest = {
 			location: latLng,
-			radius: 75,
+			radius: 30,
 			types: placeTypes
 		};
 		service.nearbySearch(nearbyRequest, function(results, status) {
