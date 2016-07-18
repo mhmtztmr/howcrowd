@@ -2,10 +2,8 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
     'mapModel', 'mapService', 'setCrowdModel',
     function($rootScope, $scope, $timeout, mapModel, mapService,
         setCrowdModel) {
-        modal.show();
         $scope.nearbyPlaces = 'pending';
         $scope.checkLocation = function() {
-            modal.show();
             $scope.nearbyPlaces = 'pending';
             $rootScope.checkLocation();
         };
@@ -36,7 +34,6 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
                     if (!$scope.$$phase) {
                         $scope.$apply();
                     }
-                    modal.hide();
                 }
             }
         }));
@@ -45,11 +42,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             setCrowdModel.loadNearbyPlaces($rootScope.location, true).then(
                 function() {
                     $scope.nearbyPlaces = setCrowdModel.getNearbyPlaces();
-                    modal.hide();
                 },
                 function() {
                     $scope.nearbyPlaces = [];
-                    modal.hide();
                 });
         };
 

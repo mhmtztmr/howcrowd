@@ -1,5 +1,4 @@
 app.controller('reportIssueController', ['$scope', function($scope) {
-  	modal.hide();
 	$scope.reportIssue = function(issueDescription){
 		var subject = issueDescription.substring(0, Math.min(10, issueDescription.length)) + "...";
 	    // prepare message bodies (plain and html) and attachment

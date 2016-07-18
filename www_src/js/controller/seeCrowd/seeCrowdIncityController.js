@@ -6,8 +6,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
         var placeBasedCrowdsArray;
         var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
 
-        modal.show();
-
         function getFilter() {
             var now = dateService.getDBDate(new Date());
             var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
@@ -28,7 +26,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
             seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest).then(
                 function() {
                     $scope.crowds = seeCrowdIncityModel.getCrowds();
-                    modal.hide();
                     var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
                     placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
                         function(key) {
@@ -40,7 +37,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
                     }
                 },
                 function() {
-                    modal.hide();
                     if (onFailure) {
                         onFailure();
                     }
@@ -66,7 +62,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
         }));
 
         $scope.checkLocation = function() {
-            modal.show();
             $scope.crowds = 'pending';
             $rootScope.checkLocation();
         };
