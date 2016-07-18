@@ -72,7 +72,7 @@
     width: 70%;
   }
   .crowd-info-window .crowd-center {
-    width: 180px !important;
+    width: 50% !important;
   }
   .crowd-place-name {
     white-space: nowrap;
@@ -152,6 +152,9 @@
 .rhs-avg-crowd-indicator {
   float: right;
   margin-right: 12px;
+}
+.gmnoprint {
+	display: none !important;
 }
 .bottom-menu-list-bottom {
   bottom: 0;

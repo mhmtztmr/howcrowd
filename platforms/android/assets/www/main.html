@@ -26,17 +26,13 @@
 
 <body>
     <div ng-controller="appController">
-       <ons-modal var="modal">
-            <ons-icon icon="ion-load-c" spin="true"></ons-icon>
-            <!-- <br>
-            <br> {{$root.lang.MAIN_MENU.LOADING}} -->
-        </ons-modal>
         <ons-sliding-menu menu-page="templates/menu.html" main-page="templates/splash.html" side="left" var="menu" type="overlay" max-slide-distance="220px" swipe-target-width="0px" swipeable="true">
         </ons-sliding-menu> 
     </div>
     <div id="preload">
         <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />
         <img src="img/sources/custom.png" width="1" height="1" alt="Image 01" />
+        <img src="img/loading.gif" width="1" height="1" alt="Image 01" />
     </div>
     <script type="text/javascript">
         myApp.initialize();

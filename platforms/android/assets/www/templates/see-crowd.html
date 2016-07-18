@@ -3,22 +3,22 @@
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="menu.toggle()">
-            <ons-icon icon="ion-navicon"></ons-icon>
+            <ons-icon icon="fa-bars"></ons-icon>
           </ons-toolbar-button>
         </div>
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
       </ons-toolbar>
       <ons-tabbar var="myTabbar" position="bottom" animation="slide" id="seeCrowdTabbar">
         <ons-tab page="templates/see-crowd-here.html">
-          <ons-icon icon="ion-location"></ons-icon>
+          <ons-icon icon="fa-map-marker"></ons-icon>
           <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.HERE}}</span>
         </ons-tab>
         <ons-tab page="templates/see-crowd-incity.html" active="true">
-          <ons-icon icon="ion-android-bus"></ons-icon>
+          <ons-icon icon="fa-bus"></ons-icon>
           <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.IN_CITY}}</span>
         </ons-tab>
         <ons-tab page="templates/see-crowd-inmap.html">
-          <ons-icon icon="ion-map"></ons-icon>
+          <ons-icon icon="fa-map"></ons-icon>
           <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.ON_MAP}}</span>
         </ons-tab>
       </ons-tabbar>

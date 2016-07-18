@@ -108,11 +108,9 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
 ]);
 
 app.controller('aboutController', ['$scope', function($scope) {
-  modal.hide();
 }]);
 
 app.controller('reportIssueController', ['$scope', function($scope) {
-  	modal.hide();
 	$scope.reportIssue = function(issueDescription){
 		var subject = issueDescription.substring(0, Math.min(10, issueDescription.length)) + "...";
 	    // prepare message bodies (plain and html) and attachment
@@ -281,7 +279,6 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
         console.log('see crowd here controller initialized');
         $scope.crowds = 'pending';
         var placeBasedCrowdsArray;
-        modal.show();
         $scope.filteredPlaceBasedCrowdsArray = [];
 
         function getFilter() {
@@ -312,13 +309,11 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
                             });
                         $scope.filteredPlaceBasedCrowdsArray =
                             placeBasedCrowdsArray;
-                        modal.hide();
                         if (onSuccess) {
                             onSuccess();
                         }
                     },
                     function() {
-                        modal.hide();
                         if (onFailure) {
                             onFailure();
                         }
@@ -331,7 +326,6 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
         };
 
         $scope.checkLocation = function() {
-            modal.show();
             $scope.crowds = 'pending';
             $rootScope.checkLocation();
         }
@@ -362,7 +356,6 @@ app.controller('seeCrowdHereController', ['$rootScope', '$scope',
                     if (!$scope.$$phase) {
                         $scope.$apply();
                     }
-                    modal.hide();
                 }
             }
         }));
@@ -403,8 +396,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
         var placeBasedCrowdsArray;
         var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
 
-        modal.show();
-
         function getFilter() {
             var now = dateService.getDBDate(new Date());
             var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
@@ -425,7 +416,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
             seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest).then(
                 function() {
                     $scope.crowds = seeCrowdIncityModel.getCrowds();
-                    modal.hide();
                     var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
                     placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
                         function(key) {
@@ -437,7 +427,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
                     }
                 },
                 function() {
-                    modal.hide();
                     if (onFailure) {
                         onFailure();
                     }
@@ -463,7 +452,6 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
         }));
 
         $scope.checkLocation = function() {
-            modal.show();
             $scope.crowds = 'pending';
             $rootScope.checkLocation();
         };
@@ -523,10 +511,8 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
     'mapModel', 'mapService', 'setCrowdModel',
     function($rootScope, $scope, $timeout, mapModel, mapService,
         setCrowdModel) {
-        modal.show();
         $scope.nearbyPlaces = 'pending';
         $scope.checkLocation = function() {
-            modal.show();
             $scope.nearbyPlaces = 'pending';
             $rootScope.checkLocation();
         };
@@ -557,7 +543,6 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
                     if (!$scope.$$phase) {
                         $scope.$apply();
                     }
-                    modal.hide();
                 }
             }
         }));
@@ -566,11 +551,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             setCrowdModel.loadNearbyPlaces($rootScope.location, true).then(
                 function() {
                     $scope.nearbyPlaces = setCrowdModel.getNearbyPlaces();
-                    modal.hide();
                 },
                 function() {
                     $scope.nearbyPlaces = [];
-                    modal.hide();
                 });
         };
 
@@ -657,8 +640,11 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
         }
 
         mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
+
+            //TODO: To be discussed if needed or not
             if(vicinity) {
               place.vicinity = vicinity;
+              place.district = vicinity;
             }
             setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
               function() {
@@ -687,7 +673,6 @@ app.controller('settingsController', ['$scope', '$rootScope', 'settingsService',
 	document.getElementById('custom-place-switch').addEventListener('change', function(e) {
 		settingsService.saveSettings();
 	});
-	modal.hide();
 }]);
 
 app.controller('splashController', [function() {
@@ -2024,11 +2009,11 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		'</div>' +
 		'<div class="crowd-center">' +
 		'<div class="crowd-place-name">{{placeBasedCrowd.placeName}}</div>' +
-		'<div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== \'\'"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>' +
-		'<div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
+		'<div class="crowd-city" ng-show="placeBasedCrowd.placeDistrict"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{placeBasedCrowd.placeDistrict}}</div>' +
+		'<div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{placeBasedCrowd.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
 		'</div>' +
 		'<div class="crowd-right">' +
-		'<div class="crowd-last-value">{{$root.lang.SEE_CROWD_MENU.LAST_VALUE}} {{item.crowdLast.crowdValue}}%</div>' +
+		'<div class="crowd-last-value">{{$root.lang.SEE_CROWD_MENU.LAST_VALUE}} {{placeBasedCrowd.crowdLast.crowdValue}}%</div>' +
 		'<div class="crowd-circle">' +
 		'<div class="c100 p{{placeBasedCrowd.crowdLast.crowdValue}} crowd-size center">' +
 		'<div class="slice">' +
@@ -2078,7 +2063,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		var service = new google.maps.places.PlacesService(map);
 		var nearbyRequest = {
 			location: latLng,
-			radius: 75,
+			radius: 30,
 			types: placeTypes
 		};
 		service.nearbySearch(nearbyRequest, function(results, status) {
@@ -2387,7 +2372,7 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService) {
     function getFilter() {
       var now = dateService.getDBDate(new Date());
       var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
-      var boundingBox = mapService.getBoundingBox($rootScope.location, 0.05);
+      var boundingBox = mapService.getBoundingBox($rootScope.location, 0.03);
 
       return {
         date: {

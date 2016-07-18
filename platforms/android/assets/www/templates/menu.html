@@ -7,7 +7,7 @@
     </div>
   </ons-toolbar>
   <ons-list>
-    <ons-list-item onclick="menu.setMainPage('templates/see-crowd.html', {closeMenu: true})">
+    <ons-list-item onclick="menu.closeMenu(); menu.setMainPage('templates/see-crowd.html')">
       <div class="menu-icon">
         <ons-icon icon="ion-ios-search-strong"></ons-icon>
       </div>
@@ -15,7 +15,7 @@
         {{$root.lang.MAIN_MENU.SEE_CROWD}}
       </span>
     </ons-list-item>
-    <ons-list-item onclick="menu.setMainPage('templates/set-crowd.html', {closeMenu: true})">
+    <ons-list-item onclick="menu.closeMenu(); menu.setMainPage('templates/set-crowd.html');">
       <div class="menu-icon">
         <ons-icon icon="ion-ios-people"></ons-icon>
       </div>
