@@ -23,51 +23,68 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
         $scope.filteredPlaceBasedCrowdsArray = [];
 
         $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
-            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest).then(
-                function() {
-                    $scope.crowds = seeCrowdIncityModel.getCrowds();
-                    var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
-                    placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
-                        function(key) {
-                            return placeBasedCrowds[key];
-                        });
-                    $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
-                    if (onSuccess) {
-                        onSuccess();
-                    }
-                },
-                function() {
-                    if (onFailure) {
-                        onFailure();
-                    }
-                });
+            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest, function(){
+                $scope.crowds = seeCrowdIncityModel.getCrowds();
+                var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
+                placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
+                    function(key) {
+                        return placeBasedCrowds[key];
+                    });
+                $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
+                if (onSuccess) {
+                    onSuccess();
+                }
+            }, function(){
+                if (onFailure) {
+                    onFailure();
+                }
+            });
         };
 
         if (locationFromStorage) {
             $scope.loadCrowds(true);
-        } else {
-            $scope.crowds = undefined;
         }
 
-        $scope.$on('$destroy',$rootScope.$on("locationChanged", function(event, args) {
+        $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
             var newLocation = $rootScope.location,
-                oldLocation = args.oldLocation;
-            if (newLocation && newLocation.latitude && newLocation.longitude) {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {
-
-                } else {
-                    $scope.loadCrowds(true);
+            oldLocation = args.oldLocation;
+            //if location changed to a valid value
+            if(newLocation && newLocation.latitude && newLocation.longitude) {
+                if(oldLocation && oldLocation.latitude && oldLocation.longitude){
+                    var distance = mapService.getDistanceBetweenLocations(
+                        newLocation, oldLocation);
+                    if (distance > 0.01) { //10 m
+                        $scope.loadCrowds(true);
+                    }
                 }
+                else if(!locationFromStorage){
+                    $scope.crowds = 'pending';
+                    $scope.$apply();
+                    $scope.loadCrowds(true);
+                }                
+            }
+            //if location changed to an invalid value and there were already no valid location value
+            else if(!locationFromStorage && (!oldLocation || !oldLocation.latitude || !oldLocation.longitude)) {
+                $scope.crowds = undefined;
+                $scope.$apply();
             }
         }));
 
-        $scope.checkLocation = function() {
-            $scope.crowds = 'pending';
-            $rootScope.checkLocation();
-        };
-
         $scope.selectPlaceBasedCrowd = function(placeBasedCrowd) {
             seeCrowdIncityModel.selectPlaceBasedCrowd(placeBasedCrowd);
+        };
+
+        $scope.searchStatus = {started : false};
+        $scope.startSearch = function(){
+            $scope.searchStatus.started = true;
+            setTimeout(function(){
+                document.getElementById('search-input').focus();
+            }, 100);
+        };
+        $scope.stopSearch = function(){
+            $scope.searchInput = '';
+            $scope.searchInputChange($scope.searchInput);
+            $scope.searchStatus.started = false;
         };
 
         $scope.searchInputChange = function(searchInput) {

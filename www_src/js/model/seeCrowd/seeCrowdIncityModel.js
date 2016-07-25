@@ -5,28 +5,26 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
         loadStatus = '';
     var map, selectedPlaceBasedCrowd;
 
-    function loadCrowds(filter, serverRequest) {
-        var def = $q.defer();
+    function loadCrowds(filter, serverRequest, onSuccess, onFailure) {
         if (serverRequest === true) {
             loadStatus = '';
         }
         if (loadStatus === 'loaded') {
-            def.resolve(crowds);
+            onSuccess(crowds);
         } else if (loadStatus === 'pending') {
-            def.resolve([]);
+             onSuccess([]);
         } else {
             loadStatus = 'pending';
             seeCrowdService.retrieveCrowds(filter).then(function(results) {
                     crowds = results;
                     loadPlaceBasedCrowds();
                     loadStatus = 'loaded';
-                    def.resolve(crowds);
+                    onSuccess(crowds);
                 },
                 function() {
-                    def.reject;
+                    onFailure();
                 });
         }
-        return def.promise;
     }
 
     function loadPlaceBasedCrowds() {
@@ -49,11 +47,9 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
             placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
             placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
             placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
+            placeBasedCrowds[crowd.placeKey].placeDistance = 10;
             if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                 placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
-                // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
-                // placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
-                // placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
             }
             placeBasedCrowds[crowd.placeKey].crowdCount += 1;
             placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;
@@ -96,10 +92,12 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
     function selectPlaceBasedCrowd(placeBasedCrowd) {
         selectedPlaceBasedCrowd = placeBasedCrowd;
         if (placeBasedCrowd) {
-            app.navi.pushPage('templates/see-crowd-detail.html', {
-                crowdType: 'incity'
-            });
+            app.navi.pushPage('templates/see-crowd-detail.html');
         }
+    }
+
+    function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
+        seeCrowdService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
     }
 
     function getSelectedPlaceBasedCrowd() {
@@ -113,11 +111,12 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
         loadMap: loadMap,
         markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
         selectPlaceBasedCrowd: selectPlaceBasedCrowd,
-        getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd
+        getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,
+        giveFeedback: giveFeedback
     };
 };
 
-angular.module('seeCrowd.Model')
+angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date'])
     .factory('seeCrowdIncityModel', ['$q', 'seeCrowdService', 'mapService',
         'configService', 'dateService', seeCrowdIncityModel
     ]);

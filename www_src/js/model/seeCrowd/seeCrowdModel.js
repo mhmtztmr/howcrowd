@@ -1,8 +1,9 @@
-var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
+var seeCrowdModel = function($q, seeCrowdService, mapService,
+    configService, dateService) {
     var crowds = [],
         placeBasedCrowds = {},
-        loadStatus = '',
-        selectedPlaceBasedCrowd;
+        loadStatus = '';
+    var map, selectedPlaceBasedCrowd;
 
     function loadCrowds(filter, serverRequest) {
         var def = $q.defer();
@@ -14,7 +15,7 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
         } else if (loadStatus === 'pending') {
             def.resolve([]);
         } else {
-            loadStatus === 'pending';
+            loadStatus = 'pending';
             seeCrowdService.retrieveCrowds(filter).then(function(results) {
                     crowds = results;
                     loadPlaceBasedCrowds();
@@ -33,6 +34,8 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
         placeBasedCrowds = {};
         for (i = 0; i < crowds.length; i++) {
             var crowd = crowds[i];
+            // crowd.crowdFeedback.negativeFeedback = 3;
+            // crowd.crowdFeedback.positiveFeedback = 5;
             crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
             if (!placeBasedCrowds[crowd.placeKey]) {
                 placeBasedCrowds[crowd.placeKey] = {
@@ -70,12 +73,30 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
             placeBasedCrowds;
     }
 
+    function loadMap(DOMElementId, boundingBox) {
+        map = mapService.initMap(DOMElementId, boundingBox.latitude.lower,
+            boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude
+            .upper);
+    }
+
+    function markPlaceBasedCrowdsOnMap() {
+        var placeBasedCrowdKey, placeBasedCrowd;
+        for (placeBasedCrowdKey in placeBasedCrowds) {
+            placeBasedCrowd = placeBasedCrowds[placeBasedCrowdKey];
+
+            (function(placeBasedCrowd) {
+                mapService.markPlaceOnMap(map, placeBasedCrowd,
+                    function() {
+                        selectPlaceBasedCrowd(placeBasedCrowd);
+                    });
+            })(placeBasedCrowd);
+        }
+    }
+
     function selectPlaceBasedCrowd(placeBasedCrowd) {
         selectedPlaceBasedCrowd = placeBasedCrowd;
         if (placeBasedCrowd) {
-            app.navi.pushPage('templates/see-crowd-detail.html', {
-                crowdType: 'here'
-            });
+            app.navi.pushPage('templates/see-crowd-detail.html');
         }
     }
 
@@ -83,21 +104,18 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
         return selectedPlaceBasedCrowd;
     }
 
-    function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
-        seeCrowdService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
-    }
-
     return {
         loadCrowds: loadCrowds,
         getCrowds: getCrowds,
         getPlaceBasedCrowds: getPlaceBasedCrowds,
+        loadMap: loadMap,
+        markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
         selectPlaceBasedCrowd: selectPlaceBasedCrowd,
-        getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,
-        giveFeedback: giveFeedback
+        getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd
     };
 };
 
-angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date'])
-.factory('seeCrowdHereModel', ['$q', 'seeCrowdService', 'mapService',
-    'dateService', seeCrowdHereModel
-]);
+angular.module('seeCrowd.Model')
+    .factory('seeCrowdModel', ['$q', 'seeCrowdService', 'mapService',
+        'configService', 'dateService', seeCrowdModel
+    ]);

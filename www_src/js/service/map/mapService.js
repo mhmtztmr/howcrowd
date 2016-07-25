@@ -1,49 +1,5 @@
 var mapService = function($q, $rootScope, googleService) {
 
-    function checkCurrentLocation() {
-        var watchId, newLocation, oldLocation;
-        if (!$rootScope.location) {
-            $rootScope.location = {};
-        }
-        oldLocation = $rootScope.location;
-        console.log('checking location...location was: ' + JSON.stringify(
-            oldLocation));
-        navigator.geolocation.getCurrentPosition(function(position) {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-            }
-            watchId = navigator.geolocation.watchPosition(function() {});
-            newLocation = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            };
-            console.log('location successfully gained: ' + JSON.stringify(
-                newLocation));
-            $rootScope.location = newLocation;
-            localStorage.setItem('location', angular.toJson(newLocation));
-            $rootScope.$broadcast('locationChanged', {
-                oldLocation: oldLocation
-            });
-        }, function(err) {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-            }
-            console.log('location failed...');
-            $rootScope.location = {
-                error: {
-                    code: err.code,
-                    message: err.message
-                }
-            };
-            $rootScope.$broadcast('locationChanged', {
-                oldLocation: oldLocation
-            });
-        }, {
-            enableHighAccuracy: true,
-            timeout: 10000
-        });
-    }
-
     //in km
     function getDistanceBetweenLocations(location1, location2) {
         // helper functions (degrees<–>radians)
@@ -176,7 +132,6 @@ var mapService = function($q, $rootScope, googleService) {
     return {
         getBoundingBox: getBoundingBox,
         retrieveNearbyPlaces: retrieveNearbyPlaces,
-        checkCurrentLocation: checkCurrentLocation,
         initMap: initMap,
         setMapBoundingBox: setMapBoundingBox,
         markPlaceOnMap: markPlaceOnMap,

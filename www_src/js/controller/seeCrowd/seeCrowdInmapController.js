@@ -3,7 +3,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$timeout',
     function($rootScope, $scope, $timeout, mapService, seeCrowdIncityModel) {
        myTabbar.on('prechange', function(event) {
         //If this is map page
-        if(event.index === 2) {
+        if(event.index === 1) {
             $timeout(function(){
                 var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
                 if (locationFromStorage) {

@@ -10,7 +10,7 @@
                 <div class="center">{{$root.lang.MAIN_MENU.SET_CROWD}}</div>
             </ons-toolbar>
 
-            <button ng-if="!nearbyPlaces" class="refresh-button button button--quiet" ng-click="checkLocation()">{{$root.lang.SET_CROWD_MENU.NO_LOCATION}}</button>
+            <button ng-if="!nearbyPlaces" class="refresh-button button button--quiet">{{$root.lang.SET_CROWD_MENU.NO_LOCATION}}</button>
             <div ng-if="nearbyPlaces === 'pending'" style="text-align: center; padding-top: 100px;">
                 <!-- <ons-progress-circular indeterminate></ons-progress-circular> -->
                 <img src="img/loading.gif"/>

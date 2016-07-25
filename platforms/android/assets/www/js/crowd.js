@@ -1,12 +1,54 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
     'seeCrowd.Service', 'identification', 'map.Model', 'map.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings'
+    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service'
 ]);
 
-app.run(['langService', 'dbService', 'settingsService', '$rootScope', function(langService, dbService, settingsService, $rootScope) {
+app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
     langService.loadLangData();
     dbService.init();
     settingsService.loadSettings();
+
+    function exitApp() {
+        navigator.app.exitApp();
+    }
+
+    locationService.checkLocationAvailability(function(){
+        //location is enabled
+        locationService.startLocationInterval();
+    }, function(){
+        locationService.openLocationDialog(function(){
+            //turn gps on rejected
+            exitApp();
+        }, function(){
+            //turn gps on skipped. not available now.
+        }, function(){
+            //turn gps on accepted, going to settings...
+            console.log('gps settings initiazlied');
+            var stillNotTurnedOn = 0;
+            var locationAvailabilityInterval = setInterval(function(){
+                if(stillNotTurnedOn < 3) {
+                    console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
+                    locationService.checkLocationAvailability(function(){
+                        console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+                        stillNotTurnedOn = 0;
+                        clearInterval(locationAvailabilityInterval);
+                        locationService.startLocationInterval();
+                    }, function(){
+                        console.log('location not available. incrementing counter...');
+                        stillNotTurnedOn++;
+                    });
+                }
+                else {
+                    console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
+                    stillNotTurnedOn = 0;
+                    clearInterval(locationAvailabilityInterval);
+                    locationService.startLocationInterval();
+                }
+            }, 3000);
+        });
+    }, function(){
+        //TODO: location availability check failure...
+    });
 
     $rootScope.exitApp = function() {
         menu.closeMenu();
@@ -19,7 +61,7 @@ app.run(['langService', 'dbService', 'settingsService', '$rootScope', function(l
             ],
             callback: function(answer) {
                 if (answer === 1) { // OK button
-                    navigator.app.exitApp(); // Close the app
+                    exitApp();
                 }
             }
         });
@@ -61,17 +103,12 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                 });
             });
 
-            $rootScope.checkLocation = function() {
-                mapService.checkCurrentLocation();
-            };
-            $rootScope.checkLocation();
-
-            $interval(function() {
-                if (!$rootScope.location.error && myApp.isCordovaApp) {
-                    //if (myApp.isCordovaApp) {
-                    $rootScope.checkLocation();
-                }
-            }, 5000);
+            // $interval(function() {
+            //     if (!$rootScope.location.error && myApp.isCordovaApp) {
+            //         //if (myApp.isCordovaApp) {
+            //         $rootScope.checkLocation();
+            //     }
+            // }, 5000);
         }
 
         if (!myApp.isCordovaApp) {
@@ -140,15 +177,10 @@ app.controller('crowdPlaceDetailController', ['$scope', 'mapService', '$timeout'
 ]);
 
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdHereModel', 'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
-  function($rootScope, $scope, seeCrowdHereModel, seeCrowdIncityModel,
+  'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
+  function($rootScope, $scope, seeCrowdIncityModel,
     feedbackModel, seeCrowdService) {
-    $scope.crowdType = app.navi.topPage.pushedOptions.crowdType;
-    if ($scope.crowdType === 'here') {
-      $scope.selectedPlaceBasedCrowd = seeCrowdHereModel.getSelectedPlaceBasedCrowd();
-    } else {
-      $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
-    }
+    $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
     if (myFeedback) {
@@ -175,7 +207,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         } else {
           $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback++;
         }
-        seeCrowdHereModel.giveFeedback(crowd, isPositive,
+        seeCrowdIncityModel.giveFeedback(crowd, isPositive,
           function() {
             feedbackModel.insertFeedback(crowd.crowdId, isPositive);
           },
@@ -272,122 +304,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
   }
 ]);
 
-app.controller('seeCrowdHereController', ['$rootScope', '$scope',
-    '$filter', 'seeCrowdHereModel', 'dateService', 'mapService',
-    function($rootScope, $scope, $filter, seeCrowdHereModel, dateService,
-        mapService) {
-        console.log('see crowd here controller initialized');
-        $scope.crowds = 'pending';
-        var placeBasedCrowdsArray;
-        $scope.filteredPlaceBasedCrowdsArray = [];
-
-        function getFilter() {
-            var now = dateService.getDBDate(new Date());
-            var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
-            var boundingBox = mapService.getBoundingBox($rootScope.location, 0.05);
-
-            return {
-                date: {
-                    start: oneHourAgo,
-                    end: now
-                },
-                location: boundingBox
-            };
-        }
-
-        $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
-            if ($rootScope.location && $rootScope.location.latitude &&
-                $rootScope.location.longitude) {
-                var filter = getFilter();
-                seeCrowdHereModel.loadCrowds(filter, serverRequest).then(
-                    function() {
-                        $scope.crowds = seeCrowdHereModel.getCrowds();
-                        var placeBasedCrowds = seeCrowdHereModel.getPlaceBasedCrowds();
-                        placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
-                            function(key) {
-                                return placeBasedCrowds[key];
-                            });
-                        $scope.filteredPlaceBasedCrowdsArray =
-                            placeBasedCrowdsArray;
-                        if (onSuccess) {
-                            onSuccess();
-                        }
-                    },
-                    function() {
-                        if (onFailure) {
-                            onFailure();
-                        }
-                    });
-            } else {
-                if (onFailure) {
-                    onFailure();
-                }
-            }
-        };
-
-        $scope.checkLocation = function() {
-            $scope.crowds = 'pending';
-            $rootScope.checkLocation();
-        }
-
-        if ($rootScope.location && $rootScope.location.latitude && $rootScope.location
-            .longitude) {
-            $scope.loadCrowds(true);
-        } else {
-            $scope.checkLocation();
-        }
-
-        $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
-            var newLocation = $rootScope.location,
-                oldLocation = args.oldLocation;
-            if (newLocation && newLocation.latitude && newLocation.longitude) {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {
-                    var distance = mapService.getDistanceBetweenLocations(
-                        newLocation, oldLocation);
-                    if (distance > 0.01) { //10 m
-                        $scope.loadCrowds(true);
-                    }
-                } else {
-                    $scope.loadCrowds(true);
-                }
-            } else {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {} else {
-                    $scope.crowds = undefined;
-                    if (!$scope.$$phase) {
-                        $scope.$apply();
-                    }
-                }
-            }
-        }));
-
-        $scope.selectPlaceBasedCrowd = function(placeBasedCrowd) {
-            seeCrowdHereModel.selectPlaceBasedCrowd(placeBasedCrowd);
-        };
-
-        $scope.searchInputChange = function(searchInput) {
-            if (searchInput.length > 1) {
-                $scope.filteredPlaceBasedCrowdsArray = $filter('filter')(
-                    placeBasedCrowdsArray, searchInput);
-            } else {
-                $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
-            }
-        };
-
-        $scope.MyDelegate = {
-            configureItemScope: function(index, itemScope) {
-                itemScope.item = $scope.filteredPlaceBasedCrowdsArray[index];
-            },
-            calculateItemHeight: function(index) {
-                return 108;
-            },
-            countItems: function() {
-                return $scope.filteredPlaceBasedCrowdsArray.length;
-            },
-            destroyItemScope: function(index, scope) {}
-        };
-    }
-]);
-
 app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
     'seeCrowdIncityModel', 'dateService', 'mapService',
     function($rootScope, $scope, $filter, seeCrowdIncityModel, dateService, mapService) {
@@ -413,51 +329,68 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
         $scope.filteredPlaceBasedCrowdsArray = [];
 
         $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
-            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest).then(
-                function() {
-                    $scope.crowds = seeCrowdIncityModel.getCrowds();
-                    var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
-                    placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
-                        function(key) {
-                            return placeBasedCrowds[key];
-                        });
-                    $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
-                    if (onSuccess) {
-                        onSuccess();
-                    }
-                },
-                function() {
-                    if (onFailure) {
-                        onFailure();
-                    }
-                });
+            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest, function(){
+                $scope.crowds = seeCrowdIncityModel.getCrowds();
+                var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
+                placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
+                    function(key) {
+                        return placeBasedCrowds[key];
+                    });
+                $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
+                if (onSuccess) {
+                    onSuccess();
+                }
+            }, function(){
+                if (onFailure) {
+                    onFailure();
+                }
+            });
         };
 
         if (locationFromStorage) {
             $scope.loadCrowds(true);
-        } else {
-            $scope.crowds = undefined;
         }
 
-        $scope.$on('$destroy',$rootScope.$on("locationChanged", function(event, args) {
+        $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
             var newLocation = $rootScope.location,
-                oldLocation = args.oldLocation;
-            if (newLocation && newLocation.latitude && newLocation.longitude) {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {
-
-                } else {
-                    $scope.loadCrowds(true);
+            oldLocation = args.oldLocation;
+            //if location changed to a valid value
+            if(newLocation && newLocation.latitude && newLocation.longitude) {
+                if(oldLocation && oldLocation.latitude && oldLocation.longitude){
+                    var distance = mapService.getDistanceBetweenLocations(
+                        newLocation, oldLocation);
+                    if (distance > 0.01) { //10 m
+                        $scope.loadCrowds(true);
+                    }
                 }
+                else if(!locationFromStorage){
+                    $scope.crowds = 'pending';
+                    $scope.$apply();
+                    $scope.loadCrowds(true);
+                }                
+            }
+            //if location changed to an invalid value and there were already no valid location value
+            else if(!locationFromStorage && (!oldLocation || !oldLocation.latitude || !oldLocation.longitude)) {
+                $scope.crowds = undefined;
+                $scope.$apply();
             }
         }));
 
-        $scope.checkLocation = function() {
-            $scope.crowds = 'pending';
-            $rootScope.checkLocation();
-        };
-
         $scope.selectPlaceBasedCrowd = function(placeBasedCrowd) {
             seeCrowdIncityModel.selectPlaceBasedCrowd(placeBasedCrowd);
+        };
+
+        $scope.searchStatus = {started : false};
+        $scope.startSearch = function(){
+            $scope.searchStatus.started = true;
+            setTimeout(function(){
+                document.getElementById('search-input').focus();
+            }, 100);
+        };
+        $scope.stopSearch = function(){
+            $scope.searchInput = '';
+            $scope.searchInputChange($scope.searchInput);
+            $scope.searchStatus.started = false;
         };
 
         $scope.searchInputChange = function(searchInput) {
@@ -489,7 +422,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$timeout',
     function($rootScope, $scope, $timeout, mapService, seeCrowdIncityModel) {
        myTabbar.on('prechange', function(event) {
         //If this is map page
-        if(event.index === 2) {
+        if(event.index === 1) {
             $timeout(function(){
                 var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
                 if (locationFromStorage) {
@@ -512,38 +445,34 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
     function($rootScope, $scope, $timeout, mapModel, mapService,
         setCrowdModel) {
         $scope.nearbyPlaces = 'pending';
-        $scope.checkLocation = function() {
-            $scope.nearbyPlaces = 'pending';
-            $rootScope.checkLocation();
-        };
 
         if ($rootScope.location && $rootScope.location.latitude && $rootScope.location
             .longitude) {
             loadNearbyPlaces();
-        } else {
-            $scope.checkLocation();
         }
 
         $scope.$on('$destroy',$rootScope.$on("locationChanged", function(event, args) {
             var newLocation = $rootScope.location,
-                oldLocation = args.oldLocation;
-            if (newLocation && newLocation.latitude && newLocation.longitude) {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {
+            oldLocation = args.oldLocation;
+            //if location changed to a valid value
+            if(newLocation && newLocation.latitude && newLocation.longitude) {
+                if(oldLocation && oldLocation.latitude && oldLocation.longitude){
                     var distance = mapService.getDistanceBetweenLocations(
                         newLocation, oldLocation);
                     if (distance > 0.01) { //10 m
                         loadNearbyPlaces();
                     }
-                } else {
+                }
+                else{
+                    $scope.nearbyPlaces = 'pending';
+                    $scope.$apply();
                     loadNearbyPlaces();
-                }
-            } else {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {} else {
-                    $scope.nearbyPlaces = undefined;
-                    if (!$scope.$$phase) {
-                        $scope.$apply();
-                    }
-                }
+                }                
+            }
+            //if location changed to an invalid value and there were already no valid location value
+            else {
+                $scope.nearbyPlaces = undefined;
+                $scope.$apply();
             }
         }));
 
@@ -817,34 +746,33 @@ var mapModel = function($q, mapService) {
 angular.module('map.Model', ['map.Service'])
   .factory('mapModel', ['$q', 'mapService', mapModel]);
 
-var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
+var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
+    configService, dateService) {
     var crowds = [],
         placeBasedCrowds = {},
-        loadStatus = '',
-        selectedPlaceBasedCrowd;
+        loadStatus = '';
+    var map, selectedPlaceBasedCrowd;
 
-    function loadCrowds(filter, serverRequest) {
-        var def = $q.defer();
+    function loadCrowds(filter, serverRequest, onSuccess, onFailure) {
         if (serverRequest === true) {
             loadStatus = '';
         }
         if (loadStatus === 'loaded') {
-            def.resolve(crowds);
+            onSuccess(crowds);
         } else if (loadStatus === 'pending') {
-            def.resolve([]);
+             onSuccess([]);
         } else {
-            loadStatus === 'pending';
+            loadStatus = 'pending';
             seeCrowdService.retrieveCrowds(filter).then(function(results) {
                     crowds = results;
                     loadPlaceBasedCrowds();
                     loadStatus = 'loaded';
-                    def.resolve(crowds);
+                    onSuccess(crowds);
                 },
                 function() {
-                    def.reject;
+                    onFailure();
                 });
         }
-        return def.promise;
     }
 
     function loadPlaceBasedCrowds() {
@@ -852,6 +780,8 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
         placeBasedCrowds = {};
         for (i = 0; i < crowds.length; i++) {
             var crowd = crowds[i];
+            // crowd.crowdFeedback.negativeFeedback = 3;
+            // crowd.crowdFeedback.positiveFeedback = 5;
             crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
             if (!placeBasedCrowds[crowd.placeKey]) {
                 placeBasedCrowds[crowd.placeKey] = {
@@ -865,11 +795,9 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
             placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
             placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
             placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
+            placeBasedCrowds[crowd.placeKey].placeDistance = 10;
             if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                 placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
-                // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
-                // placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
-                // placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
             }
             placeBasedCrowds[crowd.placeKey].crowdCount += 1;
             placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;
@@ -889,27 +817,47 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
             placeBasedCrowds;
     }
 
-    function selectPlaceBasedCrowd(placeBasedCrowd) {
-        selectedPlaceBasedCrowd = placeBasedCrowd;
-        if (placeBasedCrowd) {
-            app.navi.pushPage('templates/see-crowd-detail.html', {
-                crowdType: 'here'
-            });
+    function loadMap(DOMElementId, boundingBox) {
+        map = mapService.initMap(DOMElementId, boundingBox.latitude.lower,
+            boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude
+            .upper);
+    }
+
+    function markPlaceBasedCrowdsOnMap() {
+        var placeBasedCrowdKey, placeBasedCrowd;
+        for (placeBasedCrowdKey in placeBasedCrowds) {
+            placeBasedCrowd = placeBasedCrowds[placeBasedCrowdKey];
+
+            (function(placeBasedCrowd) {
+                mapService.markPlaceOnMap(map, placeBasedCrowd,
+                    function() {
+                        selectPlaceBasedCrowd(placeBasedCrowd);
+                    });
+            })(placeBasedCrowd);
         }
     }
 
-    function getSelectedPlaceBasedCrowd() {
-        return selectedPlaceBasedCrowd;
+    function selectPlaceBasedCrowd(placeBasedCrowd) {
+        selectedPlaceBasedCrowd = placeBasedCrowd;
+        if (placeBasedCrowd) {
+            app.navi.pushPage('templates/see-crowd-detail.html');
+        }
     }
 
     function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
         seeCrowdService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
     }
 
+    function getSelectedPlaceBasedCrowd() {
+        return selectedPlaceBasedCrowd;
+    }
+
     return {
         loadCrowds: loadCrowds,
         getCrowds: getCrowds,
         getPlaceBasedCrowds: getPlaceBasedCrowds,
+        loadMap: loadMap,
+        markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
         selectPlaceBasedCrowd: selectPlaceBasedCrowd,
         getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,
         giveFeedback: giveFeedback
@@ -917,11 +865,11 @@ var seeCrowdHereModel = function($q, seeCrowdService, mapService, dateService) {
 };
 
 angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date'])
-.factory('seeCrowdHereModel', ['$q', 'seeCrowdService', 'mapService',
-    'dateService', seeCrowdHereModel
-]);
+    .factory('seeCrowdIncityModel', ['$q', 'seeCrowdService', 'mapService',
+        'configService', 'dateService', seeCrowdIncityModel
+    ]);
 
-var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
+var seeCrowdModel = function($q, seeCrowdService, mapService,
     configService, dateService) {
     var crowds = [],
         placeBasedCrowds = {},
@@ -1019,9 +967,7 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
     function selectPlaceBasedCrowd(placeBasedCrowd) {
         selectedPlaceBasedCrowd = placeBasedCrowd;
         if (placeBasedCrowd) {
-            app.navi.pushPage('templates/see-crowd-detail.html', {
-                crowdType: 'incity'
-            });
+            app.navi.pushPage('templates/see-crowd-detail.html');
         }
     }
 
@@ -1041,8 +987,8 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
 };
 
 angular.module('seeCrowd.Model')
-    .factory('seeCrowdIncityModel', ['$q', 'seeCrowdService', 'mapService',
-        'configService', 'dateService', seeCrowdIncityModel
+    .factory('seeCrowdModel', ['$q', 'seeCrowdService', 'mapService',
+        'configService', 'dateService', seeCrowdModel
     ]);
 
 var setCrowdModel = function($q, setCrowdService, mapService) {
@@ -1731,13 +1677,15 @@ var defaultLanguageModel = function() {
             "HERE": "Here",
             "ON_MAP": "On Map",
             "IN_CITY": "In City",
+            "LIST": "List",
+            "MAP": "Map",
             "DATE": "Date",
             "NAME": "Place Name",
             "LAST_VALUE": "Last",
             "AVERAGE_VALUE": "Avg.",
             "MIN_AGO": "min(s) ago",
-            "NO_PLACE": "No recent crowd. Tab to enter one!",
-            "NO_LOCATION": "No location data. Make sure your device's location service is accessible, then tab to refresh!",
+            "NO_PLACE": "No recent crowd. Tap to enter one!",
+            "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "SEARCH_INCITY": "Search: Last One Hour, Around 15 kilometers",
             "SEARCH_HERE": "Search: Last One Hour, Around 50 meters"
         },
@@ -1764,8 +1712,8 @@ var defaultLanguageModel = function() {
             "SELECT_PLACE": "Select Place",
             "ENTER_CUSTOM_PLACE": "Enter Custom Place",
             "PLACE_NAME": "Place Name",
-            "NO_PLACE": "No places around. Tab to enter a custom place!",
-            "NO_LOCATION": "No location data. Make sure your device's location service is accessible, then tab to refresh!",
+            "NO_PLACE": "No places around. Tap to enter a custom place!",
+            "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "PULL_TO_REFRESH": "Pull down to refresh",
             "RELEASE_TO_REFRESH": "Release to refresh"
         },
@@ -1871,6 +1819,105 @@ var langService = function($q, $http, $rootScope) {
 angular.module('lang')
   .factory('langService', ['$q', '$http', '$rootScope', langService]);
 
+
+angular.module('location.Service', [])
+    .factory('locationService', ['$rootScope', function($rootScope){
+		var locationInterval, oldLocation, watchId;
+		
+		function startLocationInterval() {
+			console.log('starting location interval...');
+			if (!$rootScope.location) {
+				$rootScope.location = {};
+			}
+		
+			locationInterval = setInterval(function(){
+        		oldLocation = $rootScope.location;
+				navigator.geolocation.getCurrentPosition(function(position) {
+					$rootScope.location = {
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude
+					};
+					console.log('location successfully gained: ' + JSON.stringify(
+						$rootScope.location));
+					if(!watchId) {
+						watchId = navigator.geolocation.watchPosition(function() {});
+					}
+					localStorage.setItem('location', angular.toJson($rootScope.location));
+					$rootScope.$broadcast('locationChanged', {
+						oldLocation: oldLocation
+					});
+				}, function(err) {
+					console.log('location failed...');
+					$rootScope.location = {
+						error: {
+							code: err.code,
+							message: err.message
+						}
+					};
+					if(watchId) {
+						navigator.geolocation.clearWatch(watchId);
+						watchId = undefined;
+					}
+					$rootScope.$broadcast('locationChanged', {
+						oldLocation: oldLocation
+					});
+				}, {
+					enableHighAccuracy: true,
+					timeout: 5000,
+					maximumAge: 0
+				});
+			}, 8000);
+		}
+		
+		function stopLocationInterval() {
+			console.log('stopping location interval...');
+			clearInterval(locationInterval);
+			if(watchId) {
+				navigator.geolocation.clearWatch(watchId);
+				watchId = undefined;
+			}
+		}
+
+		function checkLocationAvailability(onEnabled, onDisabled, failure){
+			if(myApp.isCordovaApp) {
+				document.addEventListener("deviceready",function() {
+		            cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+		                if(enabled) {
+		                    onEnabled();
+		                }
+		                else {
+		                	onDisabled();
+		                }
+		            },failure);
+		        });
+			}
+			else {
+				onEnabled();
+			}
+		}
+
+		function openLocationDialog(onNo, onLater, onYes){
+			document.addEventListener("deviceready",function() {
+				cordova.dialogGPS("Your GPS is Disabled, this app needs to be enable to works.",//message
+                            "Use GPS, with wifi or 3G.",//description
+                            function(buttonIndex){//callback
+                              switch(buttonIndex) {
+                                case 0:  onNo(); break;//cancel
+                                case 1:  onLater(); break;//neutro option
+                                case 2:  onYes(); break;//positive option
+                              }},
+                              "Please Turn on GPS",//title
+                              ["No","Yes"]);//buttons
+			 });
+		}
+
+		return {
+			openLocationDialog: openLocationDialog,
+			checkLocationAvailability: checkLocationAvailability,
+			startLocationInterval: startLocationInterval,
+			stopLocationInterval: stopLocationInterval
+		};
+	}]);
 
 angular.module('google', []).factory('googleService', ['$compile','$rootScope', function($compile, $rootScope) {
 	
@@ -2127,50 +2174,6 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 }]);
 var mapService = function($q, $rootScope, googleService) {
 
-    function checkCurrentLocation() {
-        var watchId, newLocation, oldLocation;
-        if (!$rootScope.location) {
-            $rootScope.location = {};
-        }
-        oldLocation = $rootScope.location;
-        console.log('checking location...location was: ' + JSON.stringify(
-            oldLocation));
-        navigator.geolocation.getCurrentPosition(function(position) {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-            }
-            watchId = navigator.geolocation.watchPosition(function() {});
-            newLocation = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            };
-            console.log('location successfully gained: ' + JSON.stringify(
-                newLocation));
-            $rootScope.location = newLocation;
-            localStorage.setItem('location', angular.toJson(newLocation));
-            $rootScope.$broadcast('locationChanged', {
-                oldLocation: oldLocation
-            });
-        }, function(err) {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-            }
-            console.log('location failed...');
-            $rootScope.location = {
-                error: {
-                    code: err.code,
-                    message: err.message
-                }
-            };
-            $rootScope.$broadcast('locationChanged', {
-                oldLocation: oldLocation
-            });
-        }, {
-            enableHighAccuracy: true,
-            timeout: 10000
-        });
-    }
-
     //in km
     function getDistanceBetweenLocations(location1, location2) {
         // helper functions (degrees<–>radians)
@@ -2303,7 +2306,6 @@ var mapService = function($q, $rootScope, googleService) {
     return {
         getBoundingBox: getBoundingBox,
         retrieveNearbyPlaces: retrieveNearbyPlaces,
-        checkCurrentLocation: checkCurrentLocation,
         initMap: initMap,
         setMapBoundingBox: setMapBoundingBox,
         markPlaceOnMap: markPlaceOnMap,

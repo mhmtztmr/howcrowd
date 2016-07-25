@@ -63,5 +63,22 @@
         },
         "is_top_level": false,
         "variables": {}
+    },
+    "cl.rmd.cordova.dialoggps": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rodrigo-martinezd/cordova-dialog-gps.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova.plugins.diagnostic.api-22": {
+        "source": {
+            "type": "registry",
+            "id": "cordova.plugins.diagnostic.api-22"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

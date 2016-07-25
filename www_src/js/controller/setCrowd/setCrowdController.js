@@ -3,38 +3,34 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
     function($rootScope, $scope, $timeout, mapModel, mapService,
         setCrowdModel) {
         $scope.nearbyPlaces = 'pending';
-        $scope.checkLocation = function() {
-            $scope.nearbyPlaces = 'pending';
-            $rootScope.checkLocation();
-        };
 
         if ($rootScope.location && $rootScope.location.latitude && $rootScope.location
             .longitude) {
             loadNearbyPlaces();
-        } else {
-            $scope.checkLocation();
         }
 
         $scope.$on('$destroy',$rootScope.$on("locationChanged", function(event, args) {
             var newLocation = $rootScope.location,
-                oldLocation = args.oldLocation;
-            if (newLocation && newLocation.latitude && newLocation.longitude) {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {
+            oldLocation = args.oldLocation;
+            //if location changed to a valid value
+            if(newLocation && newLocation.latitude && newLocation.longitude) {
+                if(oldLocation && oldLocation.latitude && oldLocation.longitude){
                     var distance = mapService.getDistanceBetweenLocations(
                         newLocation, oldLocation);
                     if (distance > 0.01) { //10 m
                         loadNearbyPlaces();
                     }
-                } else {
+                }
+                else{
+                    $scope.nearbyPlaces = 'pending';
+                    $scope.$apply();
                     loadNearbyPlaces();
-                }
-            } else {
-                if (oldLocation && oldLocation.latitude && oldLocation.longitude) {} else {
-                    $scope.nearbyPlaces = undefined;
-                    if (!$scope.$$phase) {
-                        $scope.$apply();
-                    }
-                }
+                }                
+            }
+            //if location changed to an invalid value and there were already no valid location value
+            else {
+                $scope.nearbyPlaces = undefined;
+                $scope.$apply();
             }
         }));
 

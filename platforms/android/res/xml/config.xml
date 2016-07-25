@@ -18,7 +18,13 @@
     <feature name="SocialSharing">
         <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
     </feature>
+    <feature name="DialogGPS">
+        <param name="android-package" value="cl.rmd.cordova.dialoggps.DialogGPS" />
+    </feature>
     <preference name="AndroidPersistentFileLocation" value="Internal" />
+    <feature name="Diagnostic">
+        <param name="android-package" value="cordova.plugins.Diagnostic" />
+    </feature>
     <allow-intent href="market:*" />
     <name>Crowd</name>
     <description>

@@ -1,13 +1,8 @@
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdHereModel', 'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
-  function($rootScope, $scope, seeCrowdHereModel, seeCrowdIncityModel,
+  'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
+  function($rootScope, $scope, seeCrowdIncityModel,
     feedbackModel, seeCrowdService) {
-    $scope.crowdType = app.navi.topPage.pushedOptions.crowdType;
-    if ($scope.crowdType === 'here') {
-      $scope.selectedPlaceBasedCrowd = seeCrowdHereModel.getSelectedPlaceBasedCrowd();
-    } else {
-      $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
-    }
+    $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
     if (myFeedback) {
@@ -34,7 +29,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         } else {
           $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback++;
         }
-        seeCrowdHereModel.giveFeedback(crowd, isPositive,
+        seeCrowdIncityModel.giveFeedback(crowd, isPositive,
           function() {
             feedbackModel.insertFeedback(crowd.crowdId, isPositive);
           },

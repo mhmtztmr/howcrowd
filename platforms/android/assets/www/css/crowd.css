@@ -140,6 +140,9 @@
     height: 100%;
     background-color:red;
   }
+  .search-crowd-cancel {
+    display: block !important;
+  }
 .positive-feedback {
   color: green;
 }

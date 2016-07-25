@@ -1,12 +1,54 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
     'seeCrowd.Service', 'identification', 'map.Model', 'map.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings'
+    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service'
 ]);
 
-app.run(['langService', 'dbService', 'settingsService', '$rootScope', function(langService, dbService, settingsService, $rootScope) {
+app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
     langService.loadLangData();
     dbService.init();
     settingsService.loadSettings();
+
+    function exitApp() {
+        navigator.app.exitApp();
+    }
+
+    locationService.checkLocationAvailability(function(){
+        //location is enabled
+        locationService.startLocationInterval();
+    }, function(){
+        locationService.openLocationDialog(function(){
+            //turn gps on rejected
+            exitApp();
+        }, function(){
+            //turn gps on skipped. not available now.
+        }, function(){
+            //turn gps on accepted, going to settings...
+            console.log('gps settings initiazlied');
+            var stillNotTurnedOn = 0;
+            var locationAvailabilityInterval = setInterval(function(){
+                if(stillNotTurnedOn < 3) {
+                    console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
+                    locationService.checkLocationAvailability(function(){
+                        console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+                        stillNotTurnedOn = 0;
+                        clearInterval(locationAvailabilityInterval);
+                        locationService.startLocationInterval();
+                    }, function(){
+                        console.log('location not available. incrementing counter...');
+                        stillNotTurnedOn++;
+                    });
+                }
+                else {
+                    console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
+                    stillNotTurnedOn = 0;
+                    clearInterval(locationAvailabilityInterval);
+                    locationService.startLocationInterval();
+                }
+            }, 3000);
+        });
+    }, function(){
+        //TODO: location availability check failure...
+    });
 
     $rootScope.exitApp = function() {
         menu.closeMenu();
@@ -19,7 +61,7 @@ app.run(['langService', 'dbService', 'settingsService', '$rootScope', function(l
             ],
             callback: function(answer) {
                 if (answer === 1) { // OK button
-                    navigator.app.exitApp(); // Close the app
+                    exitApp();
                 }
             }
         });
@@ -61,17 +103,12 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                 });
             });
 
-            $rootScope.checkLocation = function() {
-                mapService.checkCurrentLocation();
-            };
-            $rootScope.checkLocation();
-
-            $interval(function() {
-                if (!$rootScope.location.error && myApp.isCordovaApp) {
-                    //if (myApp.isCordovaApp) {
-                    $rootScope.checkLocation();
-                }
-            }, 5000);
+            // $interval(function() {
+            //     if (!$rootScope.location.error && myApp.isCordovaApp) {
+            //         //if (myApp.isCordovaApp) {
+            //         $rootScope.checkLocation();
+            //     }
+            // }, 5000);
         }
 
         if (!myApp.isCordovaApp) {

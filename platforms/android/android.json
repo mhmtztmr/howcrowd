@@ -27,6 +27,10 @@
                         {
                             "xml": "<feature name=\"SocialSharing\"><param name=\"android-package\" value=\"nl.xservices.plugins.SocialSharing\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"DialogGPS\"><param name=\"android-package\" value=\"cl.rmd.cordova.dialoggps.DialogGPS\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -52,7 +56,16 @@
                         }
                     ],
                     "/manifest/application": [],
-                    "/manifest": []
+                    "/manifest": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
+                            "count": 1
+                        }
+                    ]
                 }
             },
             "config.xml": {
@@ -60,6 +73,10 @@
                     "/*": [
                         {
                             "xml": "<preference name=\"AndroidPersistentFileLocation\" value=\"Internal\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Diagnostic\"><param name=\"android-package\" value=\"cordova.plugins.Diagnostic\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -84,6 +101,12 @@
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
         "cordova-plugin-x-socialsharing": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cl.rmd.cordova.dialoggps": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova.plugins.diagnostic.api-22": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         }
     },
@@ -302,6 +325,20 @@
             "clobbers": [
                 "window.plugins.socialsharing"
             ]
+        },
+        {
+            "file": "plugins/cl.rmd.cordova.dialoggps/www/DialogGPS.js",
+            "id": "cl.rmd.cordova.dialoggps.DialogGPS",
+            "clobbers": [
+                "cordova.dialogGPS"
+            ]
+        },
+        {
+            "file": "plugins/cordova.plugins.diagnostic.api-22/www/android/diagnostic.js",
+            "id": "cordova.plugins.diagnostic.api-22.Diagnostic",
+            "clobbers": [
+                "cordova.plugins.diagnostic"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -310,6 +347,8 @@
         "cordova-plugin-file": "3.0.0",
         "cordova-plugin-globalization": "1.0.2",
         "cordova-plugin-network-information": "1.2.1-dev",
-        "cordova-plugin-x-socialsharing": "5.0.11"
+        "cordova-plugin-x-socialsharing": "5.0.11",
+        "cl.rmd.cordova.dialoggps": "0.0.2",
+        "cordova.plugins.diagnostic.api-22": "2.3.10-api-22"
     }
 }
