@@ -27,7 +27,7 @@
                     </ons-list>
                 </div>
             </div>
-            <ons-bottom-toolbar ng-if="$root.settings.isCustomPlacesEnabled === true && nearbyPlaces && nearbyPlaces !== 'pending'">
+            <ons-bottom-toolbar ng-if="$root.settings.isCustomPlacesEnabled === true && nearbyPlaces && nearbyPlaces !== 'pending' && nearbyPlaces.length > 0">
                 <div class="tab-bar">
                     <label class="tab-bar__item" ng-click="selectPlace()">
                         <input type="radio" name="tab-bar-c" checked="checked">
