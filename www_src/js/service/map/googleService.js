@@ -127,7 +127,12 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		var scope = $rootScope.$new();
 		scope.placeBasedCrowd = placeBasedCrowd;
 
-		var contentString = '<div ng-controller="seeCrowdInmapController">'+
+    	scope.selectPlaceBasedCrowd = function(selectPlaceBasedCrowd){
+	        //seeCrowdIncityModel.selectPlaceBasedCrowd(selectPlaceBasedCrowd);
+	        alert('hey');
+	    };
+
+		var contentString = '<div>'+
 		'<div class="crowd-main-body crowd-info-window" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +
 		'<div class="crowd-left">' +
 		'<div class="crowd-source-icon">' +

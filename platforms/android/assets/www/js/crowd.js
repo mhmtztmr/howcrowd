@@ -314,7 +314,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
 
         function getFilter() {
             var now = dateService.getDBDate(new Date());
-            var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
+            var oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20));
             var boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), 15);
 
             return {
@@ -401,7 +401,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
                 $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
             }
         };
-
+       
         $scope.MyDelegate = {
             configureItemScope: function(index, itemScope) {
                 itemScope.item = $scope.filteredPlaceBasedCrowdsArray[index];
@@ -421,23 +421,22 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$timeout',
     'mapService', 'seeCrowdIncityModel',
     function($rootScope, $scope, $timeout, mapService, seeCrowdIncityModel) {
        myTabbar.on('prechange', function(event) {
+
         //If this is map page
         if(event.index === 1) {
+
             $timeout(function(){
                 var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
                 if (locationFromStorage) {
-                    $scope.map = true;
                     var boundingBox = mapService.getBoundingBox(locationFromStorage, 0.1);
                     seeCrowdIncityModel.loadMap('map', boundingBox);
-                    seeCrowdIncityModel.markPlaceBasedCrowdsOnMap();
                 }
+                seeCrowdIncityModel.markPlaceBasedCrowdsOnMap();
             }, 100);
+
+           
         }
     });
-
-    $scope.selectPlaceBasedCrowd = function(selectPlaceBasedCrowd){
-        seeCrowdIncityModel.selectPlaceBasedCrowd(selectPlaceBasedCrowd);
-    };
 }]);
 
 app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
@@ -823,6 +822,11 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
             .upper);
     }
 
+    function setMapBoundingBox(boundingBox) {
+        mapService.setMapBoundingBox(map, boundingBox.latitude.lower,
+            boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude.upper);
+    }
+
     function markPlaceBasedCrowdsOnMap() {
         var placeBasedCrowdKey, placeBasedCrowd;
         for (placeBasedCrowdKey in placeBasedCrowds) {
@@ -857,6 +861,7 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
         getCrowds: getCrowds,
         getPlaceBasedCrowds: getPlaceBasedCrowds,
         loadMap: loadMap,
+        setMapBoundingBox: setMapBoundingBox,
         markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
         selectPlaceBasedCrowd: selectPlaceBasedCrowd,
         getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,
@@ -1847,20 +1852,24 @@ angular.module('location.Service', [])
 						oldLocation: oldLocation
 					});
 				}, function(err) {
-					console.log('location failed...');
-					$rootScope.location = {
-						error: {
-							code: err.code,
-							message: err.message
+					checkLocationAvailability(function(){
+
+					}, function(){
+						console.log('location failed...');
+						$rootScope.location = {
+							error: {
+								code: err.code,
+								message: err.message
+							}
+						};
+						if(watchId) {
+							navigator.geolocation.clearWatch(watchId);
+							watchId = undefined;
 						}
-					};
-					if(watchId) {
-						navigator.geolocation.clearWatch(watchId);
-						watchId = undefined;
-					}
-					$rootScope.$broadcast('locationChanged', {
-						oldLocation: oldLocation
-					});
+						$rootScope.$broadcast('locationChanged', {
+							oldLocation: oldLocation
+						});
+					}, function(){});
 				}, {
 					enableHighAccuracy: true,
 					timeout: 5000,
@@ -2047,7 +2056,12 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		var scope = $rootScope.$new();
 		scope.placeBasedCrowd = placeBasedCrowd;
 
-		var contentString = '<div ng-controller="seeCrowdInmapController">'+
+    	scope.selectPlaceBasedCrowd = function(selectPlaceBasedCrowd){
+	        //seeCrowdIncityModel.selectPlaceBasedCrowd(selectPlaceBasedCrowd);
+	        alert('hey');
+	    };
+
+		var contentString = '<div>'+
 		'<div class="crowd-main-body crowd-info-window" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +
 		'<div class="crowd-left">' +
 		'<div class="crowd-source-icon">' +

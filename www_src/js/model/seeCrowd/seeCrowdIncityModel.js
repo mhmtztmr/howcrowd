@@ -75,6 +75,11 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
             .upper);
     }
 
+    function setMapBoundingBox(boundingBox) {
+        mapService.setMapBoundingBox(map, boundingBox.latitude.lower,
+            boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude.upper);
+    }
+
     function markPlaceBasedCrowdsOnMap() {
         var placeBasedCrowdKey, placeBasedCrowd;
         for (placeBasedCrowdKey in placeBasedCrowds) {
@@ -109,6 +114,7 @@ var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
         getCrowds: getCrowds,
         getPlaceBasedCrowds: getPlaceBasedCrowds,
         loadMap: loadMap,
+        setMapBoundingBox: setMapBoundingBox,
         markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
         selectPlaceBasedCrowd: selectPlaceBasedCrowd,
         getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,

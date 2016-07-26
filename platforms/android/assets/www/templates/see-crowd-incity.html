@@ -31,9 +31,9 @@
         <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0" style="height: 100%;">
             <button class="refresh-button button button--quiet" onclick="menu.setMainPage('templates/set-crowd.html')">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
         </div>
-        <div ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
-            <ons-list ons-lazy-repeat="MyDelegate">
-              <ons-list-item ng-click="selectPlaceBasedCrowd(item)">
+        <div class="crowd-list-container" ng-show="crowds && crowds !== 'pending' && crowds.length > 0">
+            <ons-list>
+              <ons-list-item ons-lazy-repeat="MyDelegate" ng-click="selectPlaceBasedCrowd(item)">
                 <div class="crowd-main-body">
                   <div class="crowd-left">
                     <div class="crowd-source-icon">
@@ -72,11 +72,8 @@
               </ons-list-item>
             </ons-list>
         </div>
-
-        <ons-speed-dial ng-if="crowds && crowds !== 'pending' && crowds.length > 0" position="bottom right">
-          <ons-fab onclick="menu.setMainPage('templates/set-crowd.html')">
+        <ons-fab ons-if-platform="android" ng-if="crowds && crowds !== 'pending' && crowds.length > 0" position="bottom right" onclick="menu.setMainPage('templates/set-crowd.html')">
             <ons-icon icon="md-plus"></ons-icon>
-          </ons-fab>
-        </ons-speed-dial>
+        </ons-fab>
     </ons-page>
 </div>

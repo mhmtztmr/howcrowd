@@ -8,7 +8,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
 
         function getFilter() {
             var now = dateService.getDBDate(new Date());
-            var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
+            var oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20));
             var boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), 15);
 
             return {
@@ -95,7 +95,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
                 $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
             }
         };
-
+       
         $scope.MyDelegate = {
             configureItemScope: function(index, itemScope) {
                 itemScope.item = $scope.filteredPlaceBasedCrowdsArray[index];

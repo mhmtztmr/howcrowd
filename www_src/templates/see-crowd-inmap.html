@@ -1,5 +1,15 @@
-<div ng-controller="seeCrowdInmapController" id="map" style="width:100%; height:100%">
-<!-- <ons-page>
-	<div ></div>
-</ons-page> -->
-</div>
+<!-- <div ng-controller="seeCrowdInmapController" id="map" style="width:100%; height:100%">
+</div> -->
+    <ons-page>
+        <ons-toolbar>
+            <div class="left">
+                <ons-toolbar-button ng-click="menu.toggle()">
+                    <ons-icon icon="fa-bars"></ons-icon>
+                </ons-toolbar-button>
+            </div>
+            <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
+
+        </ons-toolbar>
+        <div  ng-controller="seeCrowdInmapController" id="map" style="width:100%; height:100%">
+		</div>
+    </ons-page>
