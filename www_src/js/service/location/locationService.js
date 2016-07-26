@@ -26,20 +26,24 @@ angular.module('location.Service', [])
 						oldLocation: oldLocation
 					});
 				}, function(err) {
-					console.log('location failed...');
-					$rootScope.location = {
-						error: {
-							code: err.code,
-							message: err.message
+					checkLocationAvailability(function(){
+
+					}, function(){
+						console.log('location failed...');
+						$rootScope.location = {
+							error: {
+								code: err.code,
+								message: err.message
+							}
+						};
+						if(watchId) {
+							navigator.geolocation.clearWatch(watchId);
+							watchId = undefined;
 						}
-					};
-					if(watchId) {
-						navigator.geolocation.clearWatch(watchId);
-						watchId = undefined;
-					}
-					$rootScope.$broadcast('locationChanged', {
-						oldLocation: oldLocation
-					});
+						$rootScope.$broadcast('locationChanged', {
+							oldLocation: oldLocation
+						});
+					}, function(){});
 				}, {
 					enableHighAccuracy: true,
 					timeout: 5000,
