@@ -12,6 +12,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         navigator.app.exitApp();
     }
 
+    $rootScope.location = {};
     locationService.checkLocationAvailability(function(){
         //location is enabled
         locationService.startLocationInterval();
@@ -307,11 +308,45 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
 app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
     'seeCrowdIncityModel', 'dateService', 'mapService',
     function($rootScope, $scope, $filter, seeCrowdIncityModel, dateService, mapService) {
-        console.log('see crowd incity controller initialized');
-        $scope.crowds = 'pending';
         var placeBasedCrowdsArray;
-        var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
+        $scope.filteredPlaceBasedCrowdsArray = [];
+        $scope.crowds = 'pending';
 
+        $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
+            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest, function(){
+                $scope.crowds = seeCrowdIncityModel.getCrowds();
+                var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
+                placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
+                    function(key) {
+                        return placeBasedCrowds[key];
+                    });
+                $scope.filteredPlaceBasedCrowdsArray = $filter('orderBy')(placeBasedCrowdsArray, 'distanceGroup');
+                if (onSuccess) {
+                    onSuccess();
+                }
+            }, function(){
+                if (onFailure) {
+                    onFailure();
+                }
+            });
+        };
+
+        $scope.groupDistance = function() {
+            var placeBasedCrowds = seeCrowdIncityModel.groupDistance();
+            placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
+                function(key) {
+                    return placeBasedCrowds[key];
+                });
+            $scope.filteredPlaceBasedCrowdsArray = $filter('orderBy')(placeBasedCrowdsArray, 'distanceGroup');
+            if (onSuccess) {
+                onSuccess();
+            }
+        };
+
+        if($rootScope.location.latitude) {
+            $scope.loadCrowds(true);
+        }
+ 
         function getFilter() {
             var now = dateService.getDBDate(new Date());
             var oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20));
@@ -326,51 +361,36 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
             };
         }
 
-        $scope.filteredPlaceBasedCrowdsArray = [];
-
-        $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
-            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest, function(){
-                $scope.crowds = seeCrowdIncityModel.getCrowds();
-                var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
-                placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
-                    function(key) {
-                        return placeBasedCrowds[key];
-                    });
-                $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
-                if (onSuccess) {
-                    onSuccess();
-                }
-            }, function(){
-                if (onFailure) {
-                    onFailure();
-                }
-            });
-        };
-
-        if (locationFromStorage) {
-            $scope.loadCrowds(true);
-        }
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
-            var newLocation = $rootScope.location,
-            oldLocation = args.oldLocation;
+            var oldLocation = args.oldLocation;
+
             //if location changed to a valid value
-            if(newLocation && newLocation.latitude && newLocation.longitude) {
-                if(oldLocation && oldLocation.latitude && oldLocation.longitude){
-                    var distance = mapService.getDistanceBetweenLocations(
-                        newLocation, oldLocation);
-                    if (distance > 0.01) { //10 m
+            if($rootScope.location.latitude) {
+                //if old location was a valid value
+                if(oldLocation.latitude){
+                    //if user changed its location remarkably (1 km)
+                    if (($rootScope.location.cumulativeDelta === 0 && $rootScope.location.overallDelta > 0) || 
+                        (!$scope.crowds || $scope.crowds === 'pending')) {
+                        //load data from scratch
                         $scope.loadCrowds(true);
                     }
+                    //if user changed its location slightly
+                    else if ($rootScope.location.delta > 0.01) { //10 m
+                        //reset here places
+                        $scope.groupDistance();
+                    }
                 }
-                else if(!locationFromStorage){
+                // if old location is not valid
+                else {
+                    //load data from scratch
                     $scope.crowds = 'pending';
                     $scope.$apply();
                     $scope.loadCrowds(true);
-                }                
+                }            
             }
             //if location changed to an invalid value and there were already no valid location value
-            else if(!locationFromStorage && (!oldLocation || !oldLocation.latitude || !oldLocation.longitude)) {
+            else if(!oldLocation.latitude && (!$scope.crowds || $scope.crowds === 'pending')) {
                 $scope.crowds = undefined;
                 $scope.$apply();
             }
@@ -387,7 +407,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
                 document.getElementById('search-input').focus();
             }, 100);
         };
-        $scope.stopSearch = function(){
+        $scope.stopSearch = function() {
             $scope.searchInput = '';
             $scope.searchInputChange($scope.searchInput);
             $scope.searchStatus.started = false;
@@ -411,8 +431,8 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
             },
             countItems: function() {
                 return $scope.filteredPlaceBasedCrowdsArray.length;
-            },
-            destroyItemScope: function(index, scope) {}
+            }
+            //,destroyItemScope: function(index, scope) {}
         };
     }
 ]);
@@ -456,9 +476,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             //if location changed to a valid value
             if(newLocation && newLocation.latitude && newLocation.longitude) {
                 if(oldLocation && oldLocation.latitude && oldLocation.longitude){
-                    var distance = mapService.getDistanceBetweenLocations(
-                        newLocation, oldLocation);
-                    if (distance > 0.01) { //10 m
+                    if (newLocation.delta > 0.01) { //10 m
                         loadNearbyPlaces();
                     }
                 }
@@ -745,257 +763,159 @@ var mapModel = function($q, mapService) {
 angular.module('map.Model', ['map.Service'])
   .factory('mapModel', ['$q', 'mapService', mapModel]);
 
-var seeCrowdIncityModel = function($q, seeCrowdService, mapService,
-    configService, dateService) {
-    var crowds = [],
-        placeBasedCrowds = {},
-        loadStatus = '';
-    var map, selectedPlaceBasedCrowd;
-
-    function loadCrowds(filter, serverRequest, onSuccess, onFailure) {
-        if (serverRequest === true) {
-            loadStatus = '';
-        }
-        if (loadStatus === 'loaded') {
-            onSuccess(crowds);
-        } else if (loadStatus === 'pending') {
-             onSuccess([]);
-        } else {
-            loadStatus = 'pending';
-            seeCrowdService.retrieveCrowds(filter).then(function(results) {
-                    crowds = results;
-                    loadPlaceBasedCrowds();
-                    loadStatus = 'loaded';
-                    onSuccess(crowds);
-                },
-                function() {
-                    onFailure();
-                });
-        }
-    }
-
-    function loadPlaceBasedCrowds() {
-        var i, now = new Date().getTime();
-        placeBasedCrowds = {};
-        for (i = 0; i < crowds.length; i++) {
-            var crowd = crowds[i];
-            // crowd.crowdFeedback.negativeFeedback = 3;
-            // crowd.crowdFeedback.positiveFeedback = 5;
-            crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
-            if (!placeBasedCrowds[crowd.placeKey]) {
-                placeBasedCrowds[crowd.placeKey] = {
-                    crowds: [],
-                    crowdCount: 0,
-                    crowdValue: 0
-                };
-            }
-            placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
-            placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
-            placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
-            placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
-            placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
-            placeBasedCrowds[crowd.placeKey].placeDistance = 10;
-            if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
-                placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
-            }
-            placeBasedCrowds[crowd.placeKey].crowdCount += 1;
-            placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;
-            placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
-            placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
-                placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
-                    crowd.placeKey].crowdCount);
-        }
-    }
-
-    function getCrowds() {
-        return crowds;
-    }
-
-    function getPlaceBasedCrowds() {
-        return Object.keys(placeBasedCrowds).length === 0 ? {} :
-            placeBasedCrowds;
-    }
-
-    function loadMap(DOMElementId, boundingBox) {
-        map = mapService.initMap(DOMElementId, boundingBox.latitude.lower,
-            boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude
-            .upper);
-    }
-
-    function setMapBoundingBox(boundingBox) {
-        mapService.setMapBoundingBox(map, boundingBox.latitude.lower,
-            boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude.upper);
-    }
-
-    function markPlaceBasedCrowdsOnMap() {
-        var placeBasedCrowdKey, placeBasedCrowd;
-        for (placeBasedCrowdKey in placeBasedCrowds) {
-            placeBasedCrowd = placeBasedCrowds[placeBasedCrowdKey];
-
-            (function(placeBasedCrowd) {
-                mapService.markPlaceOnMap(map, placeBasedCrowd,
-                    function() {
-                        selectPlaceBasedCrowd(placeBasedCrowd);
-                    });
-            })(placeBasedCrowd);
-        }
-    }
-
-    function selectPlaceBasedCrowd(placeBasedCrowd) {
-        selectedPlaceBasedCrowd = placeBasedCrowd;
-        if (placeBasedCrowd) {
-            app.navi.pushPage('templates/see-crowd-detail.html');
-        }
-    }
-
-    function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
-        seeCrowdService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
-    }
-
-    function getSelectedPlaceBasedCrowd() {
-        return selectedPlaceBasedCrowd;
-    }
-
-    return {
-        loadCrowds: loadCrowds,
-        getCrowds: getCrowds,
-        getPlaceBasedCrowds: getPlaceBasedCrowds,
-        loadMap: loadMap,
-        setMapBoundingBox: setMapBoundingBox,
-        markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
-        selectPlaceBasedCrowd: selectPlaceBasedCrowd,
-        getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,
-        giveFeedback: giveFeedback
-    };
-};
-
 angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date'])
     .factory('seeCrowdIncityModel', ['$q', 'seeCrowdService', 'mapService',
-        'configService', 'dateService', seeCrowdIncityModel
-    ]);
+        'configService', 'dateService', '$rootScope', function($q, seeCrowdService, mapService,
+            configService, dateService, $rootScope) {
+            var crowds = [],
+                placeBasedCrowds = {},
+                loadStatus = '';
+            var map, selectedPlaceBasedCrowd;
 
-var seeCrowdModel = function($q, seeCrowdService, mapService,
-    configService, dateService) {
-    var crowds = [],
-        placeBasedCrowds = {},
-        loadStatus = '';
-    var map, selectedPlaceBasedCrowd;
-
-    function loadCrowds(filter, serverRequest) {
-        var def = $q.defer();
-        if (serverRequest === true) {
-            loadStatus = '';
-        }
-        if (loadStatus === 'loaded') {
-            def.resolve(crowds);
-        } else if (loadStatus === 'pending') {
-            def.resolve([]);
-        } else {
-            loadStatus = 'pending';
-            seeCrowdService.retrieveCrowds(filter).then(function(results) {
-                    crowds = results;
-                    loadPlaceBasedCrowds();
-                    loadStatus = 'loaded';
-                    def.resolve(crowds);
-                },
-                function() {
-                    def.reject;
-                });
-        }
-        return def.promise;
-    }
-
-    function loadPlaceBasedCrowds() {
-        var i, now = new Date().getTime();
-        placeBasedCrowds = {};
-        for (i = 0; i < crowds.length; i++) {
-            var crowd = crowds[i];
-            // crowd.crowdFeedback.negativeFeedback = 3;
-            // crowd.crowdFeedback.positiveFeedback = 5;
-            crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
-            if (!placeBasedCrowds[crowd.placeKey]) {
-                placeBasedCrowds[crowd.placeKey] = {
-                    crowds: [],
-                    crowdCount: 0,
-                    crowdValue: 0
-                };
+            function loadCrowds(filter, serverRequest, onSuccess, onFailure) {
+                if (serverRequest === true) {
+                    loadStatus = '';
+                }
+                if (loadStatus === 'loaded') {
+                    onSuccess(crowds);
+                } else if (loadStatus === 'pending') {
+                     onSuccess([]);
+                } else {
+                    loadStatus = 'pending';
+                    seeCrowdService.retrieveCrowds(filter).then(function(results) {
+                            crowds = results;
+                            loadPlaceBasedCrowds();
+                            loadStatus = 'loaded';
+                            onSuccess(crowds);
+                        },
+                        function() {
+                            onFailure();
+                        });
+                }
             }
-            placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
-            placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
-            placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
-            placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
-            placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
-            if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
-                placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
-                // placeBasedCrowds[crowd.placeKey].crowdLast = crowd.crowdValue;
-                // placeBasedCrowds[crowd.placeKey].lastUpdateDate = crowd.crowdDate;
-                // placeBasedCrowds[crowd.placeKey].lastUpdatePass = crowd.lastUpdatePass;
+
+            function loadPlaceBasedCrowds() {
+                var i, now = new Date().getTime(), distance;
+                placeBasedCrowds = {};
+                for (i = 0; i < crowds.length; i++) {
+                    var crowd = crowds[i];
+                    // crowd.crowdFeedback.negativeFeedback = 3;
+                    // crowd.crowdFeedback.positiveFeedback = 5;
+                    crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
+                    if (!placeBasedCrowds[crowd.placeKey]) {
+                        placeBasedCrowds[crowd.placeKey] = {
+                            crowds: [],
+                            crowdCount: 0,
+                            crowdValue: 0
+                        };
+                    }
+                    placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
+                    placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
+                    placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
+                    placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
+                    placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
+                    placeBasedCrowds[crowd.placeKey].placeDistance = 10;
+                    if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
+                        placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
+                    }
+                    placeBasedCrowds[crowd.placeKey].crowdCount += 1;
+                    placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;
+                    placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
+                    placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
+                        placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
+                            crowd.placeKey].crowdCount);
+
+                    if($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
+                        distance = mapService.getDistanceBetweenLocations($rootScope.location, crowd.crowdLocation);
+                        if(distance > 0.03) {
+                            placeBasedCrowds[crowd.placeKey].distanceGroup = 10;
+                        }
+                        else {
+                            placeBasedCrowds[crowd.placeKey].distanceGroup = 0;
+                        }
+                    }
+                }
             }
-            placeBasedCrowds[crowd.placeKey].crowdCount += 1;
-            placeBasedCrowds[crowd.placeKey].crowdValue += crowd.crowdValue;
-            placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
-            placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
-                placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
-                    crowd.placeKey].crowdCount);
+
+            function groupDistance(){
+                var i, placeKey;
+                for (placeKey in placeBasedCrowds) {
+                    if($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
+                        distance = mapService.getDistanceBetweenLocations($rootScope.location, crowd.crowdLocation);
+                        if(distance > 0.03) {
+                            placeBasedCrowds[placeKey].distanceGroup = 10;
+                        }
+                        else {
+                            placeBasedCrowds[placeKey].distanceGroup = 0;
+                        }
+                    }
+                }
+                return placeBasedCrowds;
+            }
+
+            function getCrowds() {
+                return crowds;
+            }
+
+            function getPlaceBasedCrowds() {
+                return Object.keys(placeBasedCrowds).length === 0 ? {} :
+                    placeBasedCrowds;
+            }
+
+            function loadMap(DOMElementId, boundingBox) {
+                map = mapService.initMap(DOMElementId, boundingBox.latitude.lower,
+                    boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude
+                    .upper);
+            }
+
+            function setMapBoundingBox(boundingBox) {
+                mapService.setMapBoundingBox(map, boundingBox.latitude.lower,
+                    boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude.upper);
+            }
+
+            function markPlaceBasedCrowdsOnMap() {
+                var placeBasedCrowdKey, placeBasedCrowd;
+                for (placeBasedCrowdKey in placeBasedCrowds) {
+                    placeBasedCrowd = placeBasedCrowds[placeBasedCrowdKey];
+
+                    (function(placeBasedCrowd) {
+                        mapService.markPlaceOnMap(map, placeBasedCrowd,
+                            function() {
+                                selectPlaceBasedCrowd(placeBasedCrowd);
+                            });
+                    })(placeBasedCrowd);
+                }
+            }
+
+            function selectPlaceBasedCrowd(placeBasedCrowd) {
+                selectedPlaceBasedCrowd = placeBasedCrowd;
+                if (placeBasedCrowd) {
+                    app.navi.pushPage('templates/see-crowd-detail.html');
+                }
+            }
+
+            function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
+                seeCrowdService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
+            }
+
+            function getSelectedPlaceBasedCrowd() {
+                return selectedPlaceBasedCrowd;
+            }
+
+            return {
+                loadCrowds: loadCrowds,
+                getCrowds: getCrowds,
+                getPlaceBasedCrowds: getPlaceBasedCrowds,
+                loadMap: loadMap,
+                setMapBoundingBox: setMapBoundingBox,
+                markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
+                selectPlaceBasedCrowd: selectPlaceBasedCrowd,
+                getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd,
+                giveFeedback: giveFeedback,
+                groupDistance: groupDistance
+            };
         }
-    }
-
-    function getCrowds() {
-        return crowds;
-    }
-
-    function getPlaceBasedCrowds() {
-        return Object.keys(placeBasedCrowds).length === 0 ? {} :
-            placeBasedCrowds;
-    }
-
-    function loadMap(DOMElementId, boundingBox) {
-        map = mapService.initMap(DOMElementId, boundingBox.latitude.lower,
-            boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude
-            .upper);
-    }
-
-    function markPlaceBasedCrowdsOnMap() {
-        var placeBasedCrowdKey, placeBasedCrowd;
-        for (placeBasedCrowdKey in placeBasedCrowds) {
-            placeBasedCrowd = placeBasedCrowds[placeBasedCrowdKey];
-
-            (function(placeBasedCrowd) {
-                mapService.markPlaceOnMap(map, placeBasedCrowd,
-                    function() {
-                        selectPlaceBasedCrowd(placeBasedCrowd);
-                    });
-            })(placeBasedCrowd);
-        }
-    }
-
-    function selectPlaceBasedCrowd(placeBasedCrowd) {
-        selectedPlaceBasedCrowd = placeBasedCrowd;
-        if (placeBasedCrowd) {
-            app.navi.pushPage('templates/see-crowd-detail.html');
-        }
-    }
-
-    function getSelectedPlaceBasedCrowd() {
-        return selectedPlaceBasedCrowd;
-    }
-
-    return {
-        loadCrowds: loadCrowds,
-        getCrowds: getCrowds,
-        getPlaceBasedCrowds: getPlaceBasedCrowds,
-        loadMap: loadMap,
-        markPlaceBasedCrowdsOnMap: markPlaceBasedCrowdsOnMap,
-        selectPlaceBasedCrowd: selectPlaceBasedCrowd,
-        getSelectedPlaceBasedCrowd: getSelectedPlaceBasedCrowd
-    };
-};
-
-angular.module('seeCrowd.Model')
-    .factory('seeCrowdModel', ['$q', 'seeCrowdService', 'mapService',
-        'configService', 'dateService', seeCrowdModel
     ]);
-
 var setCrowdModel = function($q, setCrowdService, mapService) {
   var selectedPlace;
   var nearbyPlaces = [];
@@ -1825,9 +1745,10 @@ angular.module('lang')
   .factory('langService', ['$q', '$http', '$rootScope', langService]);
 
 
-angular.module('location.Service', [])
-    .factory('locationService', ['$rootScope', function($rootScope){
+angular.module('location.Service', ['map.Service'])
+    .factory('locationService', ['$rootScope', 'mapService', function($rootScope, mapService){
 		var locationInterval, oldLocation, watchId;
+		var intervalTime = 8000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
 		function startLocationInterval() {
 			console.log('starting location interval...');
@@ -1840,8 +1761,34 @@ angular.module('location.Service', [])
 				navigator.geolocation.getCurrentPosition(function(position) {
 					$rootScope.location = {
 						latitude: position.coords.latitude,
-						longitude: position.coords.longitude
+						longitude: position.coords.longitude,
+						delta: 0
 					};
+
+					if(oldLocation.latitude) {
+						$rootScope.location.delta = mapService.getDistanceBetweenLocations($rootScope.location, oldLocation);
+						$rootScope.location.cumulativeDelta = oldLocation.cumulativeDelta;
+						$rootScope.location.overallDelta = oldLocation.overallDelta;
+					}
+
+					if(!$rootScope.location.cumulativeDelta) {
+						$rootScope.location.cumulativeDelta = $rootScope.location.delta;
+					}
+					else {
+						$rootScope.location.cumulativeDelta += $rootScope.location.delta;
+					}
+
+					if($rootScope.location.cumulativeDelta > cumulativeDeltaResetValue) {
+						$rootScope.location.cumulativeDelta = 0;
+					}
+
+					if(!$rootScope.location.overallDelta) {
+						$rootScope.location.overallDelta = $rootScope.location.delta;
+					}
+					else {
+						$rootScope.location.overallDelta += $rootScope.location.delta;
+					}
+
 					console.log('location successfully gained: ' + JSON.stringify(
 						$rootScope.location));
 					if(!watchId) {
@@ -1872,10 +1819,10 @@ angular.module('location.Service', [])
 					}, function(){});
 				}, {
 					enableHighAccuracy: true,
-					timeout: 5000,
+					timeout: geolocationTimeout,
 					maximumAge: 0
 				});
-			}, 8000);
+			}, intervalTime);
 		}
 		
 		function stopLocationInterval() {
@@ -2153,7 +2100,8 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 	}
 
 	function getDistrictFromVicinity(vicinity){
-		return vicinity.replace("No:", "<notoreplaceback>").replace("No, ", "").replace("No", "").replace("<notoreplaceback>", "No:");
+		if(vicinity)
+			return vicinity.replace("No:", "<notoreplaceback>").replace("No, ", "").replace("No", "").replace("<notoreplaceback>", "No:");
 	}
 
 	function getAddressByLocation(location, onSuccess){

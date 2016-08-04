@@ -41,7 +41,7 @@
                     </div>
                   </div>
                   <div class="crowd-center">
-                    <div class="crowd-place-name">{{item.placeName}}</div>
+                    <div class="crowd-place-name">{{item.distanceGroup}} {{item.placeName}}</div>
                     <div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== ''"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>
                     <div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>
                   </div>

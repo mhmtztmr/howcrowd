@@ -87,9 +87,12 @@ module.exports = function(grunt) {
         },
         replace: {
             dbCredentials: {
-                src: ['www/js/crowd.js'],
+                src: ['www/js/*.js'],
                 overwrite: true, // overwrite matched source files
                 replacements: [{
+                    from: /<%=SERVER_URL%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.serverUrl %>'
+                }, {
                     from: /<%=APPLICATION_ID%>/g,
                     to: '<%= grunt.option(\"credentials\").backendless.applicationId %>'
                 }, {
@@ -191,8 +194,12 @@ module.exports = function(grunt) {
             global.credentials = credentials.alpha;
         } else if (t === 'prod') {
             global.credentials = credentials.prod;
+        }  else if (t === 'dev_local') {
+            global.credentials = credentials.dev_local;
+        } else if (t === 'dev_remote') {
+            global.credentials = credentials.dev_remote;
         } else {
-            global.credentials = credentials.dev;
+            global.credentials = credentials.dev_remote;
         }
         grunt.option("credentials", global.credentials);
     });
@@ -209,7 +216,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('delete', ['clean']);
-    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'concat', 'copy', 'replace']);
+    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace']);
+    grunt.registerTask('dev_remote', ['clean', 'setCredentials:dev_remote', 'setReportIssue:dev_remote', 'concat', 'copy', 'replace']);
 	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace']);
 	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace']);
 };

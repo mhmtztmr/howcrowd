@@ -224,7 +224,8 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 	}
 
 	function getDistrictFromVicinity(vicinity){
-		return vicinity.replace("No:", "<notoreplaceback>").replace("No, ", "").replace("No", "").replace("<notoreplaceback>", "No:");
+		if(vicinity)
+			return vicinity.replace("No:", "<notoreplaceback>").replace("No, ", "").replace("No", "").replace("<notoreplaceback>", "No:");
 	}
 
 	function getAddressByLocation(location, onSuccess){

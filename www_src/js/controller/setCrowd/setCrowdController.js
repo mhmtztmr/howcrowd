@@ -15,9 +15,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             //if location changed to a valid value
             if(newLocation && newLocation.latitude && newLocation.longitude) {
                 if(oldLocation && oldLocation.latitude && oldLocation.longitude){
-                    var distance = mapService.getDistanceBetweenLocations(
-                        newLocation, oldLocation);
-                    if (distance > 0.01) { //10 m
+                    if (newLocation.delta > 0.01) { //10 m
                         loadNearbyPlaces();
                     }
                 }

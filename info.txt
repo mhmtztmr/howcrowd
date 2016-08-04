@@ -1,0 +1,2 @@
+Backendless Standalone download link for Linux x64:
+https://downloads.bitnami.com/files/stacks/backendless/3.0.0-27/backendless-3.0.0-27-linux-x64-installer.run

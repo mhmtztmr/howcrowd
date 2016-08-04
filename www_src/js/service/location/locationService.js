@@ -1,7 +1,8 @@
 
-angular.module('location.Service', [])
-    .factory('locationService', ['$rootScope', function($rootScope){
+angular.module('location.Service', ['map.Service'])
+    .factory('locationService', ['$rootScope', 'mapService', function($rootScope, mapService){
 		var locationInterval, oldLocation, watchId;
+		var intervalTime = 8000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
 		function startLocationInterval() {
 			console.log('starting location interval...');
@@ -14,8 +15,34 @@ angular.module('location.Service', [])
 				navigator.geolocation.getCurrentPosition(function(position) {
 					$rootScope.location = {
 						latitude: position.coords.latitude,
-						longitude: position.coords.longitude
+						longitude: position.coords.longitude,
+						delta: 0
 					};
+
+					if(oldLocation.latitude) {
+						$rootScope.location.delta = mapService.getDistanceBetweenLocations($rootScope.location, oldLocation);
+						$rootScope.location.cumulativeDelta = oldLocation.cumulativeDelta;
+						$rootScope.location.overallDelta = oldLocation.overallDelta;
+					}
+
+					if(!$rootScope.location.cumulativeDelta) {
+						$rootScope.location.cumulativeDelta = $rootScope.location.delta;
+					}
+					else {
+						$rootScope.location.cumulativeDelta += $rootScope.location.delta;
+					}
+
+					if($rootScope.location.cumulativeDelta > cumulativeDeltaResetValue) {
+						$rootScope.location.cumulativeDelta = 0;
+					}
+
+					if(!$rootScope.location.overallDelta) {
+						$rootScope.location.overallDelta = $rootScope.location.delta;
+					}
+					else {
+						$rootScope.location.overallDelta += $rootScope.location.delta;
+					}
+
 					console.log('location successfully gained: ' + JSON.stringify(
 						$rootScope.location));
 					if(!watchId) {
@@ -46,10 +73,10 @@ angular.module('location.Service', [])
 					}, function(){});
 				}, {
 					enableHighAccuracy: true,
-					timeout: 5000,
+					timeout: geolocationTimeout,
 					maximumAge: 0
 				});
-			}, 8000);
+			}, intervalTime);
 		}
 		
 		function stopLocationInterval() {

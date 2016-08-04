@@ -12,6 +12,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         navigator.app.exitApp();
     }
 
+    $rootScope.location = {};
     locationService.checkLocationAvailability(function(){
         //location is enabled
         locationService.startLocationInterval();

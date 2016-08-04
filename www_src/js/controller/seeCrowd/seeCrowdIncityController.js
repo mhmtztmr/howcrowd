@@ -1,11 +1,45 @@
 app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
     'seeCrowdIncityModel', 'dateService', 'mapService',
     function($rootScope, $scope, $filter, seeCrowdIncityModel, dateService, mapService) {
-        console.log('see crowd incity controller initialized');
-        $scope.crowds = 'pending';
         var placeBasedCrowdsArray;
-        var locationFromStorage = angular.fromJson(localStorage.getItem('location'));
+        $scope.filteredPlaceBasedCrowdsArray = [];
+        $scope.crowds = 'pending';
 
+        $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
+            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest, function(){
+                $scope.crowds = seeCrowdIncityModel.getCrowds();
+                var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
+                placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
+                    function(key) {
+                        return placeBasedCrowds[key];
+                    });
+                $scope.filteredPlaceBasedCrowdsArray = $filter('orderBy')(placeBasedCrowdsArray, 'distanceGroup');
+                if (onSuccess) {
+                    onSuccess();
+                }
+            }, function(){
+                if (onFailure) {
+                    onFailure();
+                }
+            });
+        };
+
+        $scope.groupDistance = function() {
+            var placeBasedCrowds = seeCrowdIncityModel.groupDistance();
+            placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
+                function(key) {
+                    return placeBasedCrowds[key];
+                });
+            $scope.filteredPlaceBasedCrowdsArray = $filter('orderBy')(placeBasedCrowdsArray, 'distanceGroup');
+            if (onSuccess) {
+                onSuccess();
+            }
+        };
+
+        if($rootScope.location.latitude) {
+            $scope.loadCrowds(true);
+        }
+ 
         function getFilter() {
             var now = dateService.getDBDate(new Date());
             var oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20));
@@ -20,51 +54,36 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
             };
         }
 
-        $scope.filteredPlaceBasedCrowdsArray = [];
-
-        $scope.loadCrowds = function(serverRequest, onSuccess, onFailure) {
-            seeCrowdIncityModel.loadCrowds(getFilter(), serverRequest, function(){
-                $scope.crowds = seeCrowdIncityModel.getCrowds();
-                var placeBasedCrowds = seeCrowdIncityModel.getPlaceBasedCrowds();
-                placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(
-                    function(key) {
-                        return placeBasedCrowds[key];
-                    });
-                $scope.filteredPlaceBasedCrowdsArray = placeBasedCrowdsArray;
-                if (onSuccess) {
-                    onSuccess();
-                }
-            }, function(){
-                if (onFailure) {
-                    onFailure();
-                }
-            });
-        };
-
-        if (locationFromStorage) {
-            $scope.loadCrowds(true);
-        }
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
-            var newLocation = $rootScope.location,
-            oldLocation = args.oldLocation;
+            var oldLocation = args.oldLocation;
+
             //if location changed to a valid value
-            if(newLocation && newLocation.latitude && newLocation.longitude) {
-                if(oldLocation && oldLocation.latitude && oldLocation.longitude){
-                    var distance = mapService.getDistanceBetweenLocations(
-                        newLocation, oldLocation);
-                    if (distance > 0.01) { //10 m
+            if($rootScope.location.latitude) {
+                //if old location was a valid value
+                if(oldLocation.latitude){
+                    //if user changed its location remarkably (1 km)
+                    if (($rootScope.location.cumulativeDelta === 0 && $rootScope.location.overallDelta > 0) || 
+                        (!$scope.crowds || $scope.crowds === 'pending')) {
+                        //load data from scratch
                         $scope.loadCrowds(true);
                     }
+                    //if user changed its location slightly
+                    else if ($rootScope.location.delta > 0.01) { //10 m
+                        //reset here places
+                        $scope.groupDistance();
+                    }
                 }
-                else if(!locationFromStorage){
+                // if old location is not valid
+                else {
+                    //load data from scratch
                     $scope.crowds = 'pending';
                     $scope.$apply();
                     $scope.loadCrowds(true);
-                }                
+                }            
             }
             //if location changed to an invalid value and there were already no valid location value
-            else if(!locationFromStorage && (!oldLocation || !oldLocation.latitude || !oldLocation.longitude)) {
+            else if(!oldLocation.latitude && (!$scope.crowds || $scope.crowds === 'pending')) {
                 $scope.crowds = undefined;
                 $scope.$apply();
             }
@@ -81,7 +100,7 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
                 document.getElementById('search-input').focus();
             }, 100);
         };
-        $scope.stopSearch = function(){
+        $scope.stopSearch = function() {
             $scope.searchInput = '';
             $scope.searchInputChange($scope.searchInput);
             $scope.searchStatus.started = false;
@@ -105,8 +124,8 @@ app.controller('seeCrowdIncityController', ['$rootScope', '$scope', '$filter',
             },
             countItems: function() {
                 return $scope.filteredPlaceBasedCrowdsArray.length;
-            },
-            destroyItemScope: function(index, scope) {}
+            }
+            //,destroyItemScope: function(index, scope) {}
         };
     }
 ]);
