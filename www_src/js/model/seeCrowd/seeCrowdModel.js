@@ -70,11 +70,13 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 var placeBasedCrowd, i;
                 for (i = 0; i < placeBasedCrowdsArray.length; i++) {
                     placeBasedCrowd = placeBasedCrowdsArray[i];
-                    markers.push(mapService.markPlaceOnMap(map, placeBasedCrowd,
-                        function() {
-                            selectPlaceBasedCrowd(placeBasedCrowd);
-                        })
-                    );
+                    (function(placeBasedCrowd) {
+                        markers.push(mapService.markPlaceOnMap(map, placeBasedCrowd,
+                            function() {
+                                selectPlaceBasedCrowd(placeBasedCrowd);
+                            })
+                        );
+                    })(placeBasedCrowd);
                 }
             }
 
@@ -101,20 +103,10 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 }
             }
 
-
-
-
-
-
-
-
-
-
-
             function selectPlaceBasedCrowd(placeBasedCrowd) {
                 selectedPlaceBasedCrowd = placeBasedCrowd;
                 if (placeBasedCrowd) {
-                    app.navi.pushPage('templates/see-crowd-detail.html');
+                    app.navi.pushPage('templates/see-crowd-detail.html', {animation:'lift'});
                 }
             }
 

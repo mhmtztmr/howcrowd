@@ -93,19 +93,23 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 document.getElementById('search-input').focus();
             }, 100);
         };
+        $scope.searchInput = {value: ''};
         $scope.stopSearch = function() {
-            $scope.searchInput = '';
-            $scope.searchInputChange($scope.searchInput);
+            $scope.clearSearchInput();
             $scope.searchStatus.started = false;
         };
 
-        $scope.searchInputChange = function(searchInput) {
-            if (searchInput.length > 1) {
+        $scope.searchInputChange = function() {
+            if ($scope.searchInput.value.length > 1) {
                 $scope.crowds = $filter('filter')(
-                    placeBasedCrowdsArray, searchInput);
+                    placeBasedCrowdsArray, $scope.searchInput.value);
             } else {
                 $scope.crowds = placeBasedCrowdsArray;
             }
+        };
+        $scope.clearSearchInput = function(){
+            $scope.searchInput.value = '';
+            $scope.searchInputChange();
         };
        
         $scope.MyDelegate = {

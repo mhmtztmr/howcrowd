@@ -184,6 +184,21 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
         $scope.crowds = 'pending';
 
         function loadCrowds(success, fail){
+
+            function getFilter() {
+                var now = dateService.getDBDate(new Date()),
+                oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20)),
+                boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), 15);
+
+                return {
+                    date: {
+                        start: oneHourAgo,
+                        end: now
+                    },
+                    location: boundingBox
+                };
+            }
+
             seeCrowdModel.loadCrowds(getFilter(), function(pbca) {
                 placeBasedCrowdsArray = pbca;
                 $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, 'distanceGroup');
@@ -230,20 +245,6 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
         $scope.showList = function(){
             tab = 'list';
         };
- 
-        function getFilter() {
-            var now = dateService.getDBDate(new Date());
-            var oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20));
-            var boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), 15);
-
-            return {
-                date: {
-                    start: oneHourAgo,
-                    end: now
-                },
-                location: boundingBox
-            };
-        }
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
             //pending or undefined
@@ -271,19 +272,23 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 document.getElementById('search-input').focus();
             }, 100);
         };
+        $scope.searchInput = {value: ''};
         $scope.stopSearch = function() {
-            $scope.searchInput = '';
-            $scope.searchInputChange($scope.searchInput);
+            $scope.clearSearchInput();
             $scope.searchStatus.started = false;
         };
 
-        $scope.searchInputChange = function(searchInput) {
-            if (searchInput.length > 1) {
+        $scope.searchInputChange = function() {
+            if ($scope.searchInput.value.length > 1) {
                 $scope.crowds = $filter('filter')(
-                    placeBasedCrowdsArray, searchInput);
+                    placeBasedCrowdsArray, $scope.searchInput.value);
             } else {
                 $scope.crowds = placeBasedCrowdsArray;
             }
+        };
+        $scope.clearSearchInput = function(){
+            $scope.searchInput.value = '';
+            $scope.searchInputChange();
         };
        
         $scope.MyDelegate = {
@@ -304,7 +309,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
   'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
   function($rootScope, $scope, seeCrowdModel,
     feedbackModel, seeCrowdService) {
-    $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
+    $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
     if (myFeedback) {
@@ -575,9 +580,11 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
 
 app.controller('settingsController', ['$scope', '$rootScope', 'settingsService', function($scope, $rootScope, settingsService) {
 
-	document.getElementById('custom-place-switch').addEventListener('change', function(e) {
+	//custom place
+	$scope.isCustomPlacesEnabled = $rootScope.settings.isCustomPlacesEnabled;
+	setTimeout(function(){document.getElementById('custom-place-switch').addEventListener('change', function(e) {
 		settingsService.saveSettings();
-	});
+	});},100);
 }]);
 
 app.controller('splashController', [function() {
@@ -794,11 +801,13 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 var placeBasedCrowd, i;
                 for (i = 0; i < placeBasedCrowdsArray.length; i++) {
                     placeBasedCrowd = placeBasedCrowdsArray[i];
-                    markers.push(mapService.markPlaceOnMap(map, placeBasedCrowd,
-                        function() {
-                            selectPlaceBasedCrowd(placeBasedCrowd);
-                        })
-                    );
+                    (function(placeBasedCrowd) {
+                        markers.push(mapService.markPlaceOnMap(map, placeBasedCrowd,
+                            function() {
+                                selectPlaceBasedCrowd(placeBasedCrowd);
+                            })
+                        );
+                    })(placeBasedCrowd);
                 }
             }
 
@@ -825,20 +834,10 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 }
             }
 
-
-
-
-
-
-
-
-
-
-
             function selectPlaceBasedCrowd(placeBasedCrowd) {
                 selectedPlaceBasedCrowd = placeBasedCrowd;
                 if (placeBasedCrowd) {
-                    app.navi.pushPage('templates/see-crowd-detail.html');
+                    app.navi.pushPage('templates/see-crowd-detail.html', {animation:'lift'});
                 }
             }
 
@@ -1535,8 +1534,7 @@ var defaultLanguageModel = function() {
             "MIN_AGO": "min(s) ago",
             "NO_PLACE": "No recent crowd. Tap to enter one!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
-            "SEARCH_INCITY": "Search: Last One Hour, Around 15 kilometers",
-            "SEARCH_HERE": "Search: Last One Hour, Around 50 meters"
+            "SEARCH_INPUT": "Last 1h, Around 15kms"
         },
         "SEE_CROWD_POPOVER_MENU": {
             "DISPLAY_TYPE": "Display Type"
@@ -1605,6 +1603,15 @@ var defaultLanguageModel = function() {
         "SETTINGS": {
             "CONTENT_SETTINGS": "Content Settings",
             "DISPLAY_CUSTOM_PLACES": "Display custom places"
+        },
+        "NATIVE_DIALOG": {
+            "GPS": {
+                "MESSAGE": "Your GPS is Disabled, this app needs to be enable to works.",
+                "DESCRIPTION": "Use GPS, with wifi or 3G.",
+                "TITLE": "Please Turn on GPS",
+                "YES": "Yes",
+                "NO": "No"
+            }
         },
         "CONFIRM": {
             "CONFIRM": "Confirm",
@@ -1778,16 +1785,16 @@ angular.module('location.Service', ['map.Service'])
 
 		function openLocationDialog(onNo, onLater, onYes){
 			document.addEventListener("deviceready",function() {
-				cordova.dialogGPS("Your GPS is Disabled, this app needs to be enable to works.",//message
-                            "Use GPS, with wifi or 3G.",//description
+				cordova.dialogGPS($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,//message
+                            $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION,//description
                             function(buttonIndex){//callback
                               switch(buttonIndex) {
                                 case 0:  onNo(); break;//cancel
                                 case 1:  onLater(); break;//neutro option
                                 case 2:  onYes(); break;//positive option
                               }},
-                              "Please Turn on GPS",//title
-                              ["No","Yes"]);//buttons
+                              $rootScope.lang.NATIVE_DIALOG.GPS.TITLE,//title
+                              [$rootScope.lang.NATIVE_DIALOG.GPS.NO, $rootScope.lang.NATIVE_DIALOG.GPS.YES]);//buttons
 			 });
 		}
 
@@ -1953,10 +1960,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		var scope = $rootScope.$new();
 		scope.placeBasedCrowd = placeBasedCrowd;
 
-    	scope.selectPlaceBasedCrowd = function(selectPlaceBasedCrowd){
-	        //seeCrowdModel.selectPlaceBasedCrowd(selectPlaceBasedCrowd);
-	        alert('hey');
-	    };
+    	scope.selectPlaceBasedCrowd = clickEvent;
 
 		var contentString = '<div>'+
 		'<div class="crowd-main-body crowd-info-window" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +

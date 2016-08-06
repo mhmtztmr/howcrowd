@@ -10,16 +10,16 @@
         </ons-toolbar>
 
       <ons-list>
-        <ons-list-header>{{$root.lang.SETTINGS.CONTENT_SETTINGS}}</ons-list-header>
-        <ons-list-item>
-        <div class="center">
-          {{$root.lang.SETTINGS.DISPLAY_CUSTOM_PLACES}}
-        </div>
-        <div class="right">
-          <ons-switch id="custom-place-switch" ng-model="$root.settings.isCustomPlacesEnabled" change="saveChanges()"></ons-switch>
-        </div>
-           <!-- <ons-switch " ></ons-switch> -->
-        </ons-list-item>
+          <ons-list-header>{{$root.lang.SETTINGS.CONTENT_SETTINGS}}</ons-list-header>
+          <ons-list-item>
+          <div class="center">
+              {{$root.lang.SETTINGS.DISPLAY_CUSTOM_PLACES}}
+          </div>
+          <div class="right">
+              <ons-switch ng-if="isCustomPlacesEnabled" ng-model="$root.settings.isCustomPlacesEnabled" id="custom-place-switch" checked></ons-switch>
+              <ons-switch ng-if="!isCustomPlacesEnabled" ng-model="$root.settings.isCustomPlacesEnabled" id="custom-place-switch"></ons-switch>
+          </div>
+          </ons-list-item>
       </ons-list>
 
     </ons-page>

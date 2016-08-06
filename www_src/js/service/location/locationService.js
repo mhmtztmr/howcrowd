@@ -108,16 +108,16 @@ angular.module('location.Service', ['map.Service'])
 
 		function openLocationDialog(onNo, onLater, onYes){
 			document.addEventListener("deviceready",function() {
-				cordova.dialogGPS("Your GPS is Disabled, this app needs to be enable to works.",//message
-                            "Use GPS, with wifi or 3G.",//description
+				cordova.dialogGPS($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,//message
+                            $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION,//description
                             function(buttonIndex){//callback
                               switch(buttonIndex) {
                                 case 0:  onNo(); break;//cancel
                                 case 1:  onLater(); break;//neutro option
                                 case 2:  onYes(); break;//positive option
                               }},
-                              "Please Turn on GPS",//title
-                              ["No","Yes"]);//buttons
+                              $rootScope.lang.NATIVE_DIALOG.GPS.TITLE,//title
+                              [$rootScope.lang.NATIVE_DIALOG.GPS.NO, $rootScope.lang.NATIVE_DIALOG.GPS.YES]);//buttons
 			 });
 		}
 

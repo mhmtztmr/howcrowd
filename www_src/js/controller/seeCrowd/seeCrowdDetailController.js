@@ -2,7 +2,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
   'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
   function($rootScope, $scope, seeCrowdModel,
     feedbackModel, seeCrowdService) {
-    $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
+    $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
     if (myFeedback) {
