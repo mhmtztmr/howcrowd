@@ -20,7 +20,7 @@ angular.module('location.Service', ['map.Service'])
 					};
 
 					if(oldLocation.latitude) {
-						$rootScope.location.delta = mapService.getDistanceBetweenLocations($rootScope.location, oldLocation);
+						$rootScope.location.delta = getDistanceBetweenLocations($rootScope.location, oldLocation);
 						$rootScope.location.cumulativeDelta = oldLocation.cumulativeDelta;
 						$rootScope.location.overallDelta = oldLocation.overallDelta;
 					}
@@ -121,10 +121,36 @@ angular.module('location.Service', ['map.Service'])
 			 });
 		}
 
+
+	    //in km
+	    function getDistanceBetweenLocations(location1, location2) {
+	        // helper functions (degrees<–>radians)
+	        Number.prototype.degToRad = function() {
+	            return this * (Math.PI / 180);
+	        };
+	        Number.prototype.radToDeg = function() {
+	            return (180 * this) / Math.PI;
+	        };
+
+	        R = 6378.1; //Radius of the earth in km
+	        var dLat = (location2.latitude - location1.latitude).degToRad(); //deg2rad below
+	        var dLon = (location2.longitude - location1.longitude).degToRad();
+	        var a =
+	            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+	            Math.cos((location1.latitude).degToRad()) * Math.cos((
+	                location2
+	                .latitude).degToRad()) *
+	            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+	        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	        var d = R * c; // Distance in km
+	        return d;
+	    }
+
 		return {
 			openLocationDialog: openLocationDialog,
 			checkLocationAvailability: checkLocationAvailability,
 			startLocationInterval: startLocationInterval,
-			stopLocationInterval: stopLocationInterval
+			stopLocationInterval: stopLocationInterval,
+			getDistanceBetweenLocations: getDistanceBetweenLocations
 		};
 	}]);

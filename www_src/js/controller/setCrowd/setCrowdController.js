@@ -4,43 +4,33 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
         setCrowdModel) {
         $scope.nearbyPlaces = 'pending';
 
+        $scope.loadNearbyPlaces = function($done) {
+            setCrowdModel.loadNearbyPlaces($rootScope.location).then(
+                function(nbp) {
+                    $scope.nearbyPlaces = nbp;
+                    if($done) $done();
+                },
+                function() {});
+        };
+
         if ($rootScope.location && $rootScope.location.latitude && $rootScope.location
             .longitude) {
-            loadNearbyPlaces();
+            $scope.loadNearbyPlaces();
         }
 
         $scope.$on('$destroy',$rootScope.$on("locationChanged", function(event, args) {
-            var newLocation = $rootScope.location,
-            oldLocation = args.oldLocation;
-            //if location changed to a valid value
-            if(newLocation && newLocation.latitude && newLocation.longitude) {
-                if(oldLocation && oldLocation.latitude && oldLocation.longitude){
-                    if (newLocation.delta > 0.01) { //10 m
-                        loadNearbyPlaces();
-                    }
-                }
-                else{
+            //pending or undefined
+            if(!($scope.nearbyPlaces instanceof Array)) {
+                if($rootScope.location.latitude) {
                     $scope.nearbyPlaces = 'pending';
+                    $scope.loadNearbyPlaces();
+                }
+                else {
+                    $scope.nearbyPlaces = undefined;
                     $scope.$apply();
-                    loadNearbyPlaces();
-                }                
-            }
-            //if location changed to an invalid value and there were already no valid location value
-            else {
-                $scope.nearbyPlaces = undefined;
-                $scope.$apply();
+                }
             }
         }));
-
-        function loadNearbyPlaces() {
-            setCrowdModel.loadNearbyPlaces($rootScope.location, true).then(
-                function() {
-                    $scope.nearbyPlaces = setCrowdModel.getNearbyPlaces();
-                },
-                function() {
-                    $scope.nearbyPlaces = [];
-                });
-        };
 
         $scope.selectPlace = function(place) {
             setCrowdModel.selectPlace(place);

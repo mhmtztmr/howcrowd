@@ -153,8 +153,13 @@
     right: 0;
     overflow-y: auto;
   }
+
   ons-fab {
     position: absolute !important;
+  }
+
+  .ons-icon.ion-load-c {
+      color: #AB2626;
   }
 .positive-feedback {
   color: green;

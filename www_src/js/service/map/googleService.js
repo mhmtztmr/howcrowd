@@ -128,7 +128,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		scope.placeBasedCrowd = placeBasedCrowd;
 
     	scope.selectPlaceBasedCrowd = function(selectPlaceBasedCrowd){
-	        //seeCrowdIncityModel.selectPlaceBasedCrowd(selectPlaceBasedCrowd);
+	        //seeCrowdModel.selectPlaceBasedCrowd(selectPlaceBasedCrowd);
 	        alert('hey');
 	    };
 
@@ -182,6 +182,11 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 			});
 			infowindow.open(map, marker);
 		});
+		return marker;
+	}
+
+	function clearMarkers(){
+
 	}
 
 	function getNearbyPlaces(location, onSuccess) {

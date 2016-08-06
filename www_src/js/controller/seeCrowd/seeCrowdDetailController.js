@@ -1,6 +1,6 @@
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
-  function($rootScope, $scope, seeCrowdIncityModel,
+  'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
+  function($rootScope, $scope, seeCrowdModel,
     feedbackModel, seeCrowdService) {
     $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
@@ -29,7 +29,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         } else {
           $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback++;
         }
-        seeCrowdIncityModel.giveFeedback(crowd, isPositive,
+        seeCrowdModel.giveFeedback(crowd, isPositive,
           function() {
             feedbackModel.insertFeedback(crowd.crowdId, isPositive);
           },

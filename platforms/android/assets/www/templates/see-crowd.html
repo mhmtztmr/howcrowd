@@ -1,14 +1,16 @@
-<ons-navigator var="app.navi">
-    <ons-page>
-      <ons-tabbar var="myTabbar" position="bottom" animation="slide" id="seeCrowdTabbar">
-        <ons-tab page="templates/see-crowd-incity.html" active="true">
-          <ons-icon icon="fa-list-ul"></ons-icon>
-          <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.LIST}}</span>
-        </ons-tab>
-        <ons-tab page="templates/see-crowd-inmap.html">
-          <ons-icon icon="fa-map"></ons-icon>
-          <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.MAP}}</span>
-        </ons-tab>
-      </ons-tabbar>
-    </ons-page>
-</ons-navigator>
+<div ng-controller="seeCrowdController">
+    <ons-navigator var="app.navi">
+        <ons-page>
+          <ons-tabbar var="myTabbar" position="bottom" animation="slide" id="seeCrowdTabbar">
+            <ons-tab page="templates/see-crowd-list.html" active="true">
+              <ons-icon icon="fa-list-ul"></ons-icon>
+              <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.LIST}}</span>
+            </ons-tab>
+            <ons-tab page="templates/see-crowd-map.html">
+              <ons-icon icon="fa-map"></ons-icon>
+              <span style="font-size: 14px">{{$root.lang.SEE_CROWD_MENU.MAP}}</span>
+            </ons-tab>
+          </ons-tabbar>
+        </ons-page>
+    </ons-navigator>
+</div>
