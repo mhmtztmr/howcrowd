@@ -201,7 +201,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
 
             seeCrowdModel.loadCrowds(getFilter(), function(pbca) {
                 placeBasedCrowdsArray = pbca;
-                $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, 'distanceGroup');
+                $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
                 if(tab === 'map'){
                     loadMap();
                 }
@@ -280,11 +280,11 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
 
         $scope.searchInputChange = function() {
             if ($scope.searchInput.value.length > 1) {
-                $scope.crowds = $filter('filter')(
-                    placeBasedCrowdsArray, $scope.searchInput.value);
+                $scope.crowds = $filter('filter')(placeBasedCrowdsArray, $scope.searchInput.value);
             } else {
                 $scope.crowds = placeBasedCrowdsArray;
             }
+            $scope.crowds = $filter('orderBy')($scope.crowds, ['distanceGroup', 'crowdLast.lastUpdatePass']);
         };
         $scope.clearSearchInput = function(){
             $scope.searchInput.value = '';
@@ -379,13 +379,20 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
       fnc: function() {
         app.navi.pushPage('templates/crowd-place-detail.html', {
-          selectedPlaceBasedCrowd: $scope.selectedPlaceBasedCrowd
+          selectedPlaceBasedCrowd: $scope.selectedPlaceBasedCrowd, 
+          animation:'lift'
         });
       }
     }, {
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
       fnc: function() {
-        $scope.dialogs['templates/share-crowd.html'].show();
+        var placeName = $scope.selectedPlaceBasedCrowd.placeName,
+        lastCrowdValue = $scope.selectedPlaceBasedCrowd.crowdLast.crowdValue,
+        lastUpdateDate = new Date($scope.selectedPlaceBasedCrowd.crowdLast.crowdDate).toLocaleString(),
+        averageValue = $scope.selectedPlaceBasedCrowd.crowdAverage;
+
+        window.plugins.socialsharing.share(placeName + ' [' + lastUpdateDate + ']\nLast: ' + lastCrowdValue + '%\tAvg.: ' + averageValue + '%'); 
+
       }
     }];
     if ($scope.selectedPlaceBasedCrowd.placeSource === 'custom') {
@@ -434,31 +441,46 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
 ]);
 
 app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
-    'mapModel', 'mapService', 'setCrowdModel',
+    'mapModel', 'mapService', 'setCrowdModel', '$filter',
     function($rootScope, $scope, $timeout, mapModel, mapService,
-        setCrowdModel) {
+        setCrowdModel, $filter) {
+
+        var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 
-        $scope.loadNearbyPlaces = function($done) {
+        function loadNearbyPlaces(success, fail){
             setCrowdModel.loadNearbyPlaces($rootScope.location).then(
                 function(nbp) {
+                    nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
-                    if($done) $done();
-                },
-                function() {});
-        };
-
-        if ($rootScope.location && $rootScope.location.latitude && $rootScope.location
-            .longitude) {
-            $scope.loadNearbyPlaces();
+                    if(success) success();
+                }, fail);
         }
 
-        $scope.$on('$destroy',$rootScope.$on("locationChanged", function(event, args) {
+        $scope.refreshNearbyPlaces = function($done) {
+            if($scope.nearbyPlaces === 'pending' || $scope.nearbyPlaces === undefined) {
+                if($done) $done();
+            }
+            if($rootScope.location.latitude) {
+                loadNearbyPlaces($done);
+            }
+            else if($scope.nearbyPlaces !== 'pending' && $scope.nearbyPlaces !== undefined){
+                $scope.nearbyPlaces = undefined;
+                $scope.$apply();
+                if($done) $done();
+            }
+        };
+
+        if($rootScope.location.latitude) {
+            loadNearbyPlaces();
+        }
+
+        $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
             //pending or undefined
             if(!($scope.nearbyPlaces instanceof Array)) {
                 if($rootScope.location.latitude) {
                     $scope.nearbyPlaces = 'pending';
-                    $scope.loadNearbyPlaces();
+                    loadNearbyPlaces();
                 }
                 else {
                     $scope.nearbyPlaces = undefined;
@@ -467,8 +489,35 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
             }
         }));
 
+
         $scope.selectPlace = function(place) {
             setCrowdModel.selectPlace(place);
+        };
+
+        $scope.searchStatus = {started : false};
+        $scope.startSearch = function(){
+            $scope.searchStatus.started = true;
+            setTimeout(function(){
+                document.getElementById('search-input').focus();
+            }, 100);
+        };
+        $scope.searchInput = {value: ''};
+        $scope.stopSearch = function() {
+            $scope.clearSearchInput();
+            $scope.searchStatus.started = false;
+        };
+
+        $scope.searchInputChange = function() {
+            if ($scope.searchInput.value.length > 1) {
+                $scope.nearbyPlaces = $filter('filter')(
+                    nearbyPlaces, $scope.searchInput.value);
+            } else {
+                $scope.nearbyPlaces = nearbyPlaces;
+            }
+        };
+        $scope.clearSearchInput = function(){
+            $scope.searchInput.value = '';
+            $scope.searchInputChange();
         };
     }
 ]);
@@ -778,9 +827,9 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
                         placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
                             crowd.placeKey].crowdCount);
-
                     placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
 
+                    //here algorithm
                     if($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
                         distance = locationService.getDistanceBetweenLocations($rootScope.location, crowd.crowdLocation);
                         if(distance > 0.03) {
@@ -868,7 +917,7 @@ var setCrowdModel = function($q, setCrowdService, mapService) {
 
     function selectPlace(place) {
         selectedPlace = place;
-        app.navi.pushPage('templates/set-crowd-level.html');
+        app.navi.pushPage('templates/set-crowd-level.html', {animation: 'lift'});
     }
 
     function getSelectedPlace() {
@@ -1562,7 +1611,8 @@ var defaultLanguageModel = function() {
             "NO_PLACE": "No places around. Tap to enter a custom place!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "PULL_TO_REFRESH": "Pull down to refresh",
-            "RELEASE_TO_REFRESH": "Release to refresh"
+            "RELEASE_TO_REFRESH": "Release to refresh",
+            "SEARCH_INPUT": "Search"
         },
         "CROWD_VALUES" : {
           "100" : "100",

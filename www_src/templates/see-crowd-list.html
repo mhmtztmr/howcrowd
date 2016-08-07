@@ -29,19 +29,19 @@
 
         <ons-pull-hook ng-action="refreshCrowds($done)" var="loader" fixed-content threshold-height="128px" height="64px" ng-attr-disabled="true">
             <span ng-switch="loader.state">
-              <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-load-c"></ons-icon></span>
-              <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-load-c"></ons-icon></span>
-              <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-c"></ons-icon> </span>
+              <span ng-switch-when="initial"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
+              <span ng-switch-when="preaction"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
+              <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="fa-repeat"></ons-icon> </span>
             </span>
         </ons-pull-hook>
 
-        <div ng-if="!crowds" style="height: 100%;">
+        <div ng-if="!crowds">
             <button class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
         </div>
         <div ng-if="crowds === 'pending'" style="text-align: center; padding-top: 144px;">
-            <ons-icon size="70px" spin="true" icon="ion-load-d">
+            <ons-icon size="70px" spin="true" icon="fa-spinner">
         </div>
-        <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0" style="height: 100%;">
+        <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0">
             <button class="refresh-button button button--quiet" onclick="menu.setMainPage('templates/set-crowd.html')">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
         </div>
         <ons-list ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
@@ -49,11 +49,17 @@
             <div class="crowd-main-body">
               <div class="crowd-left">
                 <div class="crowd-source-icon">
-                  <img ng-src="img/sources/{{item.placeSource}}.png" />
+                  <!-- <img ng-src="img/sources/{{item.placeSource}}.png" /> -->
+                  <ons-icon ng-if="item.placeSource ==='custom'" icon="fa-map-signs" style="color: brown"></ons-icon>
+                  <!-- <ons-icon icon="fa-google" style="color: blue"></ons-icon> -->
+                </div>
+                <div>
+                  <!-- <ons-icon ng-if="item.distanceGroup === 0" icon="ion-ios-navigate"></ons-icon> -->
+                  <ons-icon ng-if="item.distanceGroup === 0" icon="fa-street-view"></ons-icon>
                 </div>
               </div>
               <div class="crowd-center">
-                <div class="crowd-place-name">{{item.distanceGroup}} {{item.placeName}}</div>
+                <div class="crowd-place-name"> {{item.placeName}}</div>
                 <div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== ''"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>
                 <div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>
               </div>

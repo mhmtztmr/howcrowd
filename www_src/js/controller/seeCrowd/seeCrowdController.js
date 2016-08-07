@@ -22,7 +22,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
 
             seeCrowdModel.loadCrowds(getFilter(), function(pbca) {
                 placeBasedCrowdsArray = pbca;
-                $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, 'distanceGroup');
+                $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
                 if(tab === 'map'){
                     loadMap();
                 }
@@ -101,11 +101,11 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
 
         $scope.searchInputChange = function() {
             if ($scope.searchInput.value.length > 1) {
-                $scope.crowds = $filter('filter')(
-                    placeBasedCrowdsArray, $scope.searchInput.value);
+                $scope.crowds = $filter('filter')(placeBasedCrowdsArray, $scope.searchInput.value);
             } else {
                 $scope.crowds = placeBasedCrowdsArray;
             }
+            $scope.crowds = $filter('orderBy')($scope.crowds, ['distanceGroup', 'crowdLast.lastUpdatePass']);
         };
         $scope.clearSearchInput = function(){
             $scope.searchInput.value = '';

@@ -51,7 +51,8 @@ var defaultLanguageModel = function() {
             "NO_PLACE": "No places around. Tap to enter a custom place!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "PULL_TO_REFRESH": "Pull down to refresh",
-            "RELEASE_TO_REFRESH": "Release to refresh"
+            "RELEASE_TO_REFRESH": "Release to refresh",
+            "SEARCH_INPUT": "Search"
         },
         "CROWD_VALUES" : {
           "100" : "100",

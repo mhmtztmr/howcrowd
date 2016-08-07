@@ -7,7 +7,7 @@ var setCrowdModel = function($q, setCrowdService, mapService) {
 
     function selectPlace(place) {
         selectedPlace = place;
-        app.navi.pushPage('templates/set-crowd-level.html');
+        app.navi.pushPage('templates/set-crowd-level.html', {animation: 'lift'});
     }
 
     function getSelectedPlace() {

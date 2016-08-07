@@ -47,9 +47,9 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
                         placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
                             crowd.placeKey].crowdCount);
-
                     placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
 
+                    //here algorithm
                     if($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
                         distance = locationService.getDistanceBetweenLocations($rootScope.location, crowd.crowdLocation);
                         if(distance > 0.03) {

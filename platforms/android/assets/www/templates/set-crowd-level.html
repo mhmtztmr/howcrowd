@@ -6,11 +6,13 @@
     </div>
     <div class="center">
       <div ng-if="selectedPlace !== undefined">
-        <div class="crowd-name">
-          <img ng-src="img/sources/{{selectedPlace.source}}.png" /> {{selectedPlace.name}}
+        <div class="crowd-name truncate">
+          <!-- <img ng-src="img/sources/{{selectedPlace.source}}.png" /> -->
+          <ons-icon ng-if="selectedPlace.placeSource ==='custom'" icon="fa-map-signs"></ons-icon>
+          {{selectedPlace.name}}
         </div>
       </div>
-      <input ng-if="selectedPlace === undefined" style="width:100%; height:100%; border:none;color:white;" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName" class="text-input text-input--underbar" />
+      <input ng-if="selectedPlace === undefined" class="search-crowd truncate" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName" class="text-input text-input--underbar" />
     </div>
   </ons-toolbar>
 
