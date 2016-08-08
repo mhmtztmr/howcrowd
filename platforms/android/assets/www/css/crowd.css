@@ -1,0 +1,235 @@
+.truncate {
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+}
+
+.profile-card {
+  width: 100%;
+  text-align: center;
+  color: white;
+  padding: 30px 0;
+  line-height: 1.4;
+  background-color: #33393c;
+  text-shadow: rgba(0, 0, 0, 0.4) 0px 1px 0px;
+}
+
+.about-image {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  background-color: black;
+  border 1px solid white;
+  box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+  -webkit-box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+}
+.about-name {
+  margin: 20px 0 0 0;
+  font-weight: 600;
+  font-size: 17px;
+}
+.about-desc {
+  font-size: 15px;
+  opacity: 0.6;
+  width: 90%;
+  text-align: center;
+  margin: 0 auto;
+}
+.about-text {
+  margin: 10px;
+}
+.about-title-1 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: bold;
+  font-size: 19px;
+  text-align: center;
+}
+.about-title-2 {
+  padding-bottom: 5px;
+  font-weight: bold;
+  font-size: 17px;
+}
+.about-description {
+  font-size: 17px;
+  padding-bottom: 5px;
+  text-align: justify;
+}
+  .crowd-item {
+  }
+  .crowd-main-body{
+    height: 60px;
+    width: 100%;
+  }
+  .crowd-left {
+    float:left;
+    width: 10%;
+  }
+  .crowd-info-window .crowd-left {
+    width: 30px !important;
+  }
+  .crowd-source-icon {
+
+  }
+  .crowd-center {
+    float:left;
+    width: 70%;
+  }
+  .crowd-info-window .crowd-center {
+    width: 50% !important;
+  }
+  .crowd-place-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .crowd-city {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .crowd-time {
+     font-size: 12px;
+  }
+  .crowd-right {
+    float: right;
+    width: 60px;
+  }
+  .crowd-info-window .crowd-right {
+    width: 60px !important;
+  }
+  .crowd-last-value {
+    font-size: 12px;
+  }
+  .crowd-circle {
+    float:left;
+  }
+  .crowd-feedbacks{
+    font-size: 12px;
+    float: left;
+    padding-left: 3px;
+    height: 30px;
+  }
+  .crowd-positive-feedback {
+    color: green;
+    height: 15px;
+  }
+  .crowd-negative-feedback {
+    color: red;
+    height: 15px;
+  }
+  .crowd-average-container {
+    height: 20px;
+    width: 100%;
+  }
+  .crowd-average-text {
+    float: left;
+    font-size: 12px;
+  }
+  .crowd-average-indicator {
+    width: 100%;
+    height: 20px;
+    float:left;
+    background-color: transparent;
+  } 
+  .crowd-average-bar {
+    border-radius: 25px;
+    width: 100%;
+    height: 1px;
+    background-color: lightgray;
+  }
+  .crowd-average-fill {
+    border-radius: 25px;
+    height: 100%;
+    background-color:red;
+  }
+  .search-crowd {
+    width:80%; 
+    height:100%; 
+    border:none;
+    color:white; 
+    margin: 0 auto;
+    font-size: 20px;
+    background: transparent;
+  }
+  .search-crowd-cancel {
+    display: block !important;
+  }
+
+  .crowd-list-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+  }
+
+  ons-fab {
+    position: absolute !important;
+  }
+
+  .ons-icon.fa-repeat {
+      color: #AB2626;
+  }
+.positive-feedback {
+  color: green;
+}
+.negative-feedback {
+  color: red;
+}
+.feedback-done {
+  opacity: 0.3;
+}
+.rhs-avg-crowd-indicator {
+  float: right;
+  margin-right: 12px;
+}
+.gmnoprint {
+	display: none !important;
+}
+.bottom-menu-list-bottom {
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  font-size: 14px;
+}
+.menu-icon {
+  float: left;
+  width: 10%;
+}
+.menu-text {
+  margin-left: 5%;
+}
+
+.list__item__center {
+	max-width: 100% !important;
+}
+.popover__content {
+	min-height: 0 !important;
+}
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.refresh-button {
+  height: 100% !important;
+  width: 100% !important;
+  white-space: normal !important;
+}
+.loading-gif-wrapper {
+  text-align: center;
+}
+.loading-gif-inner {
+  margin-top: 50px;
+}
+.crowd-detail-dialog {
+  width: 90% !important;
+}
+
+
+div#preload {
+  display: none;
+}

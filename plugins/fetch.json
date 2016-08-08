@@ -39,5 +39,46 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "cordova-plugin-device": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-device"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "cordova-plugin-app-event": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-app-event"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "cl.rmd.cordova.dialoggps": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rodrigo-martinezd/cordova-dialog-gps.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova.plugins.diagnostic.api-22": {
+        "source": {
+            "type": "registry",
+            "id": "cordova.plugins.diagnostic.api-22"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-x-socialsharing": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-x-socialsharing"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

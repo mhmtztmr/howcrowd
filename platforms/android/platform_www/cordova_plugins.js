@@ -205,6 +205,27 @@ module.exports = [
         "clobbers": [
             "Connection"
         ]
+    },
+    {
+        "file": "plugins/cl.rmd.cordova.dialoggps/www/DialogGPS.js",
+        "id": "cl.rmd.cordova.dialoggps.DialogGPS",
+        "clobbers": [
+            "cordova.dialogGPS"
+        ]
+    },
+    {
+        "file": "plugins/cordova.plugins.diagnostic.api-22/www/android/diagnostic.js",
+        "id": "cordova.plugins.diagnostic.api-22.Diagnostic",
+        "clobbers": [
+            "cordova.plugins.diagnostic"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-x-socialsharing/www/SocialSharing.js",
+        "id": "cordova-plugin-x-socialsharing.SocialSharing",
+        "clobbers": [
+            "window.plugins.socialsharing"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -214,7 +235,10 @@ module.exports.metadata =
     "cordova-plugin-geolocation": "1.0.1",
     "cordova-plugin-file": "3.0.0",
     "cordova-plugin-globalization": "1.0.2",
-    "cordova-plugin-network-information": "1.2.1-dev"
-}
+    "cordova-plugin-network-information": "1.2.1-dev",
+    "cl.rmd.cordova.dialoggps": "0.0.2",
+    "cordova.plugins.diagnostic.api-22": "2.3.10-api-22",
+    "cordova-plugin-x-socialsharing": "5.1.1"
+};
 // BOTTOM OF METADATA
 });

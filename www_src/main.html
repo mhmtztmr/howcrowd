@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+
+    <title>Crowd</title>
+
+    <link rel="stylesheet" href="css/lib.css" />
+    <link rel="stylesheet/less" type="text/css" href="css/crowd.less" />
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/crowd.css" />
+
+    <script type="text/javascript" src="js/lib.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%=MAPS_KEY%>&libraries=places" async defer></script>
+
+    <script type="text/javascript" src="js/crowd.js"></script>
+</head>
+
+<body>
+    <div ng-controller="appController">
+        <ons-sliding-menu menu-page="templates/menu.html" main-page="templates/splash.html" side="left" var="menu" type="overlay" max-slide-distance="220px" swipe-target-width="0px" swipeable="true">
+        </ons-sliding-menu> 
+    </div>
+    <div id="preload">
+        <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />
+        <img src="img/sources/custom.png" width="1" height="1" alt="Image 01" />
+        <img src="img/loading.gif" width="1" height="1" alt="Image 01" />
+    </div>
+    <script type="text/javascript">
+        myApp.initialize();
+    </script>
+</body>
+
+</html>

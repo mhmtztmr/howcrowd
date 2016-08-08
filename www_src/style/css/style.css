@@ -1,0 +1,23 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.refresh-button {
+  height: 100% !important;
+  width: 100% !important;
+  white-space: normal !important;
+}
+.loading-gif-wrapper {
+  text-align: center;
+}
+.loading-gif-inner {
+  margin-top: 50px;
+}
+.crowd-detail-dialog {
+  width: 90% !important;
+}
+
+
+div#preload {
+  display: none;
+}

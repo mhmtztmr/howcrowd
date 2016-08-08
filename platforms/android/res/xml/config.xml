@@ -15,7 +15,16 @@
     <feature name="NetworkStatus">
         <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
+    <feature name="DialogGPS">
+        <param name="android-package" value="cl.rmd.cordova.dialoggps.DialogGPS" />
+    </feature>
+    <feature name="SocialSharing">
+        <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
+    </feature>
     <preference name="AndroidPersistentFileLocation" value="Internal" />
+    <feature name="Diagnostic">
+        <param name="android-package" value="cordova.plugins.Diagnostic" />
+    </feature>
     <allow-intent href="market:*" />
     <name>Crowd</name>
     <description>
@@ -63,6 +72,8 @@
     <icon gap:density="mdpi" gap:platform="android" gap:qualifier="mdpi" src="www/res/icon/android/icon-48-mdpi.png" />
     <icon gap:density="hdpi" gap:platform="android" gap:qualifier="hdpi" src="www/res/icon/android/icon-72-hdpi.png" />
     <icon gap:density="xhdpi" gap:platform="android" gap:qualifier="xhdpi" src="www/res/icon/android/icon-96-xhdpi.png" />
+    <icon gap:density="xxhdpi" gap:platform="android" gap:qualifier="xxhdpi" src="www/res/icon/android/icon-144-xxhdpi.png" />
+    <icon gap:density="xxxhdpi" gap:platform="android" gap:qualifier="xxxhdpi" src="www/res/icon/android/icon-192-xxxhdpi.png" />
     <icon gap:platform="blackberry" src="www/res/icon/blackberry/icon-80.png" />
     <icon gap:platform="blackberry" gap:state="hover" src="www/res/icon/blackberry/icon-80.png" />
     <icon gap:platform="ios" height="57" src="www/res/icon/ios/icon-57.png" width="57" />
@@ -84,6 +95,7 @@
     <gap:splash gap:platform="ios" height="768" src="www/res/screen/ios/screen-ipad-landscape.png" width="1024" />
     <gap:splash gap:platform="winphone" src="www/res/screen/windows-phone/screen-portrait.jpg" />
     <access origin="*" />
+    <allow-navigation href="http://*/*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
