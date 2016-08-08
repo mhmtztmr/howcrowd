@@ -1,40 +1,22 @@
 app.controller('setCrowdLevelController', ['$rootScope', '$scope',
-  'setCrowdModel', 'guidService', 'dateService', 'mapService',
-  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService) {
+  'setCrowdModel', 'guidService', 'dateService', 'mapService', 'crowdDisplayService',
+  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService, crowdDisplayService) {
 
     $scope.levels = [{
-      value: 100,
-      text: 100
-    }, {
-      value: 90,
-      text: 90
-    }, {
-      value: 80,
-      text: 80
+      value: 95,
+      text: crowdDisplayService.getCrowdDisplayText(95)
     }, {
       value: 70,
-      text: 70
-    }, {
-      value: 60,
-      text: 60
+      text: crowdDisplayService.getCrowdDisplayText(70)
     }, {
       value: 50,
-      text: 50
-    }, {
-      value: 40,
-      text: 40
+      text: crowdDisplayService.getCrowdDisplayText(50)
     }, {
       value: 30,
-      text: 30
+      text: crowdDisplayService.getCrowdDisplayText(30)
     }, {
-      value: 20,
-      text: 20
-    }, {
-      value: 10,
-      text: 10
-    }, {
-      value: 0,
-      text: 0
+      value: 5,
+      text: crowdDisplayService.getCrowdDisplayText(5)
     }];
 
     $scope.selectedPlace = setCrowdModel.getSelectedPlace();

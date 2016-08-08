@@ -2,9 +2,9 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
 
     function init() {
         var APPLICATION_ID = '<%=APPLICATION_ID%>',
-            SECRET_KEY = '<%=SECRET_KEY%>',
+            JS_SECRET_KEY = '<%=JS_SECRET_KEY%>',
             VERSION = '<%=VERSION%>'; //default application version;
-        Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
+        Backendless.initApp(APPLICATION_ID, JS_SECRET_KEY, VERSION);
     }
 
     /******* DB Models */
@@ -69,47 +69,6 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         });
         crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
     }
-
-    // function retrievePlace(placeKey, onSuccess) {
-    //   var def = $q.defer();
-    //   var places = Backendless.Persistence.of(Place);
-    //   var query = new Backendless.DataQuery();
-    //   query.condition = "placeKey = '" + placeKey + "'";
-    //   places.find(query, new Backendless.Async(function(result) {
-    //     if (result.data.length > 0) {
-    //       def.resolve(result.data[0]);
-    //     } else {
-    //       def.resolve(undefined);
-    //     }
-    //   }, function(error) {
-    //     def.resolve(undefined);
-    //   }));
-    //   return def.promise;
-    // }
-    //
-    // function insertPlace(place, onSuccess, onFailure) {
-    //
-    //   retrievePlace(place.placeKey).then(function(existingPlace) {
-    //       if (existingPlace) {
-    //         onSuccess(existingPlace);
-    //       } else {
-    //         var places = Backendless.Persistence.of(Place);
-    //         var placeObject = new Place({
-    //           placeKey: place.key,
-    //           placeName: place.name,
-    //           placeSource: place.source,
-    //           placeSid: place.sid,
-    //           placeLocationLatitude: place.location.latitude,
-    //           placeLocationLongitude: place.location.longitude
-    //         });
-    //         places.save(placeObject, new Backendless.Async(onSuccess,
-    //           onFailure));
-    //       }
-    //     },
-    //     function() {
-    //       def.reject;
-    //     });
-    // }
 
     function insertDevice(device, onSuccess, onFailure) {
         var devices = Backendless.Persistence.of(Device);

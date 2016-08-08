@@ -1,13 +1,13 @@
-angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location.Service'])
-    .factory('seeCrowdModel', ['$q', 'seeCrowdService', 'mapService',
-        'configService', 'dateService', '$rootScope', 'locationService', function($q, seeCrowdService, mapService,
+angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location.Service', 'config'])
+    .factory('seeCrowdModel', ['seeCrowdService', 'mapService',
+        'configService', 'dateService', '$rootScope', 'locationService', function(seeCrowdService, mapService,
             configService, dateService, $rootScope, locationService) {
             var selectedPlaceBasedCrowd, placeBasedCrowdsArray = [], boundingBox,
             mapDivId = 'map', map, markers = [], reload = true;
 
-            function loadCrowds(filter, onSuccess, onFailure) {
+            function loadCrowds(onSuccess, onFailure) {
                 boundingBox = mapService.getBoundingBox($rootScope.location, 0.1);
-                seeCrowdService.retrieveCrowds(filter).then(function(results) {
+                seeCrowdService.retrieveCrowds().then(function(results) {
                         onSuccess(loadPlaceBasedCrowds(results));
                     },
                     function() {
@@ -50,13 +50,13 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
 
                     //here algorithm
-                    if($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
+                    if($rootScope.location.latitude) {
                         distance = locationService.getDistanceBetweenLocations($rootScope.location, crowd.crowdLocation);
-                        if(distance > 0.03) {
-                            placeBasedCrowds[crowd.placeKey].distanceGroup = 10;
+                        if(distance > configService.NEARBY_DISTANCE) {
+                            placeBasedCrowds[crowd.placeKey].distanceGroup = 10; //not here
                         }
                         else {
-                            placeBasedCrowds[crowd.placeKey].distanceGroup = 0;
+                            placeBasedCrowds[crowd.placeKey].distanceGroup = 0; //here
                         }
                     }
                 }

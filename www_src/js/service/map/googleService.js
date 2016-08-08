@@ -1,5 +1,6 @@
 
-angular.module('google', []).factory('googleService', ['$compile','$rootScope', function($compile, $rootScope) {
+angular.module('google', ['config']).
+	factory('googleService', ['$compile','$rootScope', 'configService', function($compile, $rootScope, configService) {
 	
 	var placeTypes = ['accounting',
 	'airport',
@@ -181,11 +182,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		});
 		return marker;
 	}
-
-	function clearMarkers(){
-
-	}
-
+	
 	function getNearbyPlaces(location, onSuccess) {
 		var nearPlaces = [];
 		var latLng = new google.maps.LatLng(location.latitude, location.longitude);
@@ -197,7 +194,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		var service = new google.maps.places.PlacesService(map);
 		var nearbyRequest = {
 			location: latLng,
-			radius: 30,
+			radius: configService.NEARBY_DISTANCE*1000, //m
 			types: placeTypes
 		};
 		service.nearbySearch(nearbyRequest, function(results, status) {

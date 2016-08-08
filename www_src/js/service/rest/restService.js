@@ -6,8 +6,8 @@ angular.module('rest', ['ngResource']).factory('crowdRest', ['$resource',
         update: {
           method: 'PUT',
           headers: {
-            'application-id': 'A556DD00-0405-02E1-FFF4-43454755FC00',
-            'secret-key': 'F2FE2852-98DD-67CB-FFF6-61CE115F9800',
+            'application-id': '<%=APPLICATION_ID%>',
+            'secret-key': '<%=REST_SECRET_KEY%>',
             'Content-Type': 'application/json',
             'application-type': 'REST'
           }

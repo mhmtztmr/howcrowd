@@ -1,13 +1,11 @@
-app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
-    'mapModel', 'mapService', 'setCrowdModel', '$filter',
-    function($rootScope, $scope, $timeout, mapModel, mapService,
-        setCrowdModel, $filter) {
+app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapService', 'setCrowdModel', '$filter',
+    function($rootScope, $scope, $timeout, mapService, setCrowdModel, $filter) {
 
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 
         function loadNearbyPlaces(success, fail){
-            setCrowdModel.loadNearbyPlaces($rootScope.location).then(
+            setCrowdModel.loadNearbyPlaces().then(
                 function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;

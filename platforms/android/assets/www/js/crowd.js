@@ -1,5 +1,5 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
-    'seeCrowd.Service', 'identification', 'map.Model', 'map.Service',
+    'seeCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service'
 ]);
 
@@ -184,22 +184,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
         $scope.crowds = 'pending';
 
         function loadCrowds(success, fail){
-
-            function getFilter() {
-                var now = dateService.getDBDate(new Date()),
-                oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20)),
-                boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), 15);
-
-                return {
-                    date: {
-                        start: oneHourAgo,
-                        end: now
-                    },
-                    location: boundingBox
-                };
-            }
-
-            seeCrowdModel.loadCrowds(getFilter(), function(pbca) {
+            seeCrowdModel.loadCrowds(function(pbca) {
                 placeBasedCrowdsArray = pbca;
                 $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
                 if(tab === 'map'){
@@ -296,7 +281,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 itemScope.item = $scope.crowds[index];
             },
             calculateItemHeight: function(index) {
-                return 108;
+                return 88;
             },
             countItems: function() {
                 return $scope.crowds.length;
@@ -315,7 +300,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     if (myFeedback) {
       $scope.myFeedback = myFeedback.isPositive;
     }
-
+    
     $scope.givePositiveFeedback = function() {
       giveFeedback(true);
     };
@@ -387,11 +372,11 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
       fnc: function() {
         var placeName = $scope.selectedPlaceBasedCrowd.placeName,
-        lastCrowdValue = $scope.selectedPlaceBasedCrowd.crowdLast.crowdValue,
         lastUpdateDate = new Date($scope.selectedPlaceBasedCrowd.crowdLast.crowdDate).toLocaleString(),
         averageValue = $scope.selectedPlaceBasedCrowd.crowdAverage;
 
-        window.plugins.socialsharing.share(placeName + ' [' + lastUpdateDate + ']\nLast: ' + lastCrowdValue + '%\tAvg.: ' + averageValue + '%'); 
+        window.plugins.socialsharing.share(placeName + ' [' + lastUpdateDate + ']\n' +
+            $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
 
       }
     }];
@@ -403,21 +388,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         }
       });
     }
-
-    $scope.shareChannels = [{
-      label: $rootScope.lang.CROWD_SHARE_MENU.WHATSAPP,
-      fnc: function() {
-        window.plugins.socialsharing.shareViaWhatsApp(
-          $scope.selectedPlaceBasedCrowd.placeName + ' last crowd value: ' +
-          $scope.selectedPlaceBasedCrowd.crowdLast, null /* img */ , null /* url */ ,
-          function() {
-            console.log('share ok');
-          },
-          function(errormsg) {
-            alert(errormsg);
-          });
-      }
-    }];
 
     $scope.reportReasons = [{
       label: $rootScope.lang.CROWD_REPORT_MENU.INAPPROPRIATE,
@@ -440,16 +410,14 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
   }
 ]);
 
-app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
-    'mapModel', 'mapService', 'setCrowdModel', '$filter',
-    function($rootScope, $scope, $timeout, mapModel, mapService,
-        setCrowdModel, $filter) {
+app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapService', 'setCrowdModel', '$filter',
+    function($rootScope, $scope, $timeout, mapService, setCrowdModel, $filter) {
 
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 
         function loadNearbyPlaces(success, fail){
-            setCrowdModel.loadNearbyPlaces($rootScope.location).then(
+            setCrowdModel.loadNearbyPlaces().then(
                 function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
@@ -523,42 +491,24 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout',
 ]);
 
 app.controller('setCrowdLevelController', ['$rootScope', '$scope',
-  'setCrowdModel', 'guidService', 'dateService', 'mapService',
-  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService) {
+  'setCrowdModel', 'guidService', 'dateService', 'mapService', 'crowdDisplayService',
+  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService, crowdDisplayService) {
 
     $scope.levels = [{
-      value: 100,
-      text: 100
-    }, {
-      value: 90,
-      text: 90
-    }, {
-      value: 80,
-      text: 80
+      value: 95,
+      text: crowdDisplayService.getCrowdDisplayText(95)
     }, {
       value: 70,
-      text: 70
-    }, {
-      value: 60,
-      text: 60
+      text: crowdDisplayService.getCrowdDisplayText(70)
     }, {
       value: 50,
-      text: 50
-    }, {
-      value: 40,
-      text: 40
+      text: crowdDisplayService.getCrowdDisplayText(50)
     }, {
       value: 30,
-      text: 30
+      text: crowdDisplayService.getCrowdDisplayText(30)
     }, {
-      value: 20,
-      text: 20
-    }, {
-      value: 10,
-      text: 10
-    }, {
-      value: 0,
-      text: 0
+      value: 5,
+      text: crowdDisplayService.getCrowdDisplayText(5)
     }];
 
     $scope.selectedPlace = setCrowdModel.getSelectedPlace();
@@ -738,56 +688,16 @@ var feedbackModel = function() {
 angular.module('feedback', [])
   .factory('feedbackModel', feedbackModel);
 
-var mapModel = function($q, mapService) {
-  var nearbyPlaces = [];
-  var loadStatus = '';
-
-  function loadNearbyPlaces(location, serverRequest) {
-    var def = $q.defer();
-    if (serverRequest === true) {
-      loadStatus = '';
-    }
-    if (loadStatus === 'loaded') {
-      def.resolve(nearbyPlaces);
-    } else if (loadStatus === 'pending') {
-      def.resolve([]);
-    } else {
-      loadStatus = 'pending';
-      mapService.retrieveNearbyPlaces(location).then(function(results) {
-          nearbyPlaces = results;
-          loadStatus = 'loaded';
-          def.resolve(nearbyPlaces);
-        },
-        function() {
-          def.resolve(nearbyPlaces);
-        });
-    }
-    return def.promise;
-  }
-
-  function getNearbyPlaces() {
-    return nearbyPlaces;
-  }
-
-  return {
-    loadNearbyPlaces: loadNearbyPlaces,
-    getNearbyPlaces: getNearbyPlaces
-  };
-};
-
-angular.module('map.Model', ['map.Service'])
-  .factory('mapModel', ['$q', 'mapService', mapModel]);
-
-angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location.Service'])
-    .factory('seeCrowdModel', ['$q', 'seeCrowdService', 'mapService',
-        'configService', 'dateService', '$rootScope', 'locationService', function($q, seeCrowdService, mapService,
+angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location.Service', 'config'])
+    .factory('seeCrowdModel', ['seeCrowdService', 'mapService',
+        'configService', 'dateService', '$rootScope', 'locationService', function(seeCrowdService, mapService,
             configService, dateService, $rootScope, locationService) {
             var selectedPlaceBasedCrowd, placeBasedCrowdsArray = [], boundingBox,
             mapDivId = 'map', map, markers = [], reload = true;
 
-            function loadCrowds(filter, onSuccess, onFailure) {
+            function loadCrowds(onSuccess, onFailure) {
                 boundingBox = mapService.getBoundingBox($rootScope.location, 0.1);
-                seeCrowdService.retrieveCrowds(filter).then(function(results) {
+                seeCrowdService.retrieveCrowds().then(function(results) {
                         onSuccess(loadPlaceBasedCrowds(results));
                     },
                     function() {
@@ -830,13 +740,13 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
 
                     //here algorithm
-                    if($rootScope.location && $rootScope.location.latitude && $rootScope.location.longitude) {
+                    if($rootScope.location.latitude) {
                         distance = locationService.getDistanceBetweenLocations($rootScope.location, crowd.crowdLocation);
-                        if(distance > 0.03) {
-                            placeBasedCrowds[crowd.placeKey].distanceGroup = 10;
+                        if(distance > configService.NEARBY_DISTANCE) {
+                            placeBasedCrowds[crowd.placeKey].distanceGroup = 10; //not here
                         }
                         else {
-                            placeBasedCrowds[crowd.placeKey].distanceGroup = 0;
+                            placeBasedCrowds[crowd.placeKey].distanceGroup = 0; //here
                         }
                     }
                 }
@@ -924,13 +834,13 @@ var setCrowdModel = function($q, setCrowdService, mapService) {
         return selectedPlace;
     }
 
-    function loadNearbyPlaces(location) {
+    function loadNearbyPlaces() {
         var def = $q.defer(), nearbyPlaces = [],
             servicePromiseArray = [],
             services = [mapService, setCrowdService];
 
         angular.forEach(services, function(value, key) {
-            servicePromiseArray.push(value.retrieveNearbyPlaces(location).then(
+            servicePromiseArray.push(value.retrieveNearbyPlaces().then(
                 function(entries) {
                     if(entries && entries.length > 0) {
                         Array.prototype.push.apply(nearbyPlaces,entries);
@@ -964,9 +874,9 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
 
     function init() {
         var APPLICATION_ID = 'A556DD00-0405-02E1-FFF4-43454755FC00',
-            SECRET_KEY = '98B3E3B5-F807-2E77-FF87-8A7D553DE200',
+            JS_SECRET_KEY = '98B3E3B5-F807-2E77-FF87-8A7D553DE200',
             VERSION = 'v1'; //default application version;
-        Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
+        Backendless.initApp(APPLICATION_ID, JS_SECRET_KEY, VERSION);
     }
 
     /******* DB Models */
@@ -1031,47 +941,6 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         });
         crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
     }
-
-    // function retrievePlace(placeKey, onSuccess) {
-    //   var def = $q.defer();
-    //   var places = Backendless.Persistence.of(Place);
-    //   var query = new Backendless.DataQuery();
-    //   query.condition = "placeKey = '" + placeKey + "'";
-    //   places.find(query, new Backendless.Async(function(result) {
-    //     if (result.data.length > 0) {
-    //       def.resolve(result.data[0]);
-    //     } else {
-    //       def.resolve(undefined);
-    //     }
-    //   }, function(error) {
-    //     def.resolve(undefined);
-    //   }));
-    //   return def.promise;
-    // }
-    //
-    // function insertPlace(place, onSuccess, onFailure) {
-    //
-    //   retrievePlace(place.placeKey).then(function(existingPlace) {
-    //       if (existingPlace) {
-    //         onSuccess(existingPlace);
-    //       } else {
-    //         var places = Backendless.Persistence.of(Place);
-    //         var placeObject = new Place({
-    //           placeKey: place.key,
-    //           placeName: place.name,
-    //           placeSource: place.source,
-    //           placeSid: place.sid,
-    //           placeLocationLatitude: place.location.latitude,
-    //           placeLocationLongitude: place.location.longitude
-    //         });
-    //         places.save(placeObject, new Backendless.Async(onSuccess,
-    //           onFailure));
-    //       }
-    //     },
-    //     function() {
-    //       def.reject;
-    //     });
-    // }
 
     function insertDevice(device, onSuccess, onFailure) {
         var devices = Backendless.Persistence.of(Device);
@@ -1293,12 +1162,117 @@ angular.module('formatter', [])
 
 var configService = function() {
   return {
-    SEE_CROWDS_IN_RADIUS: 0.5
+    NEARBY_DISTANCE: 0.03, //km
+    FAR_DISTANCE: 15, //km => city
+    NEARBY_TIME: 1 //hour
   };
 };
 
 angular.module('config', [])
   .factory('configService', configService);
+
+var crowdDisplayService = function() {
+
+  function getCrowdDisplayText(value){
+      if(value <= 10) {
+        return "Sinek avlıyor"
+      }
+      else if(value <= 40) {
+        return "Sakin"
+      }
+      else if(value <= 60) {
+        return "Normal"
+      }
+      else if(value <= 90) {
+        return "Kalabalık"
+      }
+      else {
+        return "Tıkılm tıklım"
+      }
+  }
+
+  return {
+    getCrowdDisplayText: getCrowdDisplayText
+  };
+};
+
+angular.module('crowdDisplay.Service', [])
+  .factory('crowdDisplayService', [crowdDisplayService]);
+
+var seeCrowdService = function(dbService, configService, dateService, mapService) {
+
+  //filter.date.start, filter.date.end,
+  //filter.location.latitude.upper, filter.location.latitude.lower, filter.location.longitude.upper, filter.location.longitude.lower
+  function retrieveCrowds() {
+
+      function getFilter() {
+          var now = dateService.getDBDate(new Date()),
+          oneHourAgo = new Date(new Date(now).setHours(now.getHours() - configService.NEARBY_TIME)),
+          boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), configService.FAR_DISTANCE);
+
+          return {
+              date: {
+                  start: oneHourAgo,
+                  end: now
+              },
+              location: boundingBox
+          };
+      }
+      return dbService.retrieveCrowds(getFilter());
+  }
+
+  function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
+    dbService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
+  }
+
+  function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
+    dbService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
+  }
+
+  return {
+    retrieveCrowds: retrieveCrowds,
+    giveFeedback: giveFeedback,
+    reportCrowd: reportCrowd
+  };
+};
+
+angular.module('seeCrowd.Service', ['db', 'config', 'date', 'map.Service'])
+  .factory('seeCrowdService', ['dbService', 'configService', 'dateService', 'mapService', seeCrowdService]);
+
+var setCrowdService = function($rootScope, dbService, dateService, mapService, configService) {
+
+  function insertCrowd(place, crowd, device, onSuccess, onFailure) {
+    dbService.insertCrowd(place, crowd, device, onSuccess, onFailure);
+  }
+
+  function retrieveNearbyPlaces() {
+
+    function getFilter() {
+      var now = dateService.getDBDate(new Date()),
+      oneHourAgo = new Date(new Date(now).setHours(now.getHours() - configService.NEARBY_TIME)),
+      boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), configService.NEARBY_DISTANCE);
+
+      return {
+        date: {
+          start: oneHourAgo,
+          end: now
+        },
+        location: boundingBox,
+        sources: ['custom']
+      };
+    }
+
+    return dbService.retrieveNearbyPlaces(getFilter());
+  }
+
+  return {
+    insertCrowd: insertCrowd,
+    retrieveNearbyPlaces: retrieveNearbyPlaces
+  };
+};
+
+angular.module('setCrowd.Service', ['db', 'date', 'map.Service', 'config'])
+  .factory('setCrowdService', ['$rootScope' ,'dbService', 'dateService', 'mapService', 'configService', setCrowdService]);
 
 var dateService = function() {
 
@@ -1882,7 +1856,8 @@ angular.module('location.Service', ['map.Service'])
 		};
 	}]);
 
-angular.module('google', []).factory('googleService', ['$compile','$rootScope', function($compile, $rootScope) {
+angular.module('google', ['config']).
+	factory('googleService', ['$compile','$rootScope', 'configService', function($compile, $rootScope, configService) {
 	
 	var placeTypes = ['accounting',
 	'airport',
@@ -2064,11 +2039,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		});
 		return marker;
 	}
-
-	function clearMarkers(){
-
-	}
-
+	
 	function getNearbyPlaces(location, onSuccess) {
 		var nearPlaces = [];
 		var latLng = new google.maps.LatLng(location.latitude, location.longitude);
@@ -2080,7 +2051,7 @@ angular.module('google', []).factory('googleService', ['$compile','$rootScope', 
 		var service = new google.maps.places.PlacesService(map);
 		var nearbyRequest = {
 			location: latLng,
-			radius: 30,
+			radius: configService.NEARBY_DISTANCE*1000, //m
 			types: placeTypes
 		};
 		service.nearbySearch(nearbyRequest, function(results, status) {
@@ -2236,9 +2207,9 @@ var mapService = function($q, $rootScope, googleService) {
         return googleService.markPlaceOnMap(map, placeBasedCrowd, clickEvent);
     }
 
-    function retrieveNearbyPlaces(location) {
+    function retrieveNearbyPlaces() {
         var def = $q.defer();
-        googleService.getNearbyPlaces(location, function(nearbyPlaces) {
+        googleService.getNearbyPlaces(angular.fromJson(localStorage.getItem('location')), function(nearbyPlaces) {
                 def.resolve(nearbyPlaces);
             },
             function() {
@@ -2282,68 +2253,6 @@ angular.module('rest', ['ngResource']).factory('crowdRest', ['$resource',
       });
   }
 ]);
-
-var seeCrowdService = function(dbService) {
-
-  //filter.date.start, filter.date.end,
-  //filter.location.latitude.upper, filter.location.latitude.lower, filter.location.longitude.upper, filter.location.longitude.lower
-  function retrieveCrowds(filter) {
-    return dbService.retrieveCrowds(filter);
-  }
-
-  function giveFeedback(crowd, isPositive, onSuccess, onFailure) {
-    dbService.giveFeedback(crowd, isPositive, onSuccess, onFailure);
-  }
-
-  function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
-    dbService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
-  }
-
-  return {
-    retrieveCrowds: retrieveCrowds,
-    giveFeedback: giveFeedback,
-    reportCrowd: reportCrowd
-  };
-};
-
-angular.module('seeCrowd.Service', ['db'])
-  .factory('seeCrowdService', ['dbService', seeCrowdService]);
-
-var setCrowdService = function($rootScope, dbService, dateService, mapService) {
-
-  function insertCrowd(place, crowd, device, onSuccess, onFailure) {
-    dbService.insertCrowd(place, crowd, device, onSuccess, onFailure);
-  }
-
-
-  function retrieveNearbyPlaces(location) {
-
-    function getFilter() {
-      var now = dateService.getDBDate(new Date());
-      var oneHourAgo = new Date(new Date(now).setHours(now.getHours() - 1));
-      var boundingBox = mapService.getBoundingBox($rootScope.location, 0.03);
-
-      return {
-        date: {
-          start: oneHourAgo,
-          end: now
-        },
-        location: boundingBox,
-        sources: ['custom']
-      };
-    }
-
-    return dbService.retrieveNearbyPlaces(getFilter());
-  }
-
-  return {
-    insertCrowd: insertCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
-  };
-};
-
-angular.module('setCrowd.Service', ['db', 'date', 'map.Service'])
-  .factory('setCrowdService', ['$rootScope' ,'dbService', 'dateService', 'mapService', setCrowdService]);
 
 var settingsService = function($rootScope) {
     function loadSettings() {

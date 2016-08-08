@@ -91,9 +91,9 @@ var mapService = function($q, $rootScope, googleService) {
         return googleService.markPlaceOnMap(map, placeBasedCrowd, clickEvent);
     }
 
-    function retrieveNearbyPlaces(location) {
+    function retrieveNearbyPlaces() {
         var def = $q.defer();
-        googleService.getNearbyPlaces(location, function(nearbyPlaces) {
+        googleService.getNearbyPlaces(angular.fromJson(localStorage.getItem('location')), function(nearbyPlaces) {
                 def.resolve(nearbyPlaces);
             },
             function() {
