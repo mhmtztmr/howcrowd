@@ -15,11 +15,11 @@
     <feature name="NetworkStatus">
         <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
-    <feature name="SocialSharing">
-        <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
-    </feature>
     <feature name="DialogGPS">
         <param name="android-package" value="cl.rmd.cordova.dialoggps.DialogGPS" />
+    </feature>
+    <feature name="SocialSharing">
+        <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
     </feature>
     <preference name="AndroidPersistentFileLocation" value="Internal" />
     <feature name="Diagnostic">

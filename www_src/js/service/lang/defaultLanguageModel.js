@@ -23,8 +23,7 @@ var defaultLanguageModel = function() {
             "MIN_AGO": "min(s) ago",
             "NO_PLACE": "No recent crowd. Tap to enter one!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
-            "SEARCH_INCITY": "Search: Last One Hour, Around 15 kilometers",
-            "SEARCH_HERE": "Search: Last One Hour, Around 50 meters"
+            "SEARCH_INPUT": "Last 1h, Around 15kms"
         },
         "SEE_CROWD_POPOVER_MENU": {
             "DISPLAY_TYPE": "Display Type"
@@ -52,7 +51,8 @@ var defaultLanguageModel = function() {
             "NO_PLACE": "No places around. Tap to enter a custom place!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "PULL_TO_REFRESH": "Pull down to refresh",
-            "RELEASE_TO_REFRESH": "Release to refresh"
+            "RELEASE_TO_REFRESH": "Release to refresh",
+            "SEARCH_INPUT": "Search"
         },
         "CROWD_VALUES" : {
           "100" : "100",
@@ -93,6 +93,15 @@ var defaultLanguageModel = function() {
         "SETTINGS": {
             "CONTENT_SETTINGS": "Content Settings",
             "DISPLAY_CUSTOM_PLACES": "Display custom places"
+        },
+        "NATIVE_DIALOG": {
+            "GPS": {
+                "MESSAGE": "Your GPS is Disabled, this app needs to be enable to works.",
+                "DESCRIPTION": "Use GPS, with wifi or 3G.",
+                "TITLE": "Please Turn on GPS",
+                "YES": "Yes",
+                "NO": "No"
+            }
         },
         "CONFIRM": {
             "CONFIRM": "Confirm",

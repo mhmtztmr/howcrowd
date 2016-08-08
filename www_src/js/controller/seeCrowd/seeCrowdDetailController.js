@@ -1,8 +1,8 @@
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdIncityModel', 'feedbackModel', 'seeCrowdService',
-  function($rootScope, $scope, seeCrowdIncityModel,
+  'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
+  function($rootScope, $scope, seeCrowdModel,
     feedbackModel, seeCrowdService) {
-    $scope.selectedPlaceBasedCrowd = seeCrowdIncityModel.getSelectedPlaceBasedCrowd();
+    $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
     if (myFeedback) {
@@ -29,7 +29,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         } else {
           $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback++;
         }
-        seeCrowdIncityModel.giveFeedback(crowd, isPositive,
+        seeCrowdModel.giveFeedback(crowd, isPositive,
           function() {
             feedbackModel.insertFeedback(crowd.crowdId, isPositive);
           },
@@ -72,13 +72,22 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
       fnc: function() {
         app.navi.pushPage('templates/crowd-place-detail.html', {
-          selectedPlaceBasedCrowd: $scope.selectedPlaceBasedCrowd
+          selectedPlaceBasedCrowd: $scope.selectedPlaceBasedCrowd, 
+          animation:'lift'
         });
       }
     }, {
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
       fnc: function() {
-        $scope.dialogs['templates/share-crowd.html'].show();
+        var placeName = $scope.selectedPlaceBasedCrowd.placeName,
+        lastCrowdValue = $scope.selectedPlaceBasedCrowd.crowdLast.crowdValue,
+        lastUpdateDate = new Date($scope.selectedPlaceBasedCrowd.crowdLast.crowdDate).toLocaleString(),
+        averageValue = $scope.selectedPlaceBasedCrowd.crowdAverage;
+
+        window.plugins.socialsharing.share(placeName + ' [' + lastUpdateDate + ']\n' +
+            $rootScope.lang.SEE_CROWD_MENU.LAST_VALUE + ': ' + lastCrowdValue + '%\t' + 
+            $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
+
       }
     }];
     if ($scope.selectedPlaceBasedCrowd.placeSource === 'custom') {
@@ -89,21 +98,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
         }
       });
     }
-
-    $scope.shareChannels = [{
-      label: $rootScope.lang.CROWD_SHARE_MENU.WHATSAPP,
-      fnc: function() {
-        window.plugins.socialsharing.shareViaWhatsApp(
-          $scope.selectedPlaceBasedCrowd.placeName + ' last crowd value: ' +
-          $scope.selectedPlaceBasedCrowd.crowdLast, null /* img */ , null /* url */ ,
-          function() {
-            console.log('share ok');
-          },
-          function(errormsg) {
-            alert(errormsg);
-          });
-      }
-    }];
 
     $scope.reportReasons = [{
       label: $rootScope.lang.CROWD_REPORT_MENU.INAPPROPRIATE,

@@ -22,13 +22,13 @@
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
-        "cordova-plugin-x-socialsharing": {
-            "PACKAGE_NAME": "com.oztemur.crowd"
-        },
         "cl.rmd.cordova.dialoggps": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
         "cordova.plugins.diagnostic.api-22": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova-plugin-x-socialsharing": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         }
     },

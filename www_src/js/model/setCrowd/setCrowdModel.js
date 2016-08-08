@@ -1,68 +1,48 @@
 var setCrowdModel = function($q, setCrowdService, mapService) {
-  var selectedPlace;
-  var nearbyPlaces = [];
-  var loadStatus = '';
+    var selectedPlace;
 
-  function insertCrowd(place, crowd, device, onSuccess, onFailure) {
-    setCrowdService.insertCrowd(place, crowd, device, onSuccess, onFailure);
-  }
-
-  function selectPlace(place) {
-    selectedPlace = place;
-    app.navi.pushPage('templates/set-crowd-level.html');
-  }
-
-  function getSelectedPlace() {
-    return selectedPlace;
-  }
-
-  function loadNearbyPlaces(location, serverRequest) {
-    var def = $q.defer(),
-      servicePromiseArray = [],
-      services = [mapService, setCrowdService];
-
-    if (serverRequest === true) {
-      nearbyPlaces = [];
-      loadStatus = '';
+    function insertCrowd(place, crowd, device, onSuccess, onFailure) {
+        setCrowdService.insertCrowd(place, crowd, device, onSuccess, onFailure);
     }
-    if (loadStatus === 'loaded') {
-      def.resolve(nearbyPlaces);
-    } else if (loadStatus === 'pending') {
-      def.resolve([]);
-    } else {
-      loadStatus = 'pending';
 
-      angular.forEach(services, function(value, key) {
-        servicePromiseArray.push(value.retrieveNearbyPlaces(location).then(
-          function(entries) {
-            if(entries && entries.length > 0) {
-              Array.prototype.push.apply(nearbyPlaces,entries);
-            }
-          }));
-      });
+    function selectPlace(place) {
+        selectedPlace = place;
+        app.navi.pushPage('templates/set-crowd-level.html', {animation: 'lift'});
+    }
 
-      $q.all(servicePromiseArray).then(function() {
-          loadStatus = 'loaded';
-          def.resolve(nearbyPlaces);
+    function getSelectedPlace() {
+        return selectedPlace;
+    }
+
+    function loadNearbyPlaces(location) {
+        var def = $q.defer(), nearbyPlaces = [],
+            servicePromiseArray = [],
+            services = [mapService, setCrowdService];
+
+        angular.forEach(services, function(value, key) {
+            servicePromiseArray.push(value.retrieveNearbyPlaces(location).then(
+                function(entries) {
+                    if(entries && entries.length > 0) {
+                        Array.prototype.push.apply(nearbyPlaces,entries);
+                    }
+                }));
+        });
+
+        $q.all(servicePromiseArray).then(function() {
+            def.resolve(nearbyPlaces);
         },
         function() {
-          def.resolve(nearbyPlaces);
+            def.reject();
         });
-      return def.promise;
+        return def.promise;
     }
-    return def.promise;
-  }
 
-  function getNearbyPlaces() {
-    return nearbyPlaces;
-  }
-  return {
-    insertCrowd: insertCrowd,
-    selectPlace: selectPlace,
-    getSelectedPlace: getSelectedPlace,
-    getNearbyPlaces: getNearbyPlaces,
-    loadNearbyPlaces: loadNearbyPlaces
-  };
+    return {
+        insertCrowd: insertCrowd,
+        selectPlace: selectPlace,
+        getSelectedPlace: getSelectedPlace,
+        loadNearbyPlaces: loadNearbyPlaces
+    };
 };
 
 angular.module('setCrowd.Model', ['setCrowd.Service', 'map.Service'])

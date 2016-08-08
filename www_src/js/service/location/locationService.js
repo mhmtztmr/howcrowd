@@ -20,7 +20,7 @@ angular.module('location.Service', ['map.Service'])
 					};
 
 					if(oldLocation.latitude) {
-						$rootScope.location.delta = mapService.getDistanceBetweenLocations($rootScope.location, oldLocation);
+						$rootScope.location.delta = getDistanceBetweenLocations($rootScope.location, oldLocation);
 						$rootScope.location.cumulativeDelta = oldLocation.cumulativeDelta;
 						$rootScope.location.overallDelta = oldLocation.overallDelta;
 					}
@@ -108,23 +108,49 @@ angular.module('location.Service', ['map.Service'])
 
 		function openLocationDialog(onNo, onLater, onYes){
 			document.addEventListener("deviceready",function() {
-				cordova.dialogGPS("Your GPS is Disabled, this app needs to be enable to works.",//message
-                            "Use GPS, with wifi or 3G.",//description
+				cordova.dialogGPS($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,//message
+                            $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION,//description
                             function(buttonIndex){//callback
                               switch(buttonIndex) {
                                 case 0:  onNo(); break;//cancel
                                 case 1:  onLater(); break;//neutro option
                                 case 2:  onYes(); break;//positive option
                               }},
-                              "Please Turn on GPS",//title
-                              ["No","Yes"]);//buttons
+                              $rootScope.lang.NATIVE_DIALOG.GPS.TITLE,//title
+                              [$rootScope.lang.NATIVE_DIALOG.GPS.NO, $rootScope.lang.NATIVE_DIALOG.GPS.YES]);//buttons
 			 });
 		}
+
+
+	    //in km
+	    function getDistanceBetweenLocations(location1, location2) {
+	        // helper functions (degrees<–>radians)
+	        Number.prototype.degToRad = function() {
+	            return this * (Math.PI / 180);
+	        };
+	        Number.prototype.radToDeg = function() {
+	            return (180 * this) / Math.PI;
+	        };
+
+	        R = 6378.1; //Radius of the earth in km
+	        var dLat = (location2.latitude - location1.latitude).degToRad(); //deg2rad below
+	        var dLon = (location2.longitude - location1.longitude).degToRad();
+	        var a =
+	            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+	            Math.cos((location1.latitude).degToRad()) * Math.cos((
+	                location2
+	                .latitude).degToRad()) *
+	            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+	        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	        var d = R * c; // Distance in km
+	        return d;
+	    }
 
 		return {
 			openLocationDialog: openLocationDialog,
 			checkLocationAvailability: checkLocationAvailability,
 			startLocationInterval: startLocationInterval,
-			stopLocationInterval: stopLocationInterval
+			stopLocationInterval: stopLocationInterval,
+			getDistanceBetweenLocations: getDistanceBetweenLocations
 		};
 	}]);

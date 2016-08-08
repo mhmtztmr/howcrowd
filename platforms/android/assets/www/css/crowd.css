@@ -1,3 +1,8 @@
+.truncate {
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+}
 
 .profile-card {
   width: 100%;
@@ -140,7 +145,15 @@
     height: 100%;
     background-color:red;
   }
-
+  .search-crowd {
+    width:80%; 
+    height:100%; 
+    border:none;
+    color:white; 
+    margin: 0 auto;
+    font-size: 20px;
+    background: transparent;
+  }
   .search-crowd-cancel {
     display: block !important;
   }
@@ -153,8 +166,13 @@
     right: 0;
     overflow-y: auto;
   }
+
   ons-fab {
     position: absolute !important;
+  }
+
+  .ons-icon.fa-repeat {
+      color: #AB2626;
   }
 .positive-feedback {
   color: green;

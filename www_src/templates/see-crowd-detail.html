@@ -5,8 +5,8 @@
         <ons-back-button></ons-back-button>
       </div>
       <div class="center">
-        <div class="crowd-name">
-          <img ng-src="img/sources/{{selectedPlaceBasedCrowd.placeSource}}.png" /> {{selectedPlaceBasedCrowd.placeName}}
+        <div class="crowd-name truncate">
+           <ons-icon ng-if="selectedPlaceBasedCrowd.placeSource ==='custom'" icon="fa-map-signs"></ons-icon> {{selectedPlaceBasedCrowd.placeName}}
         </div>
       </div>
       <div class="right">
