@@ -96,8 +96,12 @@ module.exports = function(grunt) {
                     from: /<%=APPLICATION_ID%>/g,
                     to: '<%= grunt.option(\"credentials\").backendless.applicationId %>'
                 }, {
-                    from: /<%=SECRET_KEY%>/g,
-                    to: '<%= grunt.option(\"credentials\").backendless.secretKey %>'
+                    from: /<%=JS_SECRET_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.jsSecretKey %>'
+
+                }, {
+                    from: /<%=REST_SECRET_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.restSecretKey %>'
 
                 }, {
                     from: /<%=VERSION%>/g,

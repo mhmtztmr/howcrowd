@@ -5,22 +5,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
         $scope.crowds = 'pending';
 
         function loadCrowds(success, fail){
-
-            function getFilter() {
-                var now = dateService.getDBDate(new Date()),
-                oneHourAgo = new Date(new Date(now).setDate(now.getDate() - 20)),
-                boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), 15);
-
-                return {
-                    date: {
-                        start: oneHourAgo,
-                        end: now
-                    },
-                    location: boundingBox
-                };
-            }
-
-            seeCrowdModel.loadCrowds(getFilter(), function(pbca) {
+            seeCrowdModel.loadCrowds(function(pbca) {
                 placeBasedCrowdsArray = pbca;
                 $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
                 if(tab === 'map'){
@@ -117,7 +102,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 itemScope.item = $scope.crowds[index];
             },
             calculateItemHeight: function(index) {
-                return 108;
+                return 88;
             },
             countItems: function() {
                 return $scope.crowds.length;

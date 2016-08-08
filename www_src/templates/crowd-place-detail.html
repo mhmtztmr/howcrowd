@@ -6,7 +6,7 @@
       </div>
       <div class="center">
         <div class="crowd-name">
-          <img ng-src="img/sources/{{selectedPlaceBasedCrowd.placeSource}}.png" /> {{selectedPlaceBasedCrowd.placeName}}
+          <ons-icon ng-if="selectedPlaceBasedCrowd.placeSource ==='custom'" icon="fa-thumb-tack"></ons-icon> {{selectedPlaceBasedCrowd.placeName}}
         </div>
       </div>
     </ons-toolbar>

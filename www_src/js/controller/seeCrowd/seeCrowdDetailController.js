@@ -80,12 +80,10 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
       fnc: function() {
         var placeName = $scope.selectedPlaceBasedCrowd.placeName,
-        lastCrowdValue = $scope.selectedPlaceBasedCrowd.crowdLast.crowdValue,
         lastUpdateDate = new Date($scope.selectedPlaceBasedCrowd.crowdLast.crowdDate).toLocaleString(),
         averageValue = $scope.selectedPlaceBasedCrowd.crowdAverage;
 
         window.plugins.socialsharing.share(placeName + ' [' + lastUpdateDate + ']\n' +
-            $rootScope.lang.SEE_CROWD_MENU.LAST_VALUE + ': ' + lastCrowdValue + '%\t' + 
             $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
 
       }

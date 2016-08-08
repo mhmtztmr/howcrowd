@@ -14,13 +14,13 @@ var setCrowdModel = function($q, setCrowdService, mapService) {
         return selectedPlace;
     }
 
-    function loadNearbyPlaces(location) {
+    function loadNearbyPlaces() {
         var def = $q.defer(), nearbyPlaces = [],
             servicePromiseArray = [],
             services = [mapService, setCrowdService];
 
         angular.forEach(services, function(value, key) {
-            servicePromiseArray.push(value.retrieveNearbyPlaces(location).then(
+            servicePromiseArray.push(value.retrieveNearbyPlaces().then(
                 function(entries) {
                     if(entries && entries.length > 0) {
                         Array.prototype.push.apply(nearbyPlaces,entries);

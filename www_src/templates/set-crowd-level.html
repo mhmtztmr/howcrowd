@@ -8,7 +8,7 @@
       <div ng-if="selectedPlace !== undefined">
         <div class="crowd-name truncate">
           <!-- <img ng-src="img/sources/{{selectedPlace.source}}.png" /> -->
-          <ons-icon ng-if="selectedPlace.placeSource ==='custom'" icon="fa-map-signs"></ons-icon>
+          <ons-icon ng-if="selectedPlace.placeSource ==='custom'" icon="fa-thumb-tack"></ons-icon>
           {{selectedPlace.name}}
         </div>
       </div>
@@ -20,7 +20,7 @@
     <ons-list-item modifier="tappable" ng-click="insertCrowd(level.value, customPlaceName);app.navi.popPage();" ng-repeat="level in levels">
       <ons-row align="center">
         <ons-col>
-            {{$root.lang.CROWD_VALUES[level.value]}}
+            {{level.text}}
         </ons-col>
         <ons-col width="40px" class="crowd-last-value">
           <div class="c100 p{{level.value}} crowd-size center">
