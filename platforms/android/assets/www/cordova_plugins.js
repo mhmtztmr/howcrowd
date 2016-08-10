@@ -226,6 +226,41 @@ module.exports = [
         "clobbers": [
             "window.plugins.socialsharing"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-camera/www/CameraConstants.js",
+        "id": "cordova-plugin-camera.Camera",
+        "clobbers": [
+            "Camera"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-camera/www/CameraPopoverOptions.js",
+        "id": "cordova-plugin-camera.CameraPopoverOptions",
+        "clobbers": [
+            "CameraPopoverOptions"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-camera/www/Camera.js",
+        "id": "cordova-plugin-camera.camera",
+        "clobbers": [
+            "navigator.camera"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-camera/www/CameraPopoverHandle.js",
+        "id": "cordova-plugin-camera.CameraPopoverHandle",
+        "clobbers": [
+            "CameraPopoverHandle"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "clobbers": [
+            "device"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -238,7 +273,10 @@ module.exports.metadata =
     "cordova-plugin-network-information": "1.2.1-dev",
     "cl.rmd.cordova.dialoggps": "0.0.2",
     "cordova.plugins.diagnostic.api-22": "2.3.10-api-22",
-    "cordova-plugin-x-socialsharing": "5.1.1"
+    "cordova-plugin-x-socialsharing": "5.1.1",
+    "cordova-plugin-compat": "1.0.0",
+    "cordova-plugin-camera": "2.2.0",
+    "cordova-plugin-device": "1.1.2"
 };
 // BOTTOM OF METADATA
 });

@@ -1,10 +1,12 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
     'seeCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service'
+    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
-    langService.loadLangData();
+    window.console.log('App running...');
+
+    $rootScope.location = {};
     dbService.init();
     settingsService.loadSettings();
 
@@ -12,43 +14,42 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         navigator.app.exitApp();
     }
 
-    $rootScope.location = {};
-    locationService.checkLocationAvailability(function(){
-        //location is enabled
-        locationService.startLocationInterval();
-    }, function(){
-        locationService.openLocationDialog(function(){
-            //turn gps on rejected
-            exitApp();
+    langService.loadLangData(function(){   
+        locationService.checkLocationAvailability(function(){
+            //location is enabled
+            locationService.startLocationInterval();
         }, function(){
-            //turn gps on skipped. not available now.
-        }, function(){
-            //turn gps on accepted, going to settings...
-            console.log('gps settings initiazlied');
-            var stillNotTurnedOn = 0;
-            var locationAvailabilityInterval = setInterval(function(){
-                if(stillNotTurnedOn < 3) {
-                    console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
-                    locationService.checkLocationAvailability(function(){
-                        console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+            locationService.openGPSDialog(function(){
+                //turn gps on rejected
+                exitApp();
+            }, function(){
+                //turn gps on skipped. not available now.
+            }, function(){
+                //turn gps on accepted, going to settings...
+                window.console.log('gps settings initiazlied');
+                var stillNotTurnedOn = 0;
+                var locationAvailabilityInterval = setInterval(function(){
+                    if(stillNotTurnedOn < 5) {
+                        console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
+                        locationService.checkLocationAvailability(function(){
+                            console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+                            stillNotTurnedOn = 0;
+                            clearInterval(locationAvailabilityInterval);
+                            locationService.startLocationInterval();
+                        }, function(){
+                            console.log('location not available. incrementing counter...');
+                            stillNotTurnedOn++;
+                        });
+                    }
+                    else {
+                        console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
                         stillNotTurnedOn = 0;
                         clearInterval(locationAvailabilityInterval);
                         locationService.startLocationInterval();
-                    }, function(){
-                        console.log('location not available. incrementing counter...');
-                        stillNotTurnedOn++;
-                    });
-                }
-                else {
-                    console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
-                    stillNotTurnedOn = 0;
-                    clearInterval(locationAvailabilityInterval);
-                    locationService.startLocationInterval();
-                }
-            }, 3000);
+                    }
+                }, 2000);
+            });
         });
-    }, function(){
-        //TODO: location availability check failure...
     });
 
     $rootScope.exitApp = function() {
@@ -77,10 +78,10 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
     'identificationService', 'mapService', '$interval', 'langService',
-    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation',
+    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation', 'INTERFACE',
     function($rootScope, $scope, dbService, identificationService,
         mapService, $interval, langService, configService,
-        connection, feedbackModel, settingsService, $cordovaGeolocation) {
+        connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
@@ -103,45 +104,34 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                     }
                 });
             });
-
-            // $interval(function() {
-            //     if (!$rootScope.location.error && myApp.isCordovaApp) {
-            //         //if (myApp.isCordovaApp) {
-            //         $rootScope.checkLocation();
-            //     }
-            // }, 5000);
         }
 
-        if (!myApp.isCordovaApp) {
-            initAppFncs();
-        } else {
-            connection.getConnectionType(function(connType) {
-                if (connType === 'none') {
+        INTERFACE.getConnectionType(function(connType) {
+            if (connType === 'none') {
+                ons.notification.alert({
+                    title: $rootScope.lang.ALERT.ALERT,
+                    message: 'No connection. App will shut down...',
+                    buttonLabel: $rootScope.lang.ALERT.OK,
+                    callback: function(answer) {
+                        navigator.app.exitApp(); // Close the app
+                    }
+                });
+            } else {
+                initAppFncs();
+                connection.addConnectionListener(function() {
+                    //alert('connected');
+                }, function() {
                     ons.notification.alert({
                         title: $rootScope.lang.ALERT.ALERT,
-                        message: 'No connection. App will shut down...',
+                        message: 'Connection lost. App will shut down...',
                         buttonLabel: $rootScope.lang.ALERT.OK,
                         callback: function(answer) {
                             navigator.app.exitApp(); // Close the app
                         }
                     });
-                } else {
-                    initAppFncs();
-                    connection.addConnectionListener(function() {
-                        //alert('connected');
-                    }, function() {
-                        ons.notification.alert({
-                            title: $rootScope.lang.ALERT.ALERT,
-                            message: 'Connection lost. App will shut down...',
-                            buttonLabel: $rootScope.lang.ALERT.OK,
-                            callback: function(answer) {
-                                navigator.app.exitApp(); // Close the app
-                            }
-                        });
-                    });
-                }
-            });
-        }
+                });
+            }
+        });
     }
 ]);
 
@@ -300,7 +290,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     if (myFeedback) {
       $scope.myFeedback = myFeedback.isPositive;
     }
-    
+
     $scope.givePositiveFeedback = function() {
       giveFeedback(true);
     };
@@ -540,7 +530,8 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
           value: crowdValue,
           date: dateService.getDBDate(new Date()),
           agree: 1,
-          disagree: 0
+          disagree: 0,
+          photo: $scope.crowdPhoto
         };
 
         //TODO: To be discussed if needed or not
@@ -574,6 +565,17 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
 
       }
     };
+
+    $scope.takePhoto= function(){
+      navigator.camera.getPicture(function(photoData){
+          $scope.crowdPhoto = photoData;
+          $scope.$apply();
+      }, function(){
+
+      }, {
+        destinationType: Camera.DestinationType.DATA_URL
+      });
+    };
   }
 ]);
 
@@ -594,51 +596,6 @@ app.controller('splashController', [function() {
         localStorage.setItem('skipTutorial', true);
     }
 }]);
-
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var myApp = {
-  // Application Constructor
-  initialize: function() {
-    this.bindEvents();
-  },
-  isCordovaApp: document.URL.indexOf('http://') === -1 && document.URL.indexOf(
-    'https://') === -1,
-  // Bind Event Listeners
-  //
-  // Bind any events that are required on startup. Common events are:
-  // 'load', 'deviceready', 'offline', and 'online'.
-  bindEvents: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
-  },
-  // deviceready Event Handler
-  //
-  // The scope of 'this' is the event. In order to call the 'receivedEvent'
-  // function, we must explicitly call 'app.receivedEvent(...);'
-  onDeviceReady: function() {
-    myApp.receivedEvent('deviceready');
-  },
-  // Update DOM on a Received Event
-  receivedEvent: function(id) {
-    console.log('Received Event: ' + id);
-  }
-};
 
 var feedbackModel = function() {
   var myFeedbacks = {};
@@ -890,6 +847,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.placeSid = args.placeSid || "";
         this.crowdValue = args.crowdValue || "";
         this.crowdDate = args.crowdDate || "";
+        this.crowdPhoto = args.crowdPhoto || "";
         this.crowdLocationLatitude = args.crowdLocationLatitude || "";
         this.crowdLocationLongitude = args.crowdLocationLongitude || "";
         this.crowdPositiveFeedback = args.crowdPositiveFeedback || 0;
@@ -933,6 +891,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
             placeSid: place.sid,
             crowdValue: crowd.value,
             crowdDate: crowd.date,
+            crowdPhoto: crowd.photo,
             crowdLocationLatitude: place.location.latitude,
             crowdLocationLongitude: place.location.longitude,
             placeVicinity: place.vicinity,
@@ -1300,6 +1259,7 @@ var dbService = function(backendlessService) {
 
   function init() {
     backendlessService.init();
+    window.console.log('Backend initialized.');
   }
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
@@ -1447,12 +1407,14 @@ var guidService = function() {
 angular.module('guid', [])
   .factory('guidService', [guidService]);
 
+//TODO: file system integartion with INTERFACE
+
 var identificationService = function($q, guidService, fileService) {
   var DID;
 
   function loadDeviceId(fileSystemIncluded) {
     var def = $q.defer();
-    if (fileSystemIncluded === true && myApp.isCordovaApp) {
+    if (fileSystemIncluded === true && window.cordova) {
       DID = readDeviceIdFromLocalStorage();
       if (DID) {
         writeDeviceIdToInternalStorage(DID,
@@ -1531,6 +1493,13 @@ angular.module('identification', ['guid', 'file'])
   .factory('identificationService', ['$q', 'guidService', 'fileService',
     identificationService
   ]);
+
+angular.module('interface', [])
+    .provider('INTERFACE', function () {
+        this.$get = function () {
+            return window.Interface.instance;
+        };
+    });
 
 var defaultLanguageModel = function() {
     return {
@@ -1658,37 +1627,53 @@ angular.module('lang', [])
     .factory('defaultLanguageModel', [defaultLanguageModel]);
 
 var langService = function($q, $http, $rootScope) {
-  function loadLangData() {
+  function loadLangData(callback) {
+    window.console.log('Loading language data...');
     if (navigator.globalization !== null && navigator.globalization !==
       undefined) {
       navigator.globalization.getPreferredLanguage(
         function(language) {
-          getLangFile(language.value);
+          getLangFile(language.value).then(function(){
+            window.console.log('Lang loaded: ' + language.value);
+            callback();
+          });
         },
         function(error) {
-          getLangFile();
+          getLangFile().then(function(){
+            window.console.log('Lang loaded');
+            callback();
+          });
         }
       );
       //Normal browser detection
     } else {
       if (window.navigator.language !== null && window.navigator.language !==
         undefined) {
-        getLangFile(window.navigator.language);
+        getLangFile(window.navigator.language).then(function(){
+          window.console.log('Lang loaded: ' + window.navigator.language);
+          callback();
+        });
       }
     }
   }
 
   function getLangFile(lang) {
+    var def = $q.defer();
     if (!lang) {
-      $rootScope.lang = defaultLanguageModel;
+        $rootScope.lang = defaultLanguageModel;
+        def.resolve();
     } else {
-      prefLang = lang.substring(0, 2);
+        prefLang = lang.substring(0, 2);
+        $http.get("lang/" + prefLang + ".json").then(function(response) {
+            $rootScope.lang = response.data;
+            def.resolve();
+        }, function() {
+            $rootScope.lang = defaultLanguageModel;
+            def.resolve();
+        });
     }
-    $http.get("lang/" + prefLang + ".json").then(function(response) {
-      $rootScope.lang = response.data;
-    }, function() {
-      getLangFile();
-    });
+
+    return def.promise;
   }
 
   return {
@@ -1700,10 +1685,10 @@ angular.module('lang')
   .factory('langService', ['$q', '$http', '$rootScope', langService]);
 
 
-angular.module('location.Service', ['map.Service'])
-    .factory('locationService', ['$rootScope', 'mapService', function($rootScope, mapService){
+angular.module('location.Service', ['map.Service', 'interface'])
+    .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
 		var locationInterval, oldLocation, watchId;
-		var intervalTime = 8000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
+		var intervalTime = 5000, geolocationTimeout = 3000, cumulativeDeltaResetValue = 1; // km
 		
 		function startLocationInterval() {
 			console.log('starting location interval...');
@@ -1789,36 +1774,32 @@ angular.module('location.Service', ['map.Service'])
 			}
 		}
 
-		function checkLocationAvailability(onEnabled, onDisabled, failure){
-			if(myApp.isCordovaApp) {
-				document.addEventListener("deviceready",function() {
-		            cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-		                if(enabled) {
-		                    onEnabled();
-		                }
-		                else {
-		                	onDisabled();
-		                }
-		            },failure);
-		        });
-			}
-			else {
-				onEnabled();
-			}
+		function checkLocationAvailability(onEnabled, onDisabled){
+			window.console.log('Checking location availability...');
+			INTERFACE.isLocationEnabled(function(enabled){
+				window.console.log('Location availability: ' + enabled);
+				if(enabled) {
+                    onEnabled();
+                }
+                else {
+                	onDisabled();
+                }
+			});
 		}
 
-		function openLocationDialog(onNo, onLater, onYes){
-			document.addEventListener("deviceready",function() {
-				cordova.dialogGPS($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,//message
-                            $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION,//description
-                            function(buttonIndex){//callback
-                              switch(buttonIndex) {
-                                case 0:  onNo(); break;//cancel
-                                case 1:  onLater(); break;//neutro option
-                                case 2:  onYes(); break;//positive option
-                              }},
-                              $rootScope.lang.NATIVE_DIALOG.GPS.TITLE,//title
-                              [$rootScope.lang.NATIVE_DIALOG.GPS.NO, $rootScope.lang.NATIVE_DIALOG.GPS.YES]);//buttons
+		function openGPSDialog(onNo, onLater, onYes){
+			window.console.log('Opening GPS dialog...');
+			INTERFACE.openGPSDialog($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,
+			 $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION, 
+			 $rootScope.lang.NATIVE_DIALOG.GPS.TITLE, 
+			 {
+			 	'NO': onNo,
+			 	'LATER': onLater,
+			 	'YES': onYes
+			 },
+			 {
+			 	'NO': $rootScope.lang.NATIVE_DIALOG.GPS.NO,
+			 	'YES': $rootScope.lang.NATIVE_DIALOG.GPS.YES
 			 });
 		}
 
@@ -1848,7 +1829,7 @@ angular.module('location.Service', ['map.Service'])
 	    }
 
 		return {
-			openLocationDialog: openLocationDialog,
+			openGPSDialog: openGPSDialog,
 			checkLocationAvailability: checkLocationAvailability,
 			startLocationInterval: startLocationInterval,
 			stopLocationInterval: stopLocationInterval,
@@ -2265,6 +2246,7 @@ var settingsService = function($rootScope) {
         } else {
             $rootScope.settings = JSON.parse(settings);
         }
+        window.console.log('Settings loaded.');
     }
 
     function saveSettings() {
