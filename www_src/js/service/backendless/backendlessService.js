@@ -18,6 +18,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.placeSid = args.placeSid || "";
         this.crowdValue = args.crowdValue || "";
         this.crowdDate = args.crowdDate || "";
+        this.crowdPhoto = args.crowdPhoto || "";
         this.crowdLocationLatitude = args.crowdLocationLatitude || "";
         this.crowdLocationLongitude = args.crowdLocationLongitude || "";
         this.crowdPositiveFeedback = args.crowdPositiveFeedback || 0;
@@ -61,6 +62,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
             placeSid: place.sid,
             crowdValue: crowd.value,
             crowdDate: crowd.date,
+            crowdPhoto: crowd.photo,
             crowdLocationLatitude: place.location.latitude,
             crowdLocationLongitude: place.location.longitude,
             placeVicinity: place.vicinity,

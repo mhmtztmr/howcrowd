@@ -48,7 +48,8 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
           value: crowdValue,
           date: dateService.getDBDate(new Date()),
           agree: 1,
-          disagree: 0
+          disagree: 0,
+          photo: $scope.crowdPhoto
         };
 
         //TODO: To be discussed if needed or not
@@ -81,6 +82,17 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
         });
 
       }
+    };
+
+    $scope.takePhoto= function(){
+      navigator.camera.getPicture(function(photoData){
+          $scope.crowdPhoto = photoData;
+          $scope.$apply();
+      }, function(){
+
+      }, {
+        destinationType: Camera.DestinationType.DATA_URL
+      });
     };
   }
 ]);
