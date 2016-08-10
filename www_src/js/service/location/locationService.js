@@ -1,8 +1,8 @@
 
-angular.module('location.Service', ['map.Service'])
-    .factory('locationService', ['$rootScope', 'mapService', function($rootScope, mapService){
+angular.module('location.Service', ['map.Service', 'interface'])
+    .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
 		var locationInterval, oldLocation, watchId;
-		var intervalTime = 8000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
+		var intervalTime = 5000, geolocationTimeout = 3000, cumulativeDeltaResetValue = 1; // km
 		
 		function startLocationInterval() {
 			console.log('starting location interval...');
@@ -88,36 +88,32 @@ angular.module('location.Service', ['map.Service'])
 			}
 		}
 
-		function checkLocationAvailability(onEnabled, onDisabled, failure){
-			if(myApp.isCordovaApp) {
-				document.addEventListener("deviceready",function() {
-		            cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-		                if(enabled) {
-		                    onEnabled();
-		                }
-		                else {
-		                	onDisabled();
-		                }
-		            },failure);
-		        });
-			}
-			else {
-				onEnabled();
-			}
+		function checkLocationAvailability(onEnabled, onDisabled){
+			window.console.log('Checking location availability...');
+			INTERFACE.isLocationEnabled(function(enabled){
+				window.console.log('Location availability: ' + enabled);
+				if(enabled) {
+                    onEnabled();
+                }
+                else {
+                	onDisabled();
+                }
+			});
 		}
 
-		function openLocationDialog(onNo, onLater, onYes){
-			document.addEventListener("deviceready",function() {
-				cordova.dialogGPS($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,//message
-                            $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION,//description
-                            function(buttonIndex){//callback
-                              switch(buttonIndex) {
-                                case 0:  onNo(); break;//cancel
-                                case 1:  onLater(); break;//neutro option
-                                case 2:  onYes(); break;//positive option
-                              }},
-                              $rootScope.lang.NATIVE_DIALOG.GPS.TITLE,//title
-                              [$rootScope.lang.NATIVE_DIALOG.GPS.NO, $rootScope.lang.NATIVE_DIALOG.GPS.YES]);//buttons
+		function openGPSDialog(onNo, onLater, onYes){
+			window.console.log('Opening GPS dialog...');
+			INTERFACE.openGPSDialog($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,
+			 $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION, 
+			 $rootScope.lang.NATIVE_DIALOG.GPS.TITLE, 
+			 {
+			 	'NO': onNo,
+			 	'LATER': onLater,
+			 	'YES': onYes
+			 },
+			 {
+			 	'NO': $rootScope.lang.NATIVE_DIALOG.GPS.NO,
+			 	'YES': $rootScope.lang.NATIVE_DIALOG.GPS.YES
 			 });
 		}
 
@@ -147,7 +143,7 @@ angular.module('location.Service', ['map.Service'])
 	    }
 
 		return {
-			openLocationDialog: openLocationDialog,
+			openGPSDialog: openGPSDialog,
 			checkLocationAvailability: checkLocationAvailability,
 			startLocationInterval: startLocationInterval,
 			stopLocationInterval: stopLocationInterval,

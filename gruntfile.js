@@ -11,6 +11,10 @@ module.exports = function(grunt) {
                 src: ['www_src/js/**/*.js'],
                 dest: 'www/js/crowd.js'
             },
+            interface: {
+                src: ['www_src/interface/**/*.js'],
+                dest: 'www/js/interface.js'
+            },
             css: {
                 src: ['www_src/style/css/*.css'],
                 dest: 'www/css/crowd.css'

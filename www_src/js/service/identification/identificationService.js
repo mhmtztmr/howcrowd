@@ -1,9 +1,11 @@
+//TODO: file system integartion with INTERFACE
+
 var identificationService = function($q, guidService, fileService) {
   var DID;
 
   function loadDeviceId(fileSystemIncluded) {
     var def = $q.defer();
-    if (fileSystemIncluded === true && myApp.isCordovaApp) {
+    if (fileSystemIncluded === true && window.cordova) {
       DID = readDeviceIdFromLocalStorage();
       if (DID) {
         writeDeviceIdToInternalStorage(DID,

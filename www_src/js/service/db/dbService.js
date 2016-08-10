@@ -2,6 +2,7 @@ var dbService = function(backendlessService) {
 
   function init() {
     backendlessService.init();
+    window.console.log('Backend initialized.');
   }
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
