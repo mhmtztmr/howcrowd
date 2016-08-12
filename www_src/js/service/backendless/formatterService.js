@@ -14,6 +14,7 @@ var formatterService = function() {
       },
       crowdValue: crowd.crowdValue,
       crowdDate: crowd.crowdDate,
+      crowdPhoto: crowd.crowdPhoto,
       crowdFeedback: {
         positiveFeedback: crowd.crowdPositiveFeedback,
         negativeFeedback: crowd.crowdNegativeFeedback

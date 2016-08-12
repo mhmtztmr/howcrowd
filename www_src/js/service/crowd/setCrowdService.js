@@ -24,9 +24,14 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService, c
     return dbService.retrieveNearbyPlaces(getFilter());
   }
 
+  function uploadFile(base64Source, fileName, onSuccess, onFailure){
+    dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+  }
+
   return {
     insertCrowd: insertCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
+    retrieveNearbyPlaces: retrieveNearbyPlaces,
+    uploadFile: uploadFile
   };
 };
 

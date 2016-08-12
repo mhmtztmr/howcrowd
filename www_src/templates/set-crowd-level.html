@@ -36,6 +36,6 @@
     <ons-button modifier="cta" ng-click="takePhoto()">
       <ons-icon icon="fa-camera" size="40px" fixed-width="true"></ons-icon>
     </ons-button>
-    <img ng-src="data:image/png;base64,{{crowdPhoto}}"/>
+    <img ng-show="crowdPhoto" ng-src="data:image/png;base64,{{crowdPhoto}}" width="50%"/>
   </ons-page>
 </div>

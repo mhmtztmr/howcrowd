@@ -1,4 +1,4 @@
-var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
+var backendlessService = function($rootScope, $q, crowdRest, formatterService, FileUploader) {
 
     function init() {
         var APPLICATION_ID = '<%=APPLICATION_ID%>',
@@ -224,6 +224,30 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         });
     }
 
+    function uploadFile(base64Source, fileName, onSuccess, onFailure){
+        FileUploader.upload('crowd-photos', fileName, base64Source, onSuccess, onFailure);
+    }
+
+    function dataURItoBlob(dataURI) {
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ia], {type:mimeString});
+    }
+
     return {
         init: init,
         insertCrowd: insertCrowd,
@@ -233,9 +257,10 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         retrieveDevice: retrieveDevice,
         //insertPlace: insertPlace,
         reportCrowd: reportCrowd,
-        retrieveNearbyPlaces: retrieveNearbyPlaces
+        retrieveNearbyPlaces: retrieveNearbyPlaces,
+        uploadFile: uploadFile
     };
 };
 
 angular.module('backendless', ['rest', 'formatter'])
-    .factory('backendlessService', ['$rootScope', '$q', 'crowdRest', 'formatterService', backendlessService]);
+    .factory('backendlessService', ['$rootScope', '$q', 'crowdRest', 'formatterService', 'FileUploader', backendlessService]);

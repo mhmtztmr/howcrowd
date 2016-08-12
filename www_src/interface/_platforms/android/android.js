@@ -28,6 +28,18 @@ var Android = function(){
               [labelMap['NO'], labelMap['YES']]);//buttons
 	};
 
+  this.takePhoto = function(onSuccess, onFailure){
+      navigator.camera.getPicture(function(photoData){
+          onSuccess(photoData);
+      }, function(){
+          onFailure();
+      }, {
+          destinationType: Camera.DestinationType.DATA_URL,
+          quality: 25,
+          correctOrientation: true
+      });
+  };
+
 	return this;
 };
 

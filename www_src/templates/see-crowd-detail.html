@@ -22,7 +22,7 @@
             {{crowd.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
           </ons-col>
           <ons-col>
-            <img ng-src="data:image/png;base64,{{crowd.crowdPhoto}}"/>
+            <img ng-src="{{crowd.crowdPhoto}}" height="100%"/>
           </ons-col>
           <ons-col width="40px" ng-class="{'feedback-done' : !$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId, 'positive-feedback' : true}">
             <ons-icon ng-if="!$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId" icon="fa-thumbs-o-up"></ons-icon>

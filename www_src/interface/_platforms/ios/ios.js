@@ -16,6 +16,17 @@ var IOS = function(){
   		callback(true);
 	};
 
+	this.takePhoto = function(onSuccess, onFailure){
+		navigator.camera.getPicture(function(photoData){
+		  	onSuccess(photoData);
+		}, function(){
+		  	onFailure();
+		}, {
+			destinationType: Camera.DestinationType.DATA_URL,
+			quality: 25
+		});
+	};
+
 	return this;
 };
 
