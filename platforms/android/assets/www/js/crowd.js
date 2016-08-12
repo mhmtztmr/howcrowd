@@ -1,11 +1,12 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
-    'seeCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
     window.console.log('App running...');
 
+    alert("APP RUN...");
     $rootScope.location = {};
     dbService.init();
     settingsService.loadSettings();
@@ -69,11 +70,11 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         });
     };
 
-    ons.ready(function() {
-        ons.setDefaultDeviceBackButtonListener(function() {
-            $rootScope.exitApp();
-        });
-    });
+    // ons.ready(function() {
+    //     ons.setDefaultDeviceBackButtonListener(function() {
+    //         $rootScope.exitApp();
+    //     });
+    // });
 }]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
@@ -82,6 +83,8 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
     function($rootScope, $scope, dbService, identificationService,
         mapService, $interval, langService, configService,
         connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
+
+        alert("APP CONTROLLER...");
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
@@ -481,8 +484,8 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
 ]);
 
 app.controller('setCrowdLevelController', ['$rootScope', '$scope',
-  'setCrowdModel', 'guidService', 'dateService', 'mapService', 'crowdDisplayService',
-  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService, crowdDisplayService) {
+  'setCrowdModel', 'setCrowdService', 'guidService', 'dateService', 'mapService', 'crowdDisplayService', 'INTERFACE',
+  function($rootScope, $scope, setCrowdModel, setCrowdService, guidService, dateService, mapService, crowdDisplayService, INTERFACE) {
 
     $scope.levels = [{
       value: 95,
@@ -504,77 +507,96 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
     $scope.selectedPlace = setCrowdModel.getSelectedPlace();
 
     $scope.insertCrowd = function(crowdValue, customPlaceName) {
-      var locationForCustomVicinity = $rootScope.location;
-      if (!$scope.selectedPlace) {
-        if (customPlaceName) {
-          var id = guidService.get();
-          var source = 'custom';
-          $scope.selectedPlace = {
-            sid: id,
-            name: customPlaceName,
-            location: $rootScope.location,
-            source: source
-          };
-        } else {
-          $scope.selectedPlace = undefined;
-          return;
-        }
-      }
-
-      if ($scope.selectedPlace && crowdValue && $rootScope.device) {
-        var place = $scope.selectedPlace;
-        place.key = $scope.selectedPlace.source +
-          '|' + $scope.selectedPlace.sid;
-        delete place['$$hashKey'];
-        var crowd = {
-          value: crowdValue,
-          date: dateService.getDBDate(new Date()),
-          agree: 1,
-          disagree: 0,
-          photo: $scope.crowdPhoto
-        };
-
-        //TODO: To be discussed if needed or not
-        if($scope.selectedPlace.source !== 'custom') {
-          locationForCustomVicinity = undefined;
-        }
-
-        mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
-
-            //TODO: To be discussed if needed or not
-            if(vicinity) {
-              place.vicinity = vicinity;
-              place.district = vicinity;
-            }
-            setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
-              function() {
-                ons.notification.alert({
-                  title: $rootScope.lang.ALERT.ALERT,
-                  message: $rootScope.lang.ALERT.SUCCESS,
-                  buttonLabel: $rootScope.lang.ALERT.OK,
-                });
-              },
-              function() {
-                ons.notification.alert({
+      if($scope.crowdPhoto){
+          var fileName = $rootScope.device.id + (new Date()).valueOf() + '.png';
+          setCrowdService.uploadFile($scope.crowdPhoto, fileName, function(photoUrl){
+              insertCrowd(photoUrl.data);
+          }, function(){
+               ons.notification.alert({
                   title: $rootScope.lang.ALERT.ALERT,
                   message: $rootScope.lang.ALERT.FAIL,
                   buttonLabel: $rootScope.lang.ALERT.OK,
                 });
-              });
-        });
-
+          });
       }
+      else {
+        insertCrowd();
+      }
+
+      function insertCrowd(photoUrl) {
+          var locationForCustomVicinity = $rootScope.location;
+          if (!$scope.selectedPlace) {
+            if (customPlaceName) {
+              var id = guidService.get();
+              var source = 'custom';
+              $scope.selectedPlace = {
+                sid: id,
+                name: customPlaceName,
+                location: $rootScope.location,
+                source: source
+              };
+            } else {
+              $scope.selectedPlace = undefined;
+              return;
+            }
+          }
+
+          if ($scope.selectedPlace && crowdValue && $rootScope.device) {
+            var place = $scope.selectedPlace;
+            place.key = $scope.selectedPlace.source +
+              '|' + $scope.selectedPlace.sid;
+            delete place['$$hashKey'];
+            var crowd = {
+              value: crowdValue,
+              date: dateService.getDBDate(new Date()),
+              agree: 1,
+              disagree: 0,
+              photo: photoUrl
+            };
+
+            //TODO: To be discussed if needed or not
+            if($scope.selectedPlace.source !== 'custom') {
+              locationForCustomVicinity = undefined;
+            }
+
+            mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
+
+                //TODO: To be discussed if needed or not
+                if(vicinity) {
+                  place.vicinity = vicinity;
+                  place.district = vicinity;
+                }
+                setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
+                  function() {
+                    ons.notification.alert({
+                      title: $rootScope.lang.ALERT.ALERT,
+                      message: $rootScope.lang.ALERT.SUCCESS,
+                      buttonLabel: $rootScope.lang.ALERT.OK,
+                    });
+                  },
+                  function() {
+                    ons.notification.alert({
+                      title: $rootScope.lang.ALERT.ALERT,
+                      message: $rootScope.lang.ALERT.FAIL,
+                      buttonLabel: $rootScope.lang.ALERT.OK,
+                    });
+                  });
+            });
+
+          }
+      }
+      
     };
 
     $scope.takePhoto= function(){
-      navigator.camera.getPicture(function(photoData){
-          $scope.crowdPhoto = photoData;
-          $scope.$apply();
-      }, function(){
+        INTERFACE.takePhoto(function(photoData){
+            $scope.crowdPhoto = photoData;
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
+        }, function(){
 
-      }, {
-        destinationType: Camera.DestinationType.DATA_URL
-      });
+        });
     };
   }
 ]);
@@ -827,7 +849,7 @@ angular.module('setCrowd.Model', ['setCrowd.Service', 'map.Service'])
     setCrowdModel
   ]);
 
-var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
+var backendlessService = function($rootScope, $q, crowdRest, formatterService, FileUploader) {
 
     function init() {
         var APPLICATION_ID = 'A556DD00-0405-02E1-FFF4-43454755FC00',
@@ -1053,6 +1075,30 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         });
     }
 
+    function uploadFile(base64Source, fileName, onSuccess, onFailure){
+        FileUploader.upload('crowd-photos', fileName, base64Source, onSuccess, onFailure);
+    }
+
+    function dataURItoBlob(dataURI) {
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ia], {type:mimeString});
+    }
+
     return {
         init: init,
         insertCrowd: insertCrowd,
@@ -1062,12 +1108,13 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         retrieveDevice: retrieveDevice,
         //insertPlace: insertPlace,
         reportCrowd: reportCrowd,
-        retrieveNearbyPlaces: retrieveNearbyPlaces
+        retrieveNearbyPlaces: retrieveNearbyPlaces,
+        uploadFile: uploadFile
     };
 };
 
 angular.module('backendless', ['rest', 'formatter'])
-    .factory('backendlessService', ['$rootScope', '$q', 'crowdRest', 'formatterService', backendlessService]);
+    .factory('backendlessService', ['$rootScope', '$q', 'crowdRest', 'formatterService', 'FileUploader', backendlessService]);
 
 var formatterService = function() {
 
@@ -1085,6 +1132,7 @@ var formatterService = function() {
       },
       crowdValue: crowd.crowdValue,
       crowdDate: crowd.crowdDate,
+      crowdPhoto: crowd.crowdPhoto,
       crowdFeedback: {
         positiveFeedback: crowd.crowdPositiveFeedback,
         negativeFeedback: crowd.crowdNegativeFeedback
@@ -1224,9 +1272,14 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService, c
     return dbService.retrieveNearbyPlaces(getFilter());
   }
 
+  function uploadFile(base64Source, fileName, onSuccess, onFailure){
+    dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+  }
+
   return {
     insertCrowd: insertCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
+    retrieveNearbyPlaces: retrieveNearbyPlaces,
+    uploadFile: uploadFile
   };
 };
 
@@ -1294,6 +1347,10 @@ var dbService = function(backendlessService) {
     backendlessService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
   }
 
+  function uploadFile(base64Source, fileName, onSuccess, onFailure){
+    backendlessService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+  }
+
   return {
     init: init,
     insertCrowd: insertCrowd,
@@ -1303,7 +1360,8 @@ var dbService = function(backendlessService) {
     retrieveDevice: retrieveDevice,
     //insertPlace: insertPlace,
     reportCrowd: reportCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
+    retrieveNearbyPlaces: retrieveNearbyPlaces,
+    uploadFile: uploadFile
   };
 };
 
@@ -2217,23 +2275,45 @@ angular.module('map.Service', ['google'])
     .factory('mapService', ['$q', '$rootScope', 'googleService', mapService
     ]);
 
-angular.module('rest', ['ngResource']).factory('crowdRest', ['$resource',
-  function($resource) {
-    return $resource(
-      "https://api.backendless.com/v1/data/bulk/Crowd?where=placeKey%3D':placeKey'",
-      null, {
-        update: {
-          method: 'PUT',
-          headers: {
-            'application-id': 'A556DD00-0405-02E1-FFF4-43454755FC00',
-            'secret-key': 'F2FE2852-98DD-67CB-FFF6-61CE115F9800',
-            'Content-Type': 'application/json',
-            'application-type': 'REST'
-          }
+angular.module('rest', ['ngResource']).
+    factory('crowdRest', ['$resource',
+      function($resource) {
+        return $resource(
+          "https://api.backendless.com/v1/data/bulk/Crowd?where=placeKey%3D':placeKey'",
+          null, {
+            update: {
+              method: 'PUT',
+              headers: {
+                'application-id': 'A556DD00-0405-02E1-FFF4-43454755FC00',
+                'secret-key': 'F2FE2852-98DD-67CB-FFF6-61CE115F9800',
+                'Content-Type': 'application/json',
+                'application-type': 'REST'
+              }
+            }
+          });
+      }
+    ]).
+    factory('FileUploader',['$http',function($http){
+        function upload(folder, fileName, fileData, onSuccess, onFailure) {
+            var req = {
+               method: 'PUT',
+               url: "https://api.backendless.com/v1/files/binary/"+folder+"/"+fileName+"?overwrite=true",
+               headers: {
+                'application-id': 'A556DD00-0405-02E1-FFF4-43454755FC00',
+                'secret-key': 'F2FE2852-98DD-67CB-FFF6-61CE115F9800',
+                'Content-Type': 'text/plain',
+                'application-type': 'REST'
+               },
+               data: fileData
+            }
+
+            $http(req).then(onSuccess, onFailure);
         }
-      });
-  }
-]);
+
+        return {
+            upload: upload
+        }
+    }]);
 
 var settingsService = function($rootScope) {
     function loadSettings() {
