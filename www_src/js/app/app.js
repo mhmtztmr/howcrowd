@@ -1,11 +1,12 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
-    'seeCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
     window.console.log('App running...');
 
+    alert("APP RUN...");
     $rootScope.location = {};
     dbService.init();
     settingsService.loadSettings();
@@ -69,11 +70,11 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         });
     };
 
-    ons.ready(function() {
-        ons.setDefaultDeviceBackButtonListener(function() {
-            $rootScope.exitApp();
-        });
-    });
+    // ons.ready(function() {
+    //     ons.setDefaultDeviceBackButtonListener(function() {
+    //         $rootScope.exitApp();
+    //     });
+    // });
 }]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
@@ -82,6 +83,8 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
     function($rootScope, $scope, dbService, identificationService,
         mapService, $interval, langService, configService,
         connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
+
+        alert("APP CONTROLLER...");
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
