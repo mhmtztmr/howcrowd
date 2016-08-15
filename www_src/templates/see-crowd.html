@@ -1,6 +1,32 @@
 <div ng-controller="seeCrowdController">
     <ons-navigator var="app.navi">
         <ons-page>
+            <ons-toolbar ng-show="searchStatus.started && tab === 'list'">
+                <div class="left">
+                    <ons-back-button class="search-crowd-cancel" ng-click="stopSearch()"></ons-back-button>
+                </div>
+                <div class="center">
+                    <input class="search-crowd truncate" type="text" ng-change="searchInputChange()" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="search-input"/>
+                </div>
+                <div class="right" ng-show="searchInput.value.length > 0">
+                    <ons-toolbar-button ng-click="clearSearchInput()">
+                        <ons-icon icon="fa-times"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+            <ons-toolbar ng-show="!searchStatus.started || tab === 'map'">
+                <div class="left">
+                    <ons-toolbar-button ng-click="menu.toggle()">
+                        <ons-icon icon="fa-bars"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+                <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
+                <div class="right" ng-show="crowds && crowds !== 'pending' && tab === 'list'">
+                    <ons-toolbar-button ng-click="startSearch();">
+                        <ons-icon icon="fa-search"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
           <ons-tabbar var="myTabbar" position="bottom" animation="slide" id="seeCrowdTabbar">
             <ons-tab page="templates/see-crowd-list.html" active="true">
               <ons-icon icon="fa-list-ul"></ons-icon>
