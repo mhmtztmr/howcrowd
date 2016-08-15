@@ -2,15 +2,15 @@
 angular.module('location.Service', ['map.Service', 'interface'])
     .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
 		var locationInterval, oldLocation, watchId;
-		var intervalTime = 5000, geolocationTimeout = 3000, cumulativeDeltaResetValue = 1; // km
+		var intervalTime = 6000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
 		function startLocationInterval() {
 			console.log('starting location interval...');
 			if (!$rootScope.location) {
 				$rootScope.location = {};
 			}
-		
-			locationInterval = setInterval(function(){
+
+			function findLocation(){
         		oldLocation = $rootScope.location;
 				navigator.geolocation.getCurrentPosition(function(position) {
 					$rootScope.location = {
@@ -76,7 +76,10 @@ angular.module('location.Service', ['map.Service', 'interface'])
 					timeout: geolocationTimeout,
 					maximumAge: 0
 				});
-			}, intervalTime);
+			}
+
+			findLocation();
+			locationInterval = setInterval(findLocation, intervalTime);
 		}
 		
 		function stopLocationInterval() {

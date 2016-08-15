@@ -28,10 +28,23 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService, c
     dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
   }
 
+  function convertSeeCrowdItemToSetCrowdItem(seeCrowdItem) {
+    return {
+      district: seeCrowdItem.placeDistrict,
+      vicinity: seeCrowdItem.placeVicinity,
+      location: seeCrowdItem.crowdLocation,
+      name: seeCrowdItem.placeName,
+      photo: seeCrowdItem.placePhoto,
+      source: seeCrowdItem.placeSource,
+      sid: seeCrowdItem.placeSid
+    }
+  }
+
   return {
     insertCrowd: insertCrowd,
     retrieveNearbyPlaces: retrieveNearbyPlaces,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    convertSeeCrowdItemToSetCrowdItem: convertSeeCrowdItemToSetCrowdItem
   };
 };
 

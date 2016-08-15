@@ -4,13 +4,22 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 
-        function loadNearbyPlaces(success, fail){
+        function loadNearbyPlaces(success){
             setCrowdModel.loadNearbyPlaces().then(
                 function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
                     if(success) success();
-                }, fail);
+                },
+                function(){
+                    ons.notification.alert({
+                      title: $rootScope.lang.ALERT.ALERT,
+                      message: $rootScope.lang.ALERT.LOAD_FAIL,
+                      buttonLabel: $rootScope.lang.ALERT.OK
+                    });
+                    if(success) success();
+                    $scope.nearbyPlaces = [];
+                });
         }
 
         $scope.refreshNearbyPlaces = function($done) {

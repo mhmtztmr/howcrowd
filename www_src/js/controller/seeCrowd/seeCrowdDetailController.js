@@ -1,7 +1,7 @@
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
+  'seeCrowdModel', 'feedbackModel', 'seeCrowdService', 'setCrowdModel', 'setCrowdService',
   function($rootScope, $scope, seeCrowdModel,
-    feedbackModel, seeCrowdService) {
+    feedbackModel, seeCrowdService, setCrowdModel, setCrowdService) {
     $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
@@ -44,17 +44,14 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       }
     }
 
+    $scope.setCrowd = function(){
+        var setCrowdItem = setCrowdService.convertSeeCrowdItemToSetCrowdItem($scope.selectedPlaceBasedCrowd);
+        setCrowdModel.selectPlace(setCrowdItem);
+    };
+
     $scope.dialogs = {
-      'templates/share-crowd.html': {},
       'templates/report-crowd.html': {}
     };
-    ons.createDialog('templates/share-crowd.html',  {
-      parentScope: $scope
-    }).then(
-    function(
-      dialog) {
-      $scope.dialogs['templates/share-crowd.html'] = dialog;
-    });
     ons.createDialog('templates/report-crowd.html',  {
       parentScope: $scope
     }).then(
@@ -66,7 +63,12 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
     }).then(function(popover) {
-      $scope.popover = popover;
+        
+        //This is workaround for back button handler for crowd detail page with popover...
+        //TODO: Blog post
+        popover.hide();
+
+        $scope.popover = popover;
     });
     $scope.options = [{
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
