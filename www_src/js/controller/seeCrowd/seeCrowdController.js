@@ -1,18 +1,32 @@
 app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
     'seeCrowdModel', 'dateService', 'mapService', '$timeout',
     function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout) {
-        var placeBasedCrowdsArray, tab = 'list';
+        var placeBasedCrowdsArray;
         $scope.crowds = 'pending';
+        $scope.tab = 'list';
 
-        function loadCrowds(success, fail){
+        function loadCrowds(success){
             seeCrowdModel.loadCrowds(function(pbca) {
                 placeBasedCrowdsArray = pbca;
-                $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
-                if(tab === 'map'){
+                $timeout(function() {
+                    $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
+                });
+                if($scope.tab === 'map'){
                     loadMap();
                 }
                 if(success) success();
-            }, fail);
+            }, function(){
+                ons.notification.alert({
+                  title: $rootScope.lang.ALERT.ALERT,
+                  message: $rootScope.lang.ALERT.LOAD_FAIL,
+                  buttonLabel: $rootScope.lang.ALERT.OK
+                });
+                $scope.crowds = [];
+                if(!$scope.$$phase) {
+                    $scope.$apply();
+                }
+                if(success) success();
+            });
         }
 
         function loadMap(){
@@ -43,13 +57,13 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
         }
 
         $scope.showMap = function(){
-            tab = 'map';
+            $scope.tab = 'map';
             if($scope.crowds instanceof Array) {
                 loadMap();
             }
         };
         $scope.showList = function(){
-            tab = 'list';
+            $scope.tab = 'list';
         };
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {

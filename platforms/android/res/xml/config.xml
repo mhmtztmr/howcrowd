@@ -1,9 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.oztemur.crowd" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <preference name="loglevel" value="DEBUG" />
-    <feature name="Whitelist">
-        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
-        <param name="onload" value="true" />
+    <feature name="DialogGPS">
+        <param name="android-package" value="cl.rmd.cordova.dialoggps.DialogGPS" />
+    </feature>
+    <feature name="Camera">
+        <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
+    </feature>
+    <feature name="Device">
+        <param name="android-package" value="org.apache.cordova.device.Device" />
     </feature>
     <feature name="File">
         <param name="android-package" value="org.apache.cordova.file.FileUtils" />
@@ -15,11 +20,16 @@
     <feature name="NetworkStatus">
         <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
-    <feature name="DialogGPS">
-        <param name="android-package" value="cl.rmd.cordova.dialoggps.DialogGPS" />
+    <feature name="Whitelist">
+        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param name="onload" value="true" />
     </feature>
     <feature name="SocialSharing">
         <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
+    </feature>
+    <feature name="SplashScreen">
+        <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
+        <param name="onload" value="true" />
     </feature>
     <preference name="AndroidPersistentFileLocation" value="Internal" />
     <feature name="Diagnostic">
@@ -49,51 +59,30 @@
     <preference name="android-minSdkVersion" value="14" />
     <preference name="android-installLocation" value="auto" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
-    <gap:plugin name="org.apache.cordova.battery-status" />
-    <gap:plugin name="org.apache.cordova.camera" />
-    <gap:plugin name="org.apache.cordova.media-capture" />
-    <gap:plugin name="org.apache.cordova.console" />
-    <gap:plugin name="org.apache.cordova.contacts" />
-    <gap:plugin name="org.apache.cordova.device" />
-    <gap:plugin name="org.apache.cordova.device-motion" />
-    <gap:plugin name="org.apache.cordova.device-orientation" />
-    <gap:plugin name="org.apache.cordova.dialogs" />
-    <gap:plugin name="org.apache.cordova.file" />
-    <gap:plugin name="org.apache.cordova.file-transfer" />
-    <gap:plugin name="org.apache.cordova.geolocation" />
-    <gap:plugin name="org.apache.cordova.globalization" />
-    <gap:plugin name="org.apache.cordova.inappbrowser" />
-    <gap:plugin name="org.apache.cordova.media" />
-    <gap:plugin name="org.apache.cordova.network-information" />
-    <gap:plugin name="org.apache.cordova.splashscreen" />
-    <gap:plugin name="org.apache.cordova.vibration" />
-    <icon src="icon.png" />
-    <icon gap:density="ldpi" gap:platform="android" gap:qualifier="ldpi" src="www/res/icon/android/icon-36-ldpi.png" />
-    <icon gap:density="mdpi" gap:platform="android" gap:qualifier="mdpi" src="www/res/icon/android/icon-48-mdpi.png" />
-    <icon gap:density="hdpi" gap:platform="android" gap:qualifier="hdpi" src="www/res/icon/android/icon-72-hdpi.png" />
-    <icon gap:density="xhdpi" gap:platform="android" gap:qualifier="xhdpi" src="www/res/icon/android/icon-96-xhdpi.png" />
-    <icon gap:density="xxhdpi" gap:platform="android" gap:qualifier="xxhdpi" src="www/res/icon/android/icon-144-xxhdpi.png" />
-    <icon gap:density="xxxhdpi" gap:platform="android" gap:qualifier="xxxhdpi" src="www/res/icon/android/icon-192-xxxhdpi.png" />
-    <icon gap:platform="blackberry" src="www/res/icon/blackberry/icon-80.png" />
-    <icon gap:platform="blackberry" gap:state="hover" src="www/res/icon/blackberry/icon-80.png" />
-    <icon gap:platform="ios" height="57" src="www/res/icon/ios/icon-57.png" width="57" />
-    <icon gap:platform="ios" height="72" src="www/res/icon/ios/icon-72.png" width="72" />
-    <icon gap:platform="ios" height="114" src="www/res/icon/ios/icon-57-2x.png" width="114" />
-    <icon gap:platform="ios" height="144" src="www/res/icon/ios/icon-72-2x.png" width="144" />
-    <icon gap:platform="webos" src="www/res/icon/webos/icon-64.png" />
-    <icon gap:platform="winphone" src="www/res/icon/windows-phone/icon-48.png" />
-    <icon gap:platform="winphone" gap:role="background" src="www/res/icon/windows-phone/icon-173-tile.png" />
-    <gap:splash gap:platform="android" gap:qualifier="port-ldpi" src="www/res/screen/android/screen-ldpi-portrait.png" />
-    <gap:splash gap:platform="android" gap:qualifier="port-mdpi" src="www/res/screen/android/screen-mdpi-portrait.png" />
-    <gap:splash gap:platform="android" gap:qualifier="port-hdpi" src="www/res/screen/android/screen-hdpi-portrait.png" />
-    <gap:splash gap:platform="android" gap:qualifier="port-xhdpi" src="www/res/screen/android/screen-xhdpi-portrait.png" />
-    <gap:splash gap:platform="blackberry" src="www/res/screen/blackberry/screen-225.png" />
-    <gap:splash gap:platform="ios" height="480" src="www/res/screen/ios/screen-iphone-portrait.png" width="320" />
-    <gap:splash gap:platform="ios" height="960" src="www/res/screen/ios/screen-iphone-portrait-2x.png" width="640" />
-    <gap:splash gap:platform="ios" height="1136" src="www/res/screen/ios/screen-iphone-portrait-568h-2x.png" width="640" />
-    <gap:splash gap:platform="ios" height="1024" src="www/res/screen/ios/screen-ipad-portrait.png" width="768" />
-    <gap:splash gap:platform="ios" height="768" src="www/res/screen/ios/screen-ipad-landscape.png" width="1024" />
-    <gap:splash gap:platform="winphone" src="www/res/screen/windows-phone/screen-portrait.jpg" />
+    <icon density="ldpi" platform="android" src="www/res/icon/android/icon-36-ldpi.png" />
+    <icon density="mdpi" platform="android" src="www/res/icon/android/icon-48-mdpi.png" />
+    <icon density="hdpi" platform="android" src="www/res/icon/android/icon-72-hdpi.png" />
+    <icon density="xhdpi" platform="android" src="www/res/icon/android/icon-96-xhdpi.png" />
+    <icon density="xxhdpi" platform="android" src="www/res/icon/android/icon-144-xxhdpi.png" />
+    <icon density="xxxhdpi" platform="android" src="www/res/icon/android/icon-192-xxxhdpi.png" />
+    <icon platform="blackberry" src="www/res/icon/blackberry/icon-80.png" />
+    <icon platform="blackberry" src="www/res/icon/blackberry/icon-80.png" state="hover" />
+    <icon height="57" platform="ios" src="www/res/icon/ios/icon-57.png" width="57" />
+    <icon height="72" platform="ios" src="www/res/icon/ios/icon-72.png" width="72" />
+    <icon height="114" platform="ios" src="www/res/icon/ios/icon-57-2x.png" width="114" />
+    <icon height="144" platform="ios" src="www/res/icon/ios/icon-72-2x.png" width="144" />
+    <icon platform="webos" src="www/res/icon/webos/icon-64.png" />
+    <icon platform="winphone" src="www/res/icon/windows-phone/icon-48.png" />
+    <icon platform="winphone" role="background" src="www/res/icon/windows-phone/icon-173-tile.png" />
+    <splash density="port-ldpi" platform="android" src="www/res/screen/android/screen-ldpi-portrait.png" />
+    <splash density="port-mdpi" platform="android" src="www/res/screen/android/screen-mdpi-portrait.png" />
+    <splash density="port-hdpi" platform="android" src="www/res/screen/android/screen-hdpi-portrait.png" />
+    <splash density="port-xhdpi" platform="android" src="www/res/screen/android/screen-xhdpi-portrait.png" />
+    <splash height="480" platform="ios" src="www/res/screen/ios/screen-iphone-portrait.png" width="320" />
+    <splash height="960" platform="ios" src="www/res/screen/ios/screen-iphone-portrait-2x.png" width="640" />
+    <splash height="1136" platform="ios" src="www/res/screen/ios/screen-iphone-portrait-568h-2x.png" width="640" />
+    <splash height="1024" platform="ios" src="www/res/screen/ios/screen-ipad-portrait.png" width="768" />
+    <splash height="768" platform="ios" src="www/res/screen/ios/screen-ipad-landscape.png" width="1024" />
     <access origin="*" />
     <allow-navigation href="http://*/*" />
     <allow-intent href="http://*/*" />

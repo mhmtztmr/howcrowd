@@ -2,6 +2,7 @@ var dbService = function(backendlessService) {
 
   function init() {
     backendlessService.init();
+    window.console.log('Backend initialized.');
   }
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
@@ -36,6 +37,10 @@ var dbService = function(backendlessService) {
     backendlessService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
   }
 
+  function uploadFile(base64Source, fileName, onSuccess, onFailure){
+    backendlessService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+  }
+
   return {
     init: init,
     insertCrowd: insertCrowd,
@@ -45,7 +50,8 @@ var dbService = function(backendlessService) {
     retrieveDevice: retrieveDevice,
     //insertPlace: insertPlace,
     reportCrowd: reportCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
+    retrieveNearbyPlaces: retrieveNearbyPlaces,
+    uploadFile: uploadFile
   };
 };
 

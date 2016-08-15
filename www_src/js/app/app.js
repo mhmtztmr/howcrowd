@@ -1,10 +1,12 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
-    'seeCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service'
+    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
-    langService.loadLangData();
+    window.console.log('App running...');
+
+    $rootScope.location = {};
     dbService.init();
     settingsService.loadSettings();
 
@@ -12,43 +14,42 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         navigator.app.exitApp();
     }
 
-    $rootScope.location = {};
-    locationService.checkLocationAvailability(function(){
-        //location is enabled
-        locationService.startLocationInterval();
-    }, function(){
-        locationService.openLocationDialog(function(){
-            //turn gps on rejected
-            exitApp();
+    langService.loadLangData(function(){   
+        locationService.checkLocationAvailability(function(){
+            //location is enabled
+            locationService.startLocationInterval();
         }, function(){
-            //turn gps on skipped. not available now.
-        }, function(){
-            //turn gps on accepted, going to settings...
-            console.log('gps settings initiazlied');
-            var stillNotTurnedOn = 0;
-            var locationAvailabilityInterval = setInterval(function(){
-                if(stillNotTurnedOn < 3) {
-                    console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
-                    locationService.checkLocationAvailability(function(){
-                        console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+            locationService.openGPSDialog(function(){
+                //turn gps on rejected
+                exitApp();
+            }, function(){
+                //turn gps on skipped. not available now.
+            }, function(){
+                //turn gps on accepted, going to settings...
+                window.console.log('gps settings initiazlied');
+                var stillNotTurnedOn = 0;
+                var locationAvailabilityInterval = setInterval(function(){
+                    if(stillNotTurnedOn < 5) {
+                        console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
+                        locationService.checkLocationAvailability(function(){
+                            console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+                            stillNotTurnedOn = 0;
+                            clearInterval(locationAvailabilityInterval);
+                            locationService.startLocationInterval();
+                        }, function(){
+                            console.log('location not available. incrementing counter...');
+                            stillNotTurnedOn++;
+                        });
+                    }
+                    else {
+                        console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
                         stillNotTurnedOn = 0;
                         clearInterval(locationAvailabilityInterval);
                         locationService.startLocationInterval();
-                    }, function(){
-                        console.log('location not available. incrementing counter...');
-                        stillNotTurnedOn++;
-                    });
-                }
-                else {
-                    console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
-                    stillNotTurnedOn = 0;
-                    clearInterval(locationAvailabilityInterval);
-                    locationService.startLocationInterval();
-                }
-            }, 3000);
+                    }
+                }, 2000);
+            });
         });
-    }, function(){
-        //TODO: location availability check failure...
     });
 
     $rootScope.exitApp = function() {
@@ -69,18 +70,23 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
     };
 
     ons.ready(function() {
-        ons.setDefaultDeviceBackButtonListener(function() {
-            $rootScope.exitApp();
+        ons.setDefaultDeviceBackButtonListener(function() {            
+            if(menu._currentPageUrl === "templates/see-crowd.html") {
+                $rootScope.exitApp();
+            }
+            else {
+                menu.setMainPage('templates/see-crowd.html');
+            }
         });
     });
 }]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
     'identificationService', 'mapService', '$interval', 'langService',
-    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation',
+    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation', 'INTERFACE',
     function($rootScope, $scope, dbService, identificationService,
         mapService, $interval, langService, configService,
-        connection, feedbackModel, settingsService, $cordovaGeolocation) {
+        connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
@@ -103,44 +109,33 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                     }
                 });
             });
-
-            // $interval(function() {
-            //     if (!$rootScope.location.error && myApp.isCordovaApp) {
-            //         //if (myApp.isCordovaApp) {
-            //         $rootScope.checkLocation();
-            //     }
-            // }, 5000);
         }
 
-        if (!myApp.isCordovaApp) {
-            initAppFncs();
-        } else {
-            connection.getConnectionType(function(connType) {
-                if (connType === 'none') {
+        INTERFACE.getConnectionType(function(connType) {
+            if (connType === 'none') {
+                ons.notification.alert({
+                    title: $rootScope.lang.ALERT.ALERT,
+                    message: 'No connection. App will shut down...',
+                    buttonLabel: $rootScope.lang.ALERT.OK,
+                    callback: function(answer) {
+                        navigator.app.exitApp(); // Close the app
+                    }
+                });
+            } else {
+                initAppFncs();
+                connection.addConnectionListener(function() {
+                    //alert('connected');
+                }, function() {
                     ons.notification.alert({
                         title: $rootScope.lang.ALERT.ALERT,
-                        message: 'No connection. App will shut down...',
+                        message: 'Connection lost. App will shut down...',
                         buttonLabel: $rootScope.lang.ALERT.OK,
                         callback: function(answer) {
                             navigator.app.exitApp(); // Close the app
                         }
                     });
-                } else {
-                    initAppFncs();
-                    connection.addConnectionListener(function() {
-                        //alert('connected');
-                    }, function() {
-                        ons.notification.alert({
-                            title: $rootScope.lang.ALERT.ALERT,
-                            message: 'Connection lost. App will shut down...',
-                            buttonLabel: $rootScope.lang.ALERT.OK,
-                            callback: function(answer) {
-                                navigator.app.exitApp(); // Close the app
-                            }
-                        });
-                    });
-                }
-            });
-        }
+                });
+            }
+        });
     }
 ]);

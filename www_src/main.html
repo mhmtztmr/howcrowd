@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html>
 
 <head>
     <meta charset="utf-8" />
@@ -11,17 +11,16 @@
 
     <title>Crowd</title>
 
-    <link rel="stylesheet" href="css/lib.css" />
-    <link rel="stylesheet/less" type="text/css" href="css/crowd.less" />
+    <link rel="stylesheet" type="text/css" href="css/lib.css" />
     <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="css/crowd.css" />
+    <link rel="stylesheet" type="text/css" href="css/less.css" />
 
-    <script type="text/javascript" src="js/lib.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/interface.js"></script>
+    <script type="text/javascript" src="js/lib.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%=MAPS_KEY%>&libraries=places" async defer></script>
-
-    <script type="text/javascript" src="js/crowd.js"></script>
 </head>
 
 <body>
@@ -30,12 +29,26 @@
         </ons-sliding-menu> 
     </div>
     <div id="preload">
-        <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />
+        <!-- <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />
         <img src="img/sources/custom.png" width="1" height="1" alt="Image 01" />
-        <img src="img/loading.gif" width="1" height="1" alt="Image 01" />
+        <img src="img/loading.gif" width="1" height="1" alt="Image 01" /> -->
     </div>
     <script type="text/javascript">
-        myApp.initialize();
+        window.console.log("starting crowd...");
+        function onInstanceReady(instance) {
+            window.console.log("Instance ready. Adding crowd script and bootstrapping angular...");
+            angular.element(document).ready(function () {
+                window.document.getElementsByTagName("html")[0].setAttribute("ng-app", "app");
+                var script = document.createElement('script');
+                script.src = "js/crowd.js";
+                document.getElementsByTagName('body')[0].appendChild(script);
+                script.onload = function(){
+                    angular.bootstrap(document, ['app']);
+                    window.console.log("crowd succesfully loaded.");
+                };
+            });
+        }
+        window.Interface.getInstance(onInstanceReady);
     </script>
 </body>
 

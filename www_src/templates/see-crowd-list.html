@@ -1,32 +1,5 @@
 <div>
     <ons-page ons-show="showList()">
-        <ons-toolbar ng-show="searchStatus.started">
-            <div class="left">
-                <ons-back-button class="search-crowd-cancel" ng-click="stopSearch()"></ons-back-button>
-            </div>
-            <div class="center">
-                <input class="search-crowd truncate" type="text" ng-change="searchInputChange()" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="search-input"/>
-            </div>
-            <div class="right" ng-show="searchInput.value.length > 0">
-                <ons-toolbar-button ng-click="clearSearchInput()">
-                    <ons-icon icon="fa-times"></ons-icon>
-                </ons-toolbar-button>
-            </div>
-        </ons-toolbar>
-        <ons-toolbar ng-show="!searchStatus.started">
-            <div class="left">
-                <ons-toolbar-button ng-click="menu.toggle()">
-                    <ons-icon icon="fa-bars"></ons-icon>
-                </ons-toolbar-button>
-            </div>
-            <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
-            <div class="right" ng-show="crowds && crowds !== 'pending'">
-                <ons-toolbar-button ng-click="startSearch();">
-                    <ons-icon icon="fa-search"></ons-icon>
-                </ons-toolbar-button>
-            </div>
-        </ons-toolbar>
-
         <ons-pull-hook ng-action="refreshCrowds($done)" var="loader" fixed-content threshold-height="128px" height="64px" ng-attr-disabled="true">
             <span ng-switch="loader.state">
               <span ng-switch-when="initial"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
@@ -48,11 +21,11 @@
           <ons-list-item ons-lazy-repeat="MyDelegate" ng-click="selectPlaceBasedCrowd(item)">
             <div class="crowd-main-body">
               <div class="crowd-left">
-                <div class="crowd-source-icon">
-                  <ons-icon ng-if="item.placeSource ==='custom'" icon="fa-thumb-tack" style="color: brown"></ons-icon>
-                </div>
                 <div>
                   <ons-icon ng-if="item.distanceGroup === 0" icon="fa-street-view"></ons-icon>
+                </div>
+                <div>
+                  <ons-icon ng-if="item.placeSource ==='custom'" icon="fa-thumb-tack" style="color: brown"></ons-icon>
                 </div>
               </div>
               <div class="crowd-center">

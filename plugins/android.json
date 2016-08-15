@@ -7,13 +7,19 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.phonegap.helloworld"
+        "cl.rmd.cordova.dialoggps": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
         },
-        "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "com.oztemur.howcrowded"
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
         },
         "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
         "cordova-plugin-globalization": {
@@ -22,15 +28,22 @@
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
-        "cl.rmd.cordova.dialoggps": {
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        },
+        "cordova-plugin-x-socialsharing": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
         "cordova.plugins.diagnostic.api-22": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         },
-        "cordova-plugin-x-socialsharing": {
+        "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.oztemur.crowd"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.oztemur.crowd"
+        }
+    }
 }

@@ -64,7 +64,8 @@
   }
   .crowd-left {
     float:left;
-    width: 10%;
+    width: 30px;
+    height: 100%;
   }
   .crowd-info-window .crowd-left {
     width: 30px !important;
@@ -95,16 +96,18 @@
   }
   .crowd-right {
     float: right;
-    width: 60px;
+    width: 40px;
+    height: 100%;
   }
   .crowd-info-window .crowd-right {
-    width: 60px !important;
+    width: 40px !important;
   }
   .crowd-last-value {
     font-size: 12px;
   }
   .crowd-circle {
-    float:left;
+    position: relative;
+    top: 20%;
   }
   .crowd-feedbacks{
     font-size: 12px;
@@ -209,9 +212,6 @@
 }
 .popover--material {
 	top: 4px !important;
-}
-.popover__content {
-	min-height: 0 !important;
 }
 html, body {
     max-width: 100%;

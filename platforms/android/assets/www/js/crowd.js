@@ -1,10 +1,13 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
-    'seeCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service'
+    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
-    langService.loadLangData();
+    window.console.log('App running...');
+
+    // alert("APP RUN...");
+    $rootScope.location = {};
     dbService.init();
     settingsService.loadSettings();
 
@@ -12,43 +15,42 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         navigator.app.exitApp();
     }
 
-    $rootScope.location = {};
-    locationService.checkLocationAvailability(function(){
-        //location is enabled
-        locationService.startLocationInterval();
-    }, function(){
-        locationService.openLocationDialog(function(){
-            //turn gps on rejected
-            exitApp();
+    langService.loadLangData(function(){   
+        locationService.checkLocationAvailability(function(){
+            //location is enabled
+            locationService.startLocationInterval();
         }, function(){
-            //turn gps on skipped. not available now.
-        }, function(){
-            //turn gps on accepted, going to settings...
-            console.log('gps settings initiazlied');
-            var stillNotTurnedOn = 0;
-            var locationAvailabilityInterval = setInterval(function(){
-                if(stillNotTurnedOn < 3) {
-                    console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
-                    locationService.checkLocationAvailability(function(){
-                        console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+            locationService.openGPSDialog(function(){
+                //turn gps on rejected
+                exitApp();
+            }, function(){
+                //turn gps on skipped. not available now.
+            }, function(){
+                //turn gps on accepted, going to settings...
+                window.console.log('gps settings initiazlied');
+                var stillNotTurnedOn = 0;
+                var locationAvailabilityInterval = setInterval(function(){
+                    if(stillNotTurnedOn < 5) {
+                        console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
+                        locationService.checkLocationAvailability(function(){
+                            console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+                            stillNotTurnedOn = 0;
+                            clearInterval(locationAvailabilityInterval);
+                            locationService.startLocationInterval();
+                        }, function(){
+                            console.log('location not available. incrementing counter...');
+                            stillNotTurnedOn++;
+                        });
+                    }
+                    else {
+                        console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
                         stillNotTurnedOn = 0;
                         clearInterval(locationAvailabilityInterval);
                         locationService.startLocationInterval();
-                    }, function(){
-                        console.log('location not available. incrementing counter...');
-                        stillNotTurnedOn++;
-                    });
-                }
-                else {
-                    console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
-                    stillNotTurnedOn = 0;
-                    clearInterval(locationAvailabilityInterval);
-                    locationService.startLocationInterval();
-                }
-            }, 3000);
+                    }
+                }, 2000);
+            });
         });
-    }, function(){
-        //TODO: location availability check failure...
     });
 
     $rootScope.exitApp = function() {
@@ -69,18 +71,25 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
     };
 
     ons.ready(function() {
-        ons.setDefaultDeviceBackButtonListener(function() {
-            $rootScope.exitApp();
+        ons.setDefaultDeviceBackButtonListener(function() {            
+            if(menu._currentPageUrl === "templates/see-crowd.html") {
+                $rootScope.exitApp();
+            }
+            else {
+                menu.setMainPage('templates/see-crowd.html');
+            }
         });
     });
 }]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
     'identificationService', 'mapService', '$interval', 'langService',
-    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation',
+    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation', 'INTERFACE',
     function($rootScope, $scope, dbService, identificationService,
         mapService, $interval, langService, configService,
-        connection, feedbackModel, settingsService, $cordovaGeolocation) {
+        connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
+
+        // alert("APP CONTROLLER...");
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
@@ -103,45 +112,34 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                     }
                 });
             });
-
-            // $interval(function() {
-            //     if (!$rootScope.location.error && myApp.isCordovaApp) {
-            //         //if (myApp.isCordovaApp) {
-            //         $rootScope.checkLocation();
-            //     }
-            // }, 5000);
         }
 
-        if (!myApp.isCordovaApp) {
-            initAppFncs();
-        } else {
-            connection.getConnectionType(function(connType) {
-                if (connType === 'none') {
+        INTERFACE.getConnectionType(function(connType) {
+            if (connType === 'none') {
+                ons.notification.alert({
+                    title: $rootScope.lang.ALERT.ALERT,
+                    message: 'No connection. App will shut down...',
+                    buttonLabel: $rootScope.lang.ALERT.OK,
+                    callback: function(answer) {
+                        navigator.app.exitApp(); // Close the app
+                    }
+                });
+            } else {
+                initAppFncs();
+                connection.addConnectionListener(function() {
+                    //alert('connected');
+                }, function() {
                     ons.notification.alert({
                         title: $rootScope.lang.ALERT.ALERT,
-                        message: 'No connection. App will shut down...',
+                        message: 'Connection lost. App will shut down...',
                         buttonLabel: $rootScope.lang.ALERT.OK,
                         callback: function(answer) {
                             navigator.app.exitApp(); // Close the app
                         }
                     });
-                } else {
-                    initAppFncs();
-                    connection.addConnectionListener(function() {
-                        //alert('connected');
-                    }, function() {
-                        ons.notification.alert({
-                            title: $rootScope.lang.ALERT.ALERT,
-                            message: 'Connection lost. App will shut down...',
-                            buttonLabel: $rootScope.lang.ALERT.OK,
-                            callback: function(answer) {
-                                navigator.app.exitApp(); // Close the app
-                            }
-                        });
-                    });
-                }
-            });
-        }
+                });
+            }
+        });
     }
 ]);
 
@@ -180,18 +178,32 @@ app.controller('crowdPlaceDetailController', ['$scope', 'mapService', '$timeout'
 app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
     'seeCrowdModel', 'dateService', 'mapService', '$timeout',
     function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout) {
-        var placeBasedCrowdsArray, tab = 'list';
+        var placeBasedCrowdsArray;
         $scope.crowds = 'pending';
+        $scope.tab = 'list';
 
-        function loadCrowds(success, fail){
+        function loadCrowds(success){
             seeCrowdModel.loadCrowds(function(pbca) {
                 placeBasedCrowdsArray = pbca;
-                $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
-                if(tab === 'map'){
+                $timeout(function() {
+                    $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
+                });
+                if($scope.tab === 'map'){
                     loadMap();
                 }
                 if(success) success();
-            }, fail);
+            }, function(){
+                ons.notification.alert({
+                  title: $rootScope.lang.ALERT.ALERT,
+                  message: $rootScope.lang.ALERT.LOAD_FAIL,
+                  buttonLabel: $rootScope.lang.ALERT.OK
+                });
+                $scope.crowds = [];
+                if(!$scope.$$phase) {
+                    $scope.$apply();
+                }
+                if(success) success();
+            });
         }
 
         function loadMap(){
@@ -222,13 +234,13 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
         }
 
         $scope.showMap = function(){
-            tab = 'map';
+            $scope.tab = 'map';
             if($scope.crowds instanceof Array) {
                 loadMap();
             }
         };
         $scope.showList = function(){
-            tab = 'list';
+            $scope.tab = 'list';
         };
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
@@ -291,16 +303,16 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
 ]);
 
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
+  'seeCrowdModel', 'feedbackModel', 'seeCrowdService', 'setCrowdModel', 'setCrowdService',
   function($rootScope, $scope, seeCrowdModel,
-    feedbackModel, seeCrowdService) {
+    feedbackModel, seeCrowdService, setCrowdModel, setCrowdService) {
     $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
     if (myFeedback) {
       $scope.myFeedback = myFeedback.isPositive;
     }
-    
+
     $scope.givePositiveFeedback = function() {
       giveFeedback(true);
     };
@@ -336,17 +348,14 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       }
     }
 
+    $scope.setCrowd = function(){
+        var setCrowdItem = setCrowdService.convertSeeCrowdItemToSetCrowdItem($scope.selectedPlaceBasedCrowd);
+        setCrowdModel.selectPlace(setCrowdItem);
+    };
+
     $scope.dialogs = {
-      'templates/share-crowd.html': {},
       'templates/report-crowd.html': {}
     };
-    ons.createDialog('templates/share-crowd.html',  {
-      parentScope: $scope
-    }).then(
-    function(
-      dialog) {
-      $scope.dialogs['templates/share-crowd.html'] = dialog;
-    });
     ons.createDialog('templates/report-crowd.html',  {
       parentScope: $scope
     }).then(
@@ -358,7 +367,12 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
     }).then(function(popover) {
-      $scope.popover = popover;
+        
+        //This is workaround for back button handler for crowd detail page with popover...
+        //TODO: Blog post
+        popover.hide();
+
+        $scope.popover = popover;
     });
     $scope.options = [{
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
@@ -416,13 +430,22 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 
-        function loadNearbyPlaces(success, fail){
+        function loadNearbyPlaces(success){
             setCrowdModel.loadNearbyPlaces().then(
                 function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
                     if(success) success();
-                }, fail);
+                },
+                function(){
+                    ons.notification.alert({
+                      title: $rootScope.lang.ALERT.ALERT,
+                      message: $rootScope.lang.ALERT.LOAD_FAIL,
+                      buttonLabel: $rootScope.lang.ALERT.OK
+                    });
+                    if(success) success();
+                    $scope.nearbyPlaces = [];
+                });
         }
 
         $scope.refreshNearbyPlaces = function($done) {
@@ -491,8 +514,8 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
 ]);
 
 app.controller('setCrowdLevelController', ['$rootScope', '$scope',
-  'setCrowdModel', 'guidService', 'dateService', 'mapService', 'crowdDisplayService',
-  function($rootScope, $scope, setCrowdModel, guidService, dateService, mapService, crowdDisplayService) {
+  'setCrowdModel', 'setCrowdService', 'guidService', 'dateService', 'mapService', 'crowdDisplayService', 'INTERFACE',
+  function($rootScope, $scope, setCrowdModel, setCrowdService, guidService, dateService, mapService, crowdDisplayService, INTERFACE) {
 
     $scope.levels = [{
       value: 95,
@@ -514,65 +537,96 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
     $scope.selectedPlace = setCrowdModel.getSelectedPlace();
 
     $scope.insertCrowd = function(crowdValue, customPlaceName) {
-      var locationForCustomVicinity = $rootScope.location;
-      if (!$scope.selectedPlace) {
-        if (customPlaceName) {
-          var id = guidService.get();
-          var source = 'custom';
-          $scope.selectedPlace = {
-            sid: id,
-            name: customPlaceName,
-            location: $rootScope.location,
-            source: source
-          };
-        } else {
-          $scope.selectedPlace = undefined;
-          return;
-        }
-      }
-
-      if ($scope.selectedPlace && crowdValue && $rootScope.device) {
-        var place = $scope.selectedPlace;
-        place.key = $scope.selectedPlace.source +
-          '|' + $scope.selectedPlace.sid;
-        delete place['$$hashKey'];
-        var crowd = {
-          value: crowdValue,
-          date: dateService.getDBDate(new Date()),
-          agree: 1,
-          disagree: 0
-        };
-
-        //TODO: To be discussed if needed or not
-        if($scope.selectedPlace.source !== 'custom') {
-          locationForCustomVicinity = undefined;
-        }
-
-        mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
-
-            //TODO: To be discussed if needed or not
-            if(vicinity) {
-              place.vicinity = vicinity;
-              place.district = vicinity;
-            }
-            setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
-              function() {
-                ons.notification.alert({
-                  title: $rootScope.lang.ALERT.ALERT,
-                  message: $rootScope.lang.ALERT.SUCCESS,
-                  buttonLabel: $rootScope.lang.ALERT.OK,
-                });
-              },
-              function() {
-                ons.notification.alert({
+      if($scope.crowdPhoto){
+          var fileName = $rootScope.device.id + (new Date()).valueOf() + '.png';
+          setCrowdService.uploadFile($scope.crowdPhoto, fileName, function(photoUrl){
+              insertCrowd(photoUrl.data);
+          }, function(){
+               ons.notification.alert({
                   title: $rootScope.lang.ALERT.ALERT,
                   message: $rootScope.lang.ALERT.FAIL,
                   buttonLabel: $rootScope.lang.ALERT.OK,
                 });
-              });
-        });
-
+          });
       }
+      else {
+        insertCrowd();
+      }
+
+      function insertCrowd(photoUrl) {
+          var locationForCustomVicinity = $rootScope.location;
+          if (!$scope.selectedPlace) {
+            if (customPlaceName) {
+              var id = guidService.get();
+              var source = 'custom';
+              $scope.selectedPlace = {
+                sid: id,
+                name: customPlaceName,
+                location: $rootScope.location,
+                source: source
+              };
+            } else {
+              $scope.selectedPlace = undefined;
+              return;
+            }
+          }
+
+          if ($scope.selectedPlace && crowdValue && $rootScope.device) {
+            var place = $scope.selectedPlace;
+            place.key = $scope.selectedPlace.source +
+              '|' + $scope.selectedPlace.sid;
+            delete place['$$hashKey'];
+            var crowd = {
+              value: crowdValue,
+              date: dateService.getDBDate(new Date()),
+              agree: 1,
+              disagree: 0,
+              photo: photoUrl
+            };
+
+            //TODO: To be discussed if needed or not
+            if($scope.selectedPlace.source !== 'custom') {
+              locationForCustomVicinity = undefined;
+            }
+
+            mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
+
+                //TODO: To be discussed if needed or not
+                if(vicinity) {
+                  place.vicinity = vicinity;
+                  place.district = vicinity;
+                }
+                setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
+                  function() {
+                    ons.notification.alert({
+                      title: $rootScope.lang.ALERT.ALERT,
+                      message: $rootScope.lang.ALERT.SUCCESS,
+                      buttonLabel: $rootScope.lang.ALERT.OK,
+                    });
+                  },
+                  function() {
+                    ons.notification.alert({
+                      title: $rootScope.lang.ALERT.ALERT,
+                      message: $rootScope.lang.ALERT.FAIL,
+                      buttonLabel: $rootScope.lang.ALERT.OK,
+                    });
+                  });
+            });
+
+          }
+      }
+      
+    };
+
+    $scope.takePhoto= function(){
+        INTERFACE.takePhoto(function(photoData){
+            $scope.crowdPhoto = photoData;
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
+        }, function(){
+
+        });
     };
   }
 ]);
@@ -594,51 +648,6 @@ app.controller('splashController', [function() {
         localStorage.setItem('skipTutorial', true);
     }
 }]);
-
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var myApp = {
-  // Application Constructor
-  initialize: function() {
-    this.bindEvents();
-  },
-  isCordovaApp: document.URL.indexOf('http://') === -1 && document.URL.indexOf(
-    'https://') === -1,
-  // Bind Event Listeners
-  //
-  // Bind any events that are required on startup. Common events are:
-  // 'load', 'deviceready', 'offline', and 'online'.
-  bindEvents: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
-  },
-  // deviceready Event Handler
-  //
-  // The scope of 'this' is the event. In order to call the 'receivedEvent'
-  // function, we must explicitly call 'app.receivedEvent(...);'
-  onDeviceReady: function() {
-    myApp.receivedEvent('deviceready');
-  },
-  // Update DOM on a Received Event
-  receivedEvent: function(id) {
-    console.log('Received Event: ' + id);
-  }
-};
 
 var feedbackModel = function() {
   var myFeedbacks = {};
@@ -721,9 +730,11 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
                     placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
                     placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
+                    placeBasedCrowds[crowd.placeKey].placeSid = crowd.placeSid;
                     placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
+                    placeBasedCrowds[crowd.placeKey].placeVicinity = crowd.placeVicinity;
                     placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
-                    placeBasedCrowds[crowd.placeKey].placeDistance = 10;
+
                     if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                         placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
                     }
@@ -870,7 +881,7 @@ angular.module('setCrowd.Model', ['setCrowd.Service', 'map.Service'])
     setCrowdModel
   ]);
 
-var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
+var backendlessService = function($rootScope, $q, crowdRest, formatterService, FileUploader) {
 
     function init() {
         var APPLICATION_ID = 'A556DD00-0405-02E1-FFF4-43454755FC00',
@@ -890,6 +901,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         this.placeSid = args.placeSid || "";
         this.crowdValue = args.crowdValue || "";
         this.crowdDate = args.crowdDate || "";
+        this.crowdPhoto = args.crowdPhoto || "";
         this.crowdLocationLatitude = args.crowdLocationLatitude || "";
         this.crowdLocationLongitude = args.crowdLocationLongitude || "";
         this.crowdPositiveFeedback = args.crowdPositiveFeedback || 0;
@@ -933,6 +945,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
             placeSid: place.sid,
             crowdValue: crowd.value,
             crowdDate: crowd.date,
+            crowdPhoto: crowd.photo,
             crowdLocationLatitude: place.location.latitude,
             crowdLocationLongitude: place.location.longitude,
             placeVicinity: place.vicinity,
@@ -1094,6 +1107,30 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         });
     }
 
+    function uploadFile(base64Source, fileName, onSuccess, onFailure){
+        FileUploader.upload('crowd-photos', fileName, base64Source, onSuccess, onFailure);
+    }
+
+    function dataURItoBlob(dataURI) {
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ia], {type:mimeString});
+    }
+
     return {
         init: init,
         insertCrowd: insertCrowd,
@@ -1103,12 +1140,13 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService) {
         retrieveDevice: retrieveDevice,
         //insertPlace: insertPlace,
         reportCrowd: reportCrowd,
-        retrieveNearbyPlaces: retrieveNearbyPlaces
+        retrieveNearbyPlaces: retrieveNearbyPlaces,
+        uploadFile: uploadFile
     };
 };
 
 angular.module('backendless', ['rest', 'formatter'])
-    .factory('backendlessService', ['$rootScope', '$q', 'crowdRest', 'formatterService', backendlessService]);
+    .factory('backendlessService', ['$rootScope', '$q', 'crowdRest', 'formatterService', 'FileUploader', backendlessService]);
 
 var formatterService = function() {
 
@@ -1126,6 +1164,7 @@ var formatterService = function() {
       },
       crowdValue: crowd.crowdValue,
       crowdDate: crowd.crowdDate,
+      crowdPhoto: crowd.crowdPhoto,
       crowdFeedback: {
         positiveFeedback: crowd.crowdPositiveFeedback,
         negativeFeedback: crowd.crowdNegativeFeedback
@@ -1265,9 +1304,27 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService, c
     return dbService.retrieveNearbyPlaces(getFilter());
   }
 
+  function uploadFile(base64Source, fileName, onSuccess, onFailure){
+    dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+  }
+
+  function convertSeeCrowdItemToSetCrowdItem(seeCrowdItem) {
+    return {
+      district: seeCrowdItem.placeDistrict,
+      vicinity: seeCrowdItem.placeVicinity,
+      location: seeCrowdItem.crowdLocation,
+      name: seeCrowdItem.placeName,
+      photo: seeCrowdItem.placePhoto,
+      source: seeCrowdItem.placeSource,
+      sid: seeCrowdItem.placeSid
+    }
+  }
+
   return {
     insertCrowd: insertCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
+    retrieveNearbyPlaces: retrieveNearbyPlaces,
+    uploadFile: uploadFile,
+    convertSeeCrowdItemToSetCrowdItem: convertSeeCrowdItemToSetCrowdItem
   };
 };
 
@@ -1300,6 +1357,7 @@ var dbService = function(backendlessService) {
 
   function init() {
     backendlessService.init();
+    window.console.log('Backend initialized.');
   }
 
   function insertCrowd(place, crowd, device, onSuccess, onFailure) {
@@ -1334,6 +1392,10 @@ var dbService = function(backendlessService) {
     backendlessService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
   }
 
+  function uploadFile(base64Source, fileName, onSuccess, onFailure){
+    backendlessService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+  }
+
   return {
     init: init,
     insertCrowd: insertCrowd,
@@ -1343,7 +1405,8 @@ var dbService = function(backendlessService) {
     retrieveDevice: retrieveDevice,
     //insertPlace: insertPlace,
     reportCrowd: reportCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
+    retrieveNearbyPlaces: retrieveNearbyPlaces,
+    uploadFile: uploadFile
   };
 };
 
@@ -1447,12 +1510,14 @@ var guidService = function() {
 angular.module('guid', [])
   .factory('guidService', [guidService]);
 
+//TODO: file system integartion with INTERFACE
+
 var identificationService = function($q, guidService, fileService) {
   var DID;
 
   function loadDeviceId(fileSystemIncluded) {
     var def = $q.defer();
-    if (fileSystemIncluded === true && myApp.isCordovaApp) {
+    if (fileSystemIncluded === true && window.cordova) {
       DID = readDeviceIdFromLocalStorage();
       if (DID) {
         writeDeviceIdToInternalStorage(DID,
@@ -1531,6 +1596,13 @@ angular.module('identification', ['guid', 'file'])
   .factory('identificationService', ['$q', 'guidService', 'fileService',
     identificationService
   ]);
+
+angular.module('interface', [])
+    .provider('INTERFACE', function () {
+        this.$get = function () {
+            return window.Interface.instance;
+        };
+    });
 
 var defaultLanguageModel = function() {
     return {
@@ -1647,6 +1719,7 @@ var defaultLanguageModel = function() {
             "ALERT": "Alert",
             "SUCCESS": "Successful!",
             "FAIL": "Failure!",
+            "LOAD_FAIL": "Loading failure!",
             "OK": "Ok"
         },
         "ERROR": {
@@ -1658,37 +1731,53 @@ angular.module('lang', [])
     .factory('defaultLanguageModel', [defaultLanguageModel]);
 
 var langService = function($q, $http, $rootScope) {
-  function loadLangData() {
+  function loadLangData(callback) {
+    window.console.log('Loading language data...');
     if (navigator.globalization !== null && navigator.globalization !==
       undefined) {
       navigator.globalization.getPreferredLanguage(
         function(language) {
-          getLangFile(language.value);
+          getLangFile(language.value).then(function(){
+            window.console.log('Lang loaded: ' + language.value);
+            callback();
+          });
         },
         function(error) {
-          getLangFile();
+          getLangFile().then(function(){
+            window.console.log('Lang loaded');
+            callback();
+          });
         }
       );
       //Normal browser detection
     } else {
       if (window.navigator.language !== null && window.navigator.language !==
         undefined) {
-        getLangFile(window.navigator.language);
+        getLangFile(window.navigator.language).then(function(){
+          window.console.log('Lang loaded: ' + window.navigator.language);
+          callback();
+        });
       }
     }
   }
 
   function getLangFile(lang) {
+    var def = $q.defer();
     if (!lang) {
-      $rootScope.lang = defaultLanguageModel;
+        $rootScope.lang = defaultLanguageModel;
+        def.resolve();
     } else {
-      prefLang = lang.substring(0, 2);
+        prefLang = lang.substring(0, 2);
+        $http.get("lang/" + prefLang + ".json").then(function(response) {
+            $rootScope.lang = response.data;
+            def.resolve();
+        }, function() {
+            $rootScope.lang = defaultLanguageModel;
+            def.resolve();
+        });
     }
-    $http.get("lang/" + prefLang + ".json").then(function(response) {
-      $rootScope.lang = response.data;
-    }, function() {
-      getLangFile();
-    });
+
+    return def.promise;
   }
 
   return {
@@ -1700,18 +1789,18 @@ angular.module('lang')
   .factory('langService', ['$q', '$http', '$rootScope', langService]);
 
 
-angular.module('location.Service', ['map.Service'])
-    .factory('locationService', ['$rootScope', 'mapService', function($rootScope, mapService){
+angular.module('location.Service', ['map.Service', 'interface'])
+    .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
 		var locationInterval, oldLocation, watchId;
-		var intervalTime = 8000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
+		var intervalTime = 6000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
 		function startLocationInterval() {
 			console.log('starting location interval...');
 			if (!$rootScope.location) {
 				$rootScope.location = {};
 			}
-		
-			locationInterval = setInterval(function(){
+
+			function findLocation(){
         		oldLocation = $rootScope.location;
 				navigator.geolocation.getCurrentPosition(function(position) {
 					$rootScope.location = {
@@ -1777,7 +1866,10 @@ angular.module('location.Service', ['map.Service'])
 					timeout: geolocationTimeout,
 					maximumAge: 0
 				});
-			}, intervalTime);
+			}
+
+			findLocation();
+			locationInterval = setInterval(findLocation, intervalTime);
 		}
 		
 		function stopLocationInterval() {
@@ -1789,36 +1881,32 @@ angular.module('location.Service', ['map.Service'])
 			}
 		}
 
-		function checkLocationAvailability(onEnabled, onDisabled, failure){
-			if(myApp.isCordovaApp) {
-				document.addEventListener("deviceready",function() {
-		            cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-		                if(enabled) {
-		                    onEnabled();
-		                }
-		                else {
-		                	onDisabled();
-		                }
-		            },failure);
-		        });
-			}
-			else {
-				onEnabled();
-			}
+		function checkLocationAvailability(onEnabled, onDisabled){
+			window.console.log('Checking location availability...');
+			INTERFACE.isLocationEnabled(function(enabled){
+				window.console.log('Location availability: ' + enabled);
+				if(enabled) {
+                    onEnabled();
+                }
+                else {
+                	onDisabled();
+                }
+			});
 		}
 
-		function openLocationDialog(onNo, onLater, onYes){
-			document.addEventListener("deviceready",function() {
-				cordova.dialogGPS($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,//message
-                            $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION,//description
-                            function(buttonIndex){//callback
-                              switch(buttonIndex) {
-                                case 0:  onNo(); break;//cancel
-                                case 1:  onLater(); break;//neutro option
-                                case 2:  onYes(); break;//positive option
-                              }},
-                              $rootScope.lang.NATIVE_DIALOG.GPS.TITLE,//title
-                              [$rootScope.lang.NATIVE_DIALOG.GPS.NO, $rootScope.lang.NATIVE_DIALOG.GPS.YES]);//buttons
+		function openGPSDialog(onNo, onLater, onYes){
+			window.console.log('Opening GPS dialog...');
+			INTERFACE.openGPSDialog($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,
+			 $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION, 
+			 $rootScope.lang.NATIVE_DIALOG.GPS.TITLE, 
+			 {
+			 	'NO': onNo,
+			 	'LATER': onLater,
+			 	'YES': onYes
+			 },
+			 {
+			 	'NO': $rootScope.lang.NATIVE_DIALOG.GPS.NO,
+			 	'YES': $rootScope.lang.NATIVE_DIALOG.GPS.YES
 			 });
 		}
 
@@ -1848,7 +1936,7 @@ angular.module('location.Service', ['map.Service'])
 	    }
 
 		return {
-			openLocationDialog: openLocationDialog,
+			openGPSDialog: openGPSDialog,
 			checkLocationAvailability: checkLocationAvailability,
 			startLocationInterval: startLocationInterval,
 			stopLocationInterval: stopLocationInterval,
@@ -2236,23 +2324,45 @@ angular.module('map.Service', ['google'])
     .factory('mapService', ['$q', '$rootScope', 'googleService', mapService
     ]);
 
-angular.module('rest', ['ngResource']).factory('crowdRest', ['$resource',
-  function($resource) {
-    return $resource(
-      "https://api.backendless.com/v1/data/bulk/Crowd?where=placeKey%3D':placeKey'",
-      null, {
-        update: {
-          method: 'PUT',
-          headers: {
-            'application-id': 'A556DD00-0405-02E1-FFF4-43454755FC00',
-            'secret-key': 'F2FE2852-98DD-67CB-FFF6-61CE115F9800',
-            'Content-Type': 'application/json',
-            'application-type': 'REST'
-          }
+angular.module('rest', ['ngResource']).
+    factory('crowdRest', ['$resource',
+      function($resource) {
+        return $resource(
+          "https://api.backendless.com/v1/data/bulk/Crowd?where=placeKey%3D':placeKey'",
+          null, {
+            update: {
+              method: 'PUT',
+              headers: {
+                'application-id': 'A556DD00-0405-02E1-FFF4-43454755FC00',
+                'secret-key': 'F2FE2852-98DD-67CB-FFF6-61CE115F9800',
+                'Content-Type': 'application/json',
+                'application-type': 'REST'
+              }
+            }
+          });
+      }
+    ]).
+    factory('FileUploader',['$http',function($http){
+        function upload(folder, fileName, fileData, onSuccess, onFailure) {
+            var req = {
+               method: 'PUT',
+               url: "https://api.backendless.com/v1/files/binary/"+folder+"/"+fileName+"?overwrite=true",
+               headers: {
+                'application-id': 'A556DD00-0405-02E1-FFF4-43454755FC00',
+                'secret-key': 'F2FE2852-98DD-67CB-FFF6-61CE115F9800',
+                'Content-Type': 'text/plain',
+                'application-type': 'REST'
+               },
+               data: fileData
+            }
+
+            $http(req).then(onSuccess, onFailure);
         }
-      });
-  }
-]);
+
+        return {
+            upload: upload
+        }
+    }]);
 
 var settingsService = function($rootScope) {
     function loadSettings() {
@@ -2265,6 +2375,7 @@ var settingsService = function($rootScope) {
         } else {
             $rootScope.settings = JSON.parse(settings);
         }
+        window.console.log('Settings loaded.');
     }
 
     function saveSettings() {

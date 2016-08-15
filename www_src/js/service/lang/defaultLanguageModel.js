@@ -113,6 +113,7 @@ var defaultLanguageModel = function() {
             "ALERT": "Alert",
             "SUCCESS": "Successful!",
             "FAIL": "Failure!",
+            "LOAD_FAIL": "Loading failure!",
             "OK": "Ok"
         },
         "ERROR": {

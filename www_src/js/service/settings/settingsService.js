@@ -9,6 +9,7 @@ var settingsService = function($rootScope) {
         } else {
             $rootScope.settings = JSON.parse(settings);
         }
+        window.console.log('Settings loaded.');
     }
 
     function saveSettings() {

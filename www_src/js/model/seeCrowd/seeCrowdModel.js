@@ -31,9 +31,11 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
                     placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
                     placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
+                    placeBasedCrowds[crowd.placeKey].placeSid = crowd.placeSid;
                     placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
+                    placeBasedCrowds[crowd.placeKey].placeVicinity = crowd.placeVicinity;
                     placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
-                    placeBasedCrowds[crowd.placeKey].placeDistance = 10;
+
                     if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                         placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
                     }

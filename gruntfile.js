@@ -11,13 +11,13 @@ module.exports = function(grunt) {
                 src: ['www_src/js/**/*.js'],
                 dest: 'www/js/crowd.js'
             },
+            interface: {
+                src: ['www_src/interface/**/*.js'],
+                dest: 'www/js/interface.js'
+            },
             css: {
                 src: ['www_src/style/css/*.css'],
                 dest: 'www/css/crowd.css'
-            },
-            less: {
-                src: ['www_src/style/less/*.less'],
-                dest: 'www/css/crowd.less'
             },
             libjs: {
                 src: ['www_src/lib/angular/angular-1.5.7.js',
@@ -29,15 +29,9 @@ module.exports = function(grunt) {
                     'www_src/lib/angular/filesystem.js',
                     'www_src/lib/angular/connection.js',
                     'www_src/lib/angular/geolocation.js',
-                   
-                    'www_src/lib/backendless/backendless.min.js',
-                    'www_src/lib/less/less.min.js'
+                    'www_src/lib/backendless/backendless.min.js'
                 ],
                 dest: 'www/js/lib.js'
-            },
-            libcss: {
-                src: ['www_src/lib/onsen/css/onsenui.css', 'www_src/lib/onsen/css/onsen-css-components.css'],
-                dest: 'www/css/lib.css'
             }
         },
         copy: {
@@ -180,6 +174,20 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+        less: {
+            compile: {
+                files: {
+                    'www/css/less.css': ['www_src/style/less/circle.less', 'www_src/style/less/mixins.less']
+                }
+            }
+        },
+        sass: {
+            dist: {
+                files: {
+                    'www/css/lib.css': 'www_src/lib/onsen/css/onsenui.scss'
+                }
+            }
         }
     });
 
@@ -191,6 +199,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-sass');
 
     grunt.registerTask('setCredentials', 'asdfg', function(t) {
 		var credentials = grunt.file.readJSON('credentials.json');
@@ -208,7 +218,7 @@ module.exports = function(grunt) {
         grunt.option("credentials", global.credentials);
     });
 
-     grunt.registerTask('setReportIssue', 'asdfg', function(t) {
+    grunt.registerTask('setReportIssue', 'asdfg', function(t) {
         if (t === 'alpha') {
             global.reportIssue = true;
         } else if (t === 'prod') {
@@ -220,8 +230,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('delete', ['clean']);
-    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace']);
-    grunt.registerTask('dev_remote', ['clean', 'setCredentials:dev_remote', 'setReportIssue:dev_remote', 'concat', 'copy', 'replace']);
-	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace']);
-	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace']);
+    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace', 'less:compile']);
+    grunt.registerTask('dev_remote', ['clean', 'setCredentials:dev_remote', 'setReportIssue:dev_remote', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
+	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace', 'less:compile']);
+	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace', 'less:compile']);
 };

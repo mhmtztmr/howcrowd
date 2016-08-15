@@ -24,9 +24,27 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService, c
     return dbService.retrieveNearbyPlaces(getFilter());
   }
 
+  function uploadFile(base64Source, fileName, onSuccess, onFailure){
+    dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+  }
+
+  function convertSeeCrowdItemToSetCrowdItem(seeCrowdItem) {
+    return {
+      district: seeCrowdItem.placeDistrict,
+      vicinity: seeCrowdItem.placeVicinity,
+      location: seeCrowdItem.crowdLocation,
+      name: seeCrowdItem.placeName,
+      photo: seeCrowdItem.placePhoto,
+      source: seeCrowdItem.placeSource,
+      sid: seeCrowdItem.placeSid
+    }
+  }
+
   return {
     insertCrowd: insertCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces
+    retrieveNearbyPlaces: retrieveNearbyPlaces,
+    uploadFile: uploadFile,
+    convertSeeCrowdItemToSetCrowdItem: convertSeeCrowdItemToSetCrowdItem
   };
 };
 
