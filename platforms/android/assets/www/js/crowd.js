@@ -6,7 +6,7 @@ var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCro
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
     window.console.log('App running...');
 
-    alert("APP RUN...");
+    // alert("APP RUN...");
     $rootScope.location = {};
     dbService.init();
     settingsService.loadSettings();
@@ -70,11 +70,16 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
         });
     };
 
-    // ons.ready(function() {
-    //     ons.setDefaultDeviceBackButtonListener(function() {
-    //         $rootScope.exitApp();
-    //     });
-    // });
+    ons.ready(function() {
+        ons.setDefaultDeviceBackButtonListener(function() {            
+            if(menu._currentPageUrl === "templates/see-crowd.html") {
+                $rootScope.exitApp();
+            }
+            else {
+                menu.setMainPage('templates/see-crowd.html');
+            }
+        });
+    });
 }]);
 
 app.controller('appController', ['$rootScope', '$scope', 'dbService',
@@ -84,7 +89,7 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
         mapService, $interval, langService, configService,
         connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
 
-        alert("APP CONTROLLER...");
+        // alert("APP CONTROLLER...");
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
@@ -173,18 +178,32 @@ app.controller('crowdPlaceDetailController', ['$scope', 'mapService', '$timeout'
 app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
     'seeCrowdModel', 'dateService', 'mapService', '$timeout',
     function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout) {
-        var placeBasedCrowdsArray, tab = 'list';
+        var placeBasedCrowdsArray;
         $scope.crowds = 'pending';
+        $scope.tab = 'list';
 
-        function loadCrowds(success, fail){
+        function loadCrowds(success){
             seeCrowdModel.loadCrowds(function(pbca) {
                 placeBasedCrowdsArray = pbca;
-                $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
-                if(tab === 'map'){
+                $timeout(function() {
+                    $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
+                });
+                if($scope.tab === 'map'){
                     loadMap();
                 }
                 if(success) success();
-            }, fail);
+            }, function(){
+                ons.notification.alert({
+                  title: $rootScope.lang.ALERT.ALERT,
+                  message: $rootScope.lang.ALERT.LOAD_FAIL,
+                  buttonLabel: $rootScope.lang.ALERT.OK
+                });
+                $scope.crowds = [];
+                if(!$scope.$$phase) {
+                    $scope.$apply();
+                }
+                if(success) success();
+            });
         }
 
         function loadMap(){
@@ -215,13 +234,13 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
         }
 
         $scope.showMap = function(){
-            tab = 'map';
+            $scope.tab = 'map';
             if($scope.crowds instanceof Array) {
                 loadMap();
             }
         };
         $scope.showList = function(){
-            tab = 'list';
+            $scope.tab = 'list';
         };
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
@@ -284,9 +303,9 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
 ]);
 
 app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
+  'seeCrowdModel', 'feedbackModel', 'seeCrowdService', 'setCrowdModel', 'setCrowdService',
   function($rootScope, $scope, seeCrowdModel,
-    feedbackModel, seeCrowdService) {
+    feedbackModel, seeCrowdService, setCrowdModel, setCrowdService) {
     $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
     var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
     var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
@@ -329,17 +348,14 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
       }
     }
 
+    $scope.setCrowd = function(){
+        var setCrowdItem = setCrowdService.convertSeeCrowdItemToSetCrowdItem($scope.selectedPlaceBasedCrowd);
+        setCrowdModel.selectPlace(setCrowdItem);
+    };
+
     $scope.dialogs = {
-      'templates/share-crowd.html': {},
       'templates/report-crowd.html': {}
     };
-    ons.createDialog('templates/share-crowd.html',  {
-      parentScope: $scope
-    }).then(
-    function(
-      dialog) {
-      $scope.dialogs['templates/share-crowd.html'] = dialog;
-    });
     ons.createDialog('templates/report-crowd.html',  {
       parentScope: $scope
     }).then(
@@ -351,7 +367,12 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
     }).then(function(popover) {
-      $scope.popover = popover;
+        
+        //This is workaround for back button handler for crowd detail page with popover...
+        //TODO: Blog post
+        popover.hide();
+
+        $scope.popover = popover;
     });
     $scope.options = [{
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
@@ -409,13 +430,22 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 
-        function loadNearbyPlaces(success, fail){
+        function loadNearbyPlaces(success){
             setCrowdModel.loadNearbyPlaces().then(
                 function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
                     if(success) success();
-                }, fail);
+                },
+                function(){
+                    ons.notification.alert({
+                      title: $rootScope.lang.ALERT.ALERT,
+                      message: $rootScope.lang.ALERT.LOAD_FAIL,
+                      buttonLabel: $rootScope.lang.ALERT.OK
+                    });
+                    if(success) success();
+                    $scope.nearbyPlaces = [];
+                });
         }
 
         $scope.refreshNearbyPlaces = function($done) {
@@ -700,9 +730,11 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
                     placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
                     placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
+                    placeBasedCrowds[crowd.placeKey].placeSid = crowd.placeSid;
                     placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
+                    placeBasedCrowds[crowd.placeKey].placeVicinity = crowd.placeVicinity;
                     placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
-                    placeBasedCrowds[crowd.placeKey].placeDistance = 10;
+
                     if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                         placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
                     }
@@ -1276,10 +1308,23 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService, c
     dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
   }
 
+  function convertSeeCrowdItemToSetCrowdItem(seeCrowdItem) {
+    return {
+      district: seeCrowdItem.placeDistrict,
+      vicinity: seeCrowdItem.placeVicinity,
+      location: seeCrowdItem.crowdLocation,
+      name: seeCrowdItem.placeName,
+      photo: seeCrowdItem.placePhoto,
+      source: seeCrowdItem.placeSource,
+      sid: seeCrowdItem.placeSid
+    }
+  }
+
   return {
     insertCrowd: insertCrowd,
     retrieveNearbyPlaces: retrieveNearbyPlaces,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    convertSeeCrowdItemToSetCrowdItem: convertSeeCrowdItemToSetCrowdItem
   };
 };
 
@@ -1674,6 +1719,7 @@ var defaultLanguageModel = function() {
             "ALERT": "Alert",
             "SUCCESS": "Successful!",
             "FAIL": "Failure!",
+            "LOAD_FAIL": "Loading failure!",
             "OK": "Ok"
         },
         "ERROR": {
@@ -1746,15 +1792,15 @@ angular.module('lang')
 angular.module('location.Service', ['map.Service', 'interface'])
     .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
 		var locationInterval, oldLocation, watchId;
-		var intervalTime = 5000, geolocationTimeout = 3000, cumulativeDeltaResetValue = 1; // km
+		var intervalTime = 6000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
 		function startLocationInterval() {
 			console.log('starting location interval...');
 			if (!$rootScope.location) {
 				$rootScope.location = {};
 			}
-		
-			locationInterval = setInterval(function(){
+
+			function findLocation(){
         		oldLocation = $rootScope.location;
 				navigator.geolocation.getCurrentPosition(function(position) {
 					$rootScope.location = {
@@ -1820,7 +1866,10 @@ angular.module('location.Service', ['map.Service', 'interface'])
 					timeout: geolocationTimeout,
 					maximumAge: 0
 				});
-			}, intervalTime);
+			}
+
+			findLocation();
+			locationInterval = setInterval(findLocation, intervalTime);
 		}
 		
 		function stopLocationInterval() {

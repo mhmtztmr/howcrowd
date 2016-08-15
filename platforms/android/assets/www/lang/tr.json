@@ -110,6 +110,7 @@
         "ALERT": "Uyarı",
         "SUCCESS": "Başarılı!",
         "FAIL": "Başarısız!",
+        "LOAD_FAIL": "Yükleme başarısız!",
         "OK": "Tamam"
     },
     "ERROR": {
