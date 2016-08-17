@@ -1,3 +1,6 @@
 node_modules/*
 www/*
 platforms/*
+.sass-cache/*
+plugins/android.json
+plugins/ios.json

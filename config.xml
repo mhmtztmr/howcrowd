@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.oztemur.crowd" version="0.1.0" xmlns:gap="http://phonegap.com/ns/1.0" xmlns="http://www.w3.org/ns/widgets">
-  <name>Crowd</name>
+  <name>HowCrowd</name>
   <description>
-    Crowd is an application that provides how places are crowded.
+    HowCrowd is an application that provides how places are crowded.
   </description>
-  <author email="support@crowd.com" href="http://crowd.com">
+  <author email="support@howcrowdapp.com" href="http://howcrowdapp.com">
     Mahmut Oztemur
   </author>
   <content src="index.html"/>
