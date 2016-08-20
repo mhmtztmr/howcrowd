@@ -5,19 +5,18 @@
         <ons-back-button></ons-back-button>
       </div>
       <div class="center">
-        <div ng-if="selectedPlace !== undefined">
+        <div ng-if="selectedPlace !== undefined && customPlaceName.value.length === 0">
           <div class="crowd-name truncate">
             <!-- <img ng-src="img/sources/{{selectedPlace.source}}.png" /> -->
             <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-thumb-tack"></ons-icon>
             {{selectedPlace.name}}
           </div>
         </div>
-        <input ng-if="selectedPlace === undefined" class="search-crowd truncate" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName" class="text-input text-input--underbar" />
+        <input id="customCrowdName" ng-if="selectedPlace === undefined || customPlaceName.value.length > 0" class="search-crowd truncate" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName.value" class="text-input text-input--underbar" />
       </div>
     </ons-toolbar>
-
     <ons-list>
-      <ons-list-item modifier="tappable" ng-click="insertCrowd(level.value, customPlaceName);app.navi.popPage();" ng-repeat="level in levels">
+      <ons-list-item modifier="tappable" ng-click="selectCrowd(level)" ng-repeat="level in levels">
         <ons-row align="center">
           <ons-col>
               {{level.text}}
@@ -33,9 +32,5 @@
         </ons-row>
       </ons-list-item>
     </ons-list>
-    <ons-button modifier="cta" ng-click="takePhoto()">
-      <ons-icon icon="fa-camera" size="40px" fixed-width="true"></ons-icon>
-    </ons-button>
-    <img ng-show="crowdPhoto" ng-src="data:image/png;base64,{{crowdPhoto}}" width="50%"/>
   </ons-page>
 </div>
