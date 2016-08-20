@@ -35,8 +35,9 @@ var Android = function(){
           onFailure();
       }, {
           destinationType: Camera.DestinationType.DATA_URL,
-          quality: 25,
-          correctOrientation: true
+          quality: 50,
+          correctOrientation: true,
+          targetWidth: 400
       });
   };
 
