@@ -51,6 +51,11 @@
         "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
         "SEARCH_INPUT": "Search"
     },
+    "SET_CROWD_ATTACHMENT": {
+        "ATTACH_PHOTO": "Attach Photo",
+        "TEXT_PLACEHOLDER_APPENDIX": " is...",
+        "ADD_CROWD": "Add Crowd"
+    },
     "CROWD_VALUES" : {
       "100" : "100",
       "90": "90",

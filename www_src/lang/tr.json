@@ -51,18 +51,17 @@
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin olun!",
         "SEARCH_INPUT": "Ara"
     },
+    "SET_CROWD_ATTACHMENT": {
+        "ATTACH_PHOTO": "Fotoğraf Ekle",
+        "TEXT_PLACEHOLDER_APPENDIX": "...",
+        "ADD_CROWD": "Kalabalık Ekle"
+    },
     "CROWD_VALUES" : {
-      "100" : "100 - Yer yok!",
-      "90": "90 - Tıklım tıklım!",
-      "80": "80 - Çok kalabalık!",
-      "70": "70 - Az yer var!",
-      "60": "60 - Yer bulunur!",
-      "50": "50 - Yarı yarıya!",
-      "40": "40 - Yarıdan çoğu boş!",
-      "30": "30 - 3'te biri boş!",
-      "20": "20 - Rahat yer bulunur!",
-      "10": "10 - Neredeyse kimse yok!",
-      "0": "0 - Bomboş!"
+        "0": "Bomboş",
+        "1": "Sakin",
+        "2": "Normal",
+        "3": "Kalabalık",
+        "4": "Tıkılm tıklım"
     },
     "ABOUT": {
         "DESCRIPTION": "Crowd (Kalabalık), etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır. Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
