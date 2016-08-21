@@ -2,6 +2,7 @@
     "MAIN_MENU": {
         "SEE_CROWD": "Kalabalık Gör",
         "SET_CROWD": "Kalabalık Gir",
+        "ASK_CROWD": "Kalabalık Sor",
         "SETTINGS": "Ayarlar",
         "ABOUT": "Hakkında",
         "REPORT_ISSUE": "Sorun Bildir",
@@ -55,6 +56,9 @@
         "ATTACH_PHOTO": "Fotoğraf Ekle",
         "TEXT_PLACEHOLDER_APPENDIX": "...",
         "ADD_CROWD": "Kalabalık Ekle"
+    },
+    "ASK_CROWD_MENU": {
+        "SEARCH_INPUT": "Ara"
     },
     "CROWD_VALUES" : {
         "0": "Bomboş",

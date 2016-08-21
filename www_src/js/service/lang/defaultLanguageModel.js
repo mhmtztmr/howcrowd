@@ -3,6 +3,7 @@ var defaultLanguageModel = function() {
         "MAIN_MENU": {
             "SEE_CROWD": "See Crowd",
             "SET_CROWD": "Set Crowd",
+            "ASK_CROWD": "Ask Crowd",
             "SETTINGS": "Settings",
             "ABOUT": "About",
             "REPORT_ISSUE": "Report Issue",
@@ -58,6 +59,9 @@ var defaultLanguageModel = function() {
             "ATTACH_PHOTO": "Attach Photo",
             "TEXT_PLACEHOLDER_APPENDIX": " is...",
             "ADD_CROWD": "Add Crowd"
+        },
+        "ASK_CROWD_MENU": {
+            "SEARCH_INPUT": "Search"
         },
         "CROWD_VALUES" : {
             "0": "Empty",
