@@ -23,7 +23,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 });
                 $scope.crowds = [];
                 if(!$scope.$$phase) {
-                    $scope.$apply();
+                    // $scope.$apply();
                 }
                 if(success) success();
             });
@@ -47,7 +47,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
             }
             else if($scope.crowds !== 'pending' && $scope.crowds !== undefined){
                 $scope.crowds = undefined;
-                $scope.$apply();
+                // $scope.$apply();
                 if($done) $done();
             }
         };
@@ -76,7 +76,7 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 }
                 else {
                     $scope.crowds = undefined;
-                    $scope.$apply();
+                    // $scope.$apply();
                 }
             }
         }));
