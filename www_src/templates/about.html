@@ -2,7 +2,7 @@
     <ons-page>
         <ons-carousel var="carousel" ons-postchange="console.log('Changed to ' + $event.activeIndex)" fullscreen swipeable auto-scroll overscrollable>
             <div class="carousel-cover page-indicator">
-                <div class="previous">
+                <div class="previous" ng-show="carousel.getActiveIndex() !== 0">
                     <ons-icon onclick="carousel.prev();" icon="fa-chevron-left"></ons-icon>
                 </div>
                 <li class="nav-dots">
@@ -13,7 +13,7 @@
                   <label class="nav-dot" onclick="carousel.setActiveIndex(4)" ng-class="{'active': carousel.getActiveIndex() === 4}"></label>
                   <label class="nav-dot" onclick="carousel.setActiveIndex(5)" ng-class="{'active': carousel.getActiveIndex() === 5}"></label>
                 </li>
-                <div class="next">
+                <div class="next" ng-show="carousel.getActiveIndex() !== 5">
                     <ons-icon onclick="carousel.next();" icon="fa-chevron-right"></ons-icon>
                 </div>
             </div>
