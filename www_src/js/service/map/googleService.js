@@ -97,10 +97,76 @@ angular.module('google', ['config']).
 	'travel_agency',
 	'university',
 	'veterinary_care',
-	'zoo'], infowindow = null;;
+	'zoo'], infowindow = null;
+
+	function addYourLocationButton(map)	{
+		var controlDiv = document.createElement('div');
+		
+		var firstChild = document.createElement('button');
+		firstChild.style.backgroundColor = '#fff';
+		firstChild.style.border = 'none';
+		firstChild.style.outline = 'none';
+		firstChild.style.width = '28px';
+		firstChild.style.height = '28px';
+		firstChild.style.borderRadius = '2px';
+		firstChild.style.boxShadow = '0 1px 4px rgba(0,0,0,0.3)';
+		firstChild.style.cursor = 'pointer';
+		firstChild.style.marginRight = '10px';
+		firstChild.style.padding = '0px';
+		firstChild.title = 'Your Location';
+		controlDiv.appendChild(firstChild);
+		
+		var secondChild = document.createElement('div');
+		secondChild.style.margin = '5px';
+		secondChild.style.width = '18px';
+		secondChild.style.height = '18px';
+		secondChild.style.backgroundImage = 'url(https://maps.gstatic.com/tactile/mylocation/mylocation-sprite-1x.png)';
+		secondChild.style.backgroundSize = '180px 18px';
+		secondChild.style.backgroundPosition = '0px 0px';
+		secondChild.style.backgroundRepeat = 'no-repeat';
+		secondChild.id = 'you_location_img';
+		firstChild.appendChild(secondChild);
+		
+		google.maps.event.addListener(map, 'dragend', function() {
+			document.getElementById('you_location_img').style.backgroundPosition = '0px 0px';
+		});
+
+		firstChild.addEventListener('click', function() {
+			var imgX = '0';
+			var animationInterval = setInterval(function(){
+				if(imgX == '-18') imgX = '0';
+				else imgX = '-18';
+				document.getElementById('you_location_img').style.backgroundPosition = imgX+'px 0px';
+			}, 500);
+			if($rootScope.location.latitude){
+        		var center = {lat: $rootScope.location.latitude, lng: $rootScope.location.longitude};
+          		map.setCenter(center);
+          		clearInterval(animationInterval);
+				document.getElementById('you_location_img').style.backgroundPosition = '-144px 0px';
+        	}
+        	else {
+        		clearInterval(animationInterval);
+        		document.getElementById('you_location_img').style.backgroundPosition = '0px 0px';
+        	}
+		});
+		
+		controlDiv.index = 1;
+		controlDiv.className = 'pinpoint';
+		map.controls[google.maps.ControlPosition.LEFT_TOP].push(controlDiv);
+	}
 
 	function initMap(DOMElementId) {
-		return new google.maps.Map(document.getElementById(DOMElementId));
+		var map = new google.maps.Map(document.getElementById(DOMElementId), {
+			zoom: 12,
+			mapTypeControl: false,
+			zoomControl: false,
+			scaleControl: false,
+			streetViewControl: false,
+			fullscreenControl: false
+		});
+
+		addYourLocationButton(map);
+		return map;
 	}
 
 	function setMapBoundingBox(map, swLat, swLng, neLat, neLng) {
@@ -111,6 +177,32 @@ angular.module('google', ['config']).
 			lat: neLat,
 			lng: neLng
 		}));
+		map.setZoom(12);
+	}
+
+	function markLocationOnMap(map, location){
+		var latLng = new google.maps.LatLng(location.latitude, location.longitude);
+		var marker = new google.maps.Marker({
+			map: map,
+			position: latLng,
+			icon: {
+				url: 'img/markers/gpsloc.png',
+				anchor: new google.maps.Point(12, 12),
+				scaledSize: new google.maps.Size(24, 24)
+			}
+		});
+
+		google.maps.event.addListener(marker, 'click', function() {
+			if (infowindow) {
+				infowindow.close();
+			}
+
+			infowindow = new google.maps.InfoWindow({
+				content: "your location"
+			});
+			infowindow.open(map, marker);
+		});
+		return marker;
 	}
 
 	function markPlaceOnMap(map, placeBasedCrowd, clickEvent) {
@@ -252,6 +344,7 @@ angular.module('google', ['config']).
 	return {
 		initMap: initMap,
 		setMapBoundingBox: setMapBoundingBox,
+		markLocationOnMap: markLocationOnMap,
 		markPlaceOnMap: markPlaceOnMap,
 		getNearbyPlaces: getNearbyPlaces,
 		getAddressByLocation: getAddressByLocation

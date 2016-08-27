@@ -87,6 +87,10 @@ var mapService = function($q, $rootScope, googleService) {
         googleService.setMapBoundingBox(map, swLat, swLng, neLat, neLng);
     }
 
+    function markLocationOnMap(map, location) {
+        return googleService.markLocationOnMap(map, location);
+    }
+
     function markPlaceOnMap(map, placeBasedCrowd, clickEvent) {
         return googleService.markPlaceOnMap(map, placeBasedCrowd, clickEvent);
     }
@@ -112,6 +116,7 @@ var mapService = function($q, $rootScope, googleService) {
         initMap: initMap,
         setMapBoundingBox: setMapBoundingBox,
         markPlaceOnMap: markPlaceOnMap,
+        markLocationOnMap: markLocationOnMap,
         getAddressByLocation: getAddressByLocation
     };
 };
