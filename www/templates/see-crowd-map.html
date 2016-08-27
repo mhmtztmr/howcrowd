@@ -1,0 +1,9 @@
+<ons-page ons-show="showMap()">
+    <div ng-if="!crowds">
+        <button class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+    </div>
+    <div ng-if="crowds === 'pending'" style="text-align: center; padding-top: 144px;">
+        <ons-icon size="70px" spin="true" icon="fa-spinner">
+    </div>
+    <div ng-show="crowds && crowds !== 'pending'" id="map" style="width:100%; height:100%"></div>
+</ons-page>

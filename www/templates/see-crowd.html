@@ -1,0 +1,101 @@
+<div ng-controller="seeCrowdController">
+    <ons-navigator var="app.navi">
+        <ons-page ng-if="tab === 'list'">
+            <ons-toolbar ng-show="searchStatus.started">
+                <div class="left">
+                    <ons-back-button class="search-crowd-cancel" ng-click="stopSearch()"></ons-back-button>
+                </div>
+                <div class="center">
+                    <input class="search-crowd truncate" type="text" ng-change="searchInputChange()" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="search-input"/>
+                </div>
+                <div class="right" ng-show="searchInput.value.length > 0">
+                    <ons-toolbar-button ng-click="clearSearchInput()">
+                        <ons-icon icon="fa-times"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+            <ons-toolbar ng-show="!searchStatus.started">
+                <div class="left">
+                    <ons-toolbar-button ng-click="menu.toggle()">
+                        <ons-icon icon="fa-bars"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+                <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
+                <div class="right" ng-show="crowds && crowds !== 'pending'">
+                    <ons-toolbar-button ng-click="startSearch()">
+                        <ons-icon icon="fa-search"></ons-icon>
+                    </ons-toolbar-button>
+                    <ons-toolbar-button ng-click="showMap()">
+                        <ons-icon icon="fa-map"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+
+            <ons-pull-hook ng-action="refreshCrowds($done)" var="loader" fixed-content threshold-height="128px" height="64px" ng-attr-disabled="true">
+                <span ng-switch="loader.state">
+                  <span ng-switch-when="initial"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
+                  <span ng-switch-when="preaction"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
+                  <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="fa-repeat"></ons-icon> </span>
+                </span>
+            </ons-pull-hook>
+
+            <div ng-if="!crowds">
+                <button class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+            </div>
+            <div ng-if="crowds === 'pending'" style="text-align: center; padding-top: 144px;">
+                <ons-icon size="70px" spin="true" icon="fa-spinner">
+            </div>
+            <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0">
+                <button class="refresh-button button button--quiet" onclick="menu.setMainPage('templates/set-crowd.html')">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
+            </div>
+            <ons-list ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
+              <ons-list-item ons-lazy-repeat="MyDelegate" ng-click="selectPlaceBasedCrowd(item)">
+                <div class="crowd-main-body">
+                  <div class="crowd-left">
+                    <div>
+                      <ons-icon ng-if="item.distanceGroup === 0" icon="fa-street-view"></ons-icon>
+                    </div>
+                    <div>
+                      <ons-icon ng-if="item.placeSource ==='custom'" icon="fa-thumb-tack" style="color: brown"></ons-icon>
+                    </div>
+                  </div>
+                  <div class="crowd-center">
+                    <div class="crowd-place-name"> {{item.placeName}}</div>
+                    <div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== ''"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>
+                    <div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>
+                  </div>
+                  <div class="crowd-right">
+                    <div class="crowd-circle">
+                      <div class="c100 p{{item.crowdAverage}} crowd-size center">
+                        <div class="slice">
+                          <div class="bar"></div>
+                          <div class="fill"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ons-list-item>
+            </ons-list>
+        </ons-page>
+        <ons-page ng-show="tab === 'map' && crowds && crowds !== 'pending'">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-toolbar-button ng-click="menu.toggle()">
+                        <ons-icon icon="fa-bars"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+                <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
+                <div class="right" ng-show="crowds && crowds !== 'pending'">
+                    <ons-toolbar-button ng-click="showList()">
+                        <ons-icon icon="fa-list"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+            <div id="map" style="width:100%; height:100%"></div>
+        </ons-page>
+    </ons-navigator>
+    <ons-fab ons-if-platform="android" ng-if="crowds && crowds !== 'pending' && crowds.length > 0" position="bottom right" onclick="menu.setMainPage('templates/set-crowd.html')">
+        <ons-icon icon="md-plus"></ons-icon>
+    </ons-fab>
+</div>
