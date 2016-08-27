@@ -7,7 +7,7 @@ var Android = function(){
 	};
 
 	this.isLocationEnabled = function(callback){
-		cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+		cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
             callback(enabled);
         },
         function(){
