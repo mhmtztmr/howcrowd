@@ -7,7 +7,7 @@ var IOS = function(){
 	};
 
 	this.isLocationEnabled = function(callback){
-		 // cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+		// cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
   //           callback(enabled);
   //       },
   //       function(){
