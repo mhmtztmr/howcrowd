@@ -139,6 +139,22 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        'file-creator': {
+            version_prod: {
+                "target/war/js/version.js": function (fs, fd, done) {
+                    var pkg = grunt.file.readJSON('package.json');
+                    var soBuildVersion = pkg.version + "." + buildNumber;
+                    fs.writeSync(fd, "var smartOfficeVersion = '" + soBuildVersion + "';");
+                    done();
+                }
+            },
+            version_dev: {
+                "www/js/version.js": function (fs, fd, done) {
+                    fs.writeSync(fd, "var smartOfficeVersion = '" + buildTimestamp + "';");
+                    done();
+                }
+            }
+        },
         jshint: {
             options: {
                 curly: true,
@@ -160,20 +176,6 @@ module.exports = function(grunt) {
                 reporterOutput: 'target/jshint-result.xml'
             },
             all: ['src/main/js/**/*.js']
-        },
-        ngtemplates: {
-            app: {
-                cwd: 'src/main/js',
-                src: '**/*.html',
-                dest: 'target/war/templates/templates.js',
-                options: {
-                    prefix: 'templates',
-                    htmlmin: {
-                        collapseWhitespace: true,
-                        removeEmptyAttributes: true
-                    }
-                }
-            }
         },
         less: {
             compile: {
