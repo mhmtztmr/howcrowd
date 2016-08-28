@@ -3,6 +3,7 @@ var defaultLanguageModel = function() {
         "MAIN_MENU": {
             "SEE_CROWD": "See Crowd",
             "SET_CROWD": "Set Crowd",
+            "ASK_CROWD": "Ask Crowd",
             "SETTINGS": "Settings",
             "ABOUT": "About",
             "REPORT_ISSUE": "Report Issue",
@@ -54,18 +55,20 @@ var defaultLanguageModel = function() {
             "RELEASE_TO_REFRESH": "Release to refresh",
             "SEARCH_INPUT": "Search"
         },
+        "SET_CROWD_ATTACHMENT": {
+            "ATTACH_PHOTO": "Attach Photo",
+            "TEXT_PLACEHOLDER_APPENDIX": " is...",
+            "ADD_CROWD": "Add Crowd"
+        },
+        "ASK_CROWD_MENU": {
+            "SEARCH_INPUT": "Search"
+        },
         "CROWD_VALUES" : {
-          "100" : "100",
-          "90": "90",
-          "80": "80",
-          "70": "70",
-          "60": "60",
-          "50": "50",
-          "40": "40",
-          "30": "30",
-          "20": "20",
-          "10": "10",
-          "0": "0"
+            "0": "Empty",
+            "1": "Quiet",
+            "2": "Moderate",
+            "3": "Crowded",
+            "4": "Congested"
         },
         "ABOUT": {
             "DESCRIPTION": "Crowd (Kalabalık), etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır.Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",

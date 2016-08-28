@@ -117,5 +117,12 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     };
 
     $scope.reportReason = $scope.reportReasons[0].value;
+
+    $scope.seeCrowdAttachment = function(crowd) {
+      app.navi.pushPage('templates/crowd-attachment-detail.html', {
+        crowd: crowd, 
+        animation:'slide'
+      });
+    };
   }
 ]);

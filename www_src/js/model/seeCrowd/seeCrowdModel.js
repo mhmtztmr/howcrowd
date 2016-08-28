@@ -68,8 +68,15 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 return placeBasedCrowdsArray;
             }
 
+            function markCurrentLocation() {
+                if($rootScope.location.latitude) {
+                    markers.push(mapService.markLocationOnMap(map, $rootScope.location));
+                }
+            }
+
             function markPlaces() {
                 var placeBasedCrowd, i;
+                markCurrentLocation();
                 for (i = 0; i < placeBasedCrowdsArray.length; i++) {
                     placeBasedCrowd = placeBasedCrowdsArray[i];
                     (function(placeBasedCrowd) {

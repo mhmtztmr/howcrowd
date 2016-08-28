@@ -9,7 +9,7 @@
   <ons-list>
     <ons-list-item onclick="menu.setMainPage('templates/see-crowd.html', {closeMenu: true})">
       <div class="menu-icon">
-        <ons-icon icon="ion-ios-search-strong"></ons-icon>
+        <ons-icon icon="fa-search"></ons-icon>
       </div>
       <span class="menu-text">
         {{$root.lang.MAIN_MENU.SEE_CROWD}}
@@ -17,17 +17,25 @@
     </ons-list-item>
     <ons-list-item onclick="menu.setMainPage('templates/set-crowd.html', {closeMenu: true})">
       <div class="menu-icon">
-        <ons-icon icon="ion-ios-people"></ons-icon>
+        <ons-icon icon="fa-users"></ons-icon>
       </div>
       <span class="menu-text">
         {{$root.lang.MAIN_MENU.SET_CROWD}}
+      </span>
+    </ons-list-item>
+    <ons-list-item onclick="menu.setMainPage('templates/ask-crowd.html', {closeMenu: true})">
+      <div class="menu-icon">
+        <ons-icon icon="fa-question-circle"></ons-icon>
+      </div>
+      <span class="menu-text">
+        {{$root.lang.MAIN_MENU.ASK_CROWD}}
       </span>
     </ons-list-item>
   </ons-list>
   <ons-list class="bottom-menu-list-bottom">
     <ons-list-item onclick="menu.setMainPage('templates/settings.html', {closeMenu: true})">
       <div class="menu-icon">
-        <ons-icon icon="ion-gear-b"></ons-icon>
+        <ons-icon icon="fa-cog"></ons-icon>
       </div>
       <span class="menu-text">
         {{$root.lang.MAIN_MENU.SETTINGS}}
@@ -35,7 +43,7 @@
     </ons-list-item>
     <ons-list-item onclick="menu.setMainPage('templates/about.html', {closeMenu: true})">
       <div class="menu-icon">
-        <ons-icon icon="ion-ios-information-outline"></ons-icon>
+        <ons-icon icon="fa-info"></ons-icon>
       </div>
       <span class="menu-text">
         {{$root.lang.MAIN_MENU.ABOUT}}
@@ -43,7 +51,7 @@
     </ons-list-item>
     <ons-list-item ng-show="<%=REPORT_ISSUE%>" onclick="menu.setMainPage('templates/report-issue.html', {closeMenu: true})">
       <div class="menu-icon">
-        <ons-icon icon="ion-alert-circled"></ons-icon>
+        <ons-icon icon="fa-bug"></ons-icon>
       </div>
       <span class="menu-text">
         {{$root.lang.MAIN_MENU.REPORT_ISSUE}}
@@ -51,7 +59,7 @@
     </ons-list-item>
     <ons-list-item ng-click="$root.exitApp()">
       <div class="menu-icon">
-        <ons-icon icon="ion-android-exit"></ons-icon>
+        <ons-icon icon="fa-sign-out"></ons-icon>
       </div>
       <span class="menu-text">
         {{$root.lang.MAIN_MENU.EXIT}}

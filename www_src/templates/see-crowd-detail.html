@@ -16,13 +16,16 @@
       </div>
     </ons-toolbar>
     <ons-list>
-      <ons-list-item ng-repeat="crowd in selectedPlaceBasedCrowd.crowds">
+      <ons-list-item ng-repeat="crowd in selectedPlaceBasedCrowd.crowds" ng-click="seeCrowdAttachment(crowd)">
         <ons-row align="center">
           <ons-col>
             {{crowd.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
           </ons-col>
           <ons-col>
-            <img ng-src="{{crowd.crowdPhoto}}" height="100%"/>
+            <ons-icon ng-if="crowd.crowdPhoto" icon="fa-picture-o"></ons-icon>
+          </ons-col>
+          <ons-col>
+            <ons-icon ng-if="crowd.crowdText" icon="fa-comment-o"></ons-icon>
           </ons-col>
           <ons-col width="40px" ng-class="{'feedback-done' : !$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId, 'positive-feedback' : true}">
             <ons-icon ng-if="!$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId" icon="fa-thumbs-o-up"></ons-icon>
@@ -48,7 +51,7 @@
       </ons-list-item>
     </ons-list>
   </ons-page>
-  <ons-fab ons-if-platform="android" ng-if="selectedPlaceBasedCrowd.distanceGroup === 0" position="bottom right" ng-click="setCrowd()">
+  <!-- <ons-fab ons-if-platform="android" ng-if="selectedPlaceBasedCrowd.distanceGroup === 0" position="bottom right" ng-click="setCrowd()">
         <ons-icon icon="md-plus"></ons-icon>
-    </ons-fab>
+    </ons-fab> -->
 </div>

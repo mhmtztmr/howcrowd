@@ -1,0 +1,18 @@
+<div ng-controller="crowdAttachmentDetailController">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-back-button></ons-back-button>
+      </div>
+      <div class="center">
+        {{crowd.placeName}}
+      </div>
+    </ons-toolbar>
+    <div>
+      {{crowd.crowdText}}
+    </div>
+    <div>
+      <img ng-src="{{crowd.crowdPhoto}}" width="100%"/>
+    </div>
+  </ons-page>
+</div>

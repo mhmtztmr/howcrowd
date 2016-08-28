@@ -7,7 +7,7 @@ var Android = function(){
 	};
 
 	this.isLocationEnabled = function(callback){
-		cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+		cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
             callback(enabled);
         },
         function(){
@@ -35,8 +35,9 @@ var Android = function(){
           onFailure();
       }, {
           destinationType: Camera.DestinationType.DATA_URL,
-          quality: 25,
-          correctOrientation: true
+          quality: 50,
+          correctOrientation: true,
+          targetWidth: 400
       });
   };
 
