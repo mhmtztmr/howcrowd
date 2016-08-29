@@ -59,7 +59,7 @@ app.controller('askCrowdController', ['$rootScope', '$scope', 'mapService', '$fi
           }
         }
 
-        initialize();
+        //initialize();
 
         $scope.searchInput = {value: ''};
 

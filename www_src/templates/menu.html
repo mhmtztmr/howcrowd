@@ -7,33 +7,7 @@
     </div>
   </ons-toolbar>
   <ons-list>
-    <ons-list-item onclick="menu.setMainPage('templates/see-crowd.html', {closeMenu: true})">
-      <div class="menu-icon">
-        <ons-icon icon="fa-search"></ons-icon>
-      </div>
-      <span class="menu-text">
-        {{$root.lang.MAIN_MENU.SEE_CROWD}}
-      </span>
-    </ons-list-item>
-    <ons-list-item onclick="menu.setMainPage('templates/set-crowd.html', {closeMenu: true})">
-      <div class="menu-icon">
-        <ons-icon icon="fa-users"></ons-icon>
-      </div>
-      <span class="menu-text">
-        {{$root.lang.MAIN_MENU.SET_CROWD}}
-      </span>
-    </ons-list-item>
-    <ons-list-item onclick="menu.setMainPage('templates/ask-crowd.html', {closeMenu: true})">
-      <div class="menu-icon">
-        <ons-icon icon="fa-question-circle"></ons-icon>
-      </div>
-      <span class="menu-text">
-        {{$root.lang.MAIN_MENU.ASK_CROWD}}
-      </span>
-    </ons-list-item>
-  </ons-list>
-  <ons-list class="bottom-menu-list-bottom">
-    <ons-list-item onclick="menu.setMainPage('templates/settings.html', {closeMenu: true})">
+    <ons-list-item onclick="menu.closeMenu();app.navi.pushPage('templates/settings.html', {animation: 'slide'});">
       <div class="menu-icon">
         <ons-icon icon="fa-cog"></ons-icon>
       </div>
@@ -41,7 +15,7 @@
         {{$root.lang.MAIN_MENU.SETTINGS}}
       </span>
     </ons-list-item>
-    <ons-list-item onclick="menu.setMainPage('templates/about.html', {closeMenu: true})">
+    <ons-list-item onclick="menu.closeMenu();app.navi.pushPage('templates/about.html', {animation: 'slide'});">
       <div class="menu-icon">
         <ons-icon icon="fa-info"></ons-icon>
       </div>
@@ -49,7 +23,7 @@
         {{$root.lang.MAIN_MENU.ABOUT}}
       </span>
     </ons-list-item>
-    <ons-list-item ng-show="<%=REPORT_ISSUE%>" onclick="menu.setMainPage('templates/report-issue.html', {closeMenu: true})">
+    <ons-list-item ng-show="<%=REPORT_ISSUE%>" onclick="menu.closeMenu();app.navi.pushPage('templates/report-issue.html', {animation: 'slide'});">
       <div class="menu-icon">
         <ons-icon icon="fa-bug"></ons-icon>
       </div>

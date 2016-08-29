@@ -23,7 +23,6 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 });
                 $scope.crowds = [];
                 if(!$scope.$$phase) {
-                    // $scope.$apply();
                 }
                 if(success) success();
             });
@@ -47,7 +46,6 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
             }
             else if($scope.crowds !== 'pending' && $scope.crowds !== undefined){
                 $scope.crowds = undefined;
-                // $scope.$apply();
                 if($done) $done();
             }
         };
@@ -76,7 +74,6 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
                 }
                 else {
                     $scope.crowds = undefined;
-                    // $scope.$apply();
                 }
             }
         }));
@@ -110,6 +107,32 @@ app.controller('seeCrowdController', ['$rootScope', '$scope', '$filter',
             $scope.searchInput.value = '';
             $scope.searchInputChange();
         };
+
+        // setTimeout(function(){
+        //     var pullHook = document.getElementById('pull-hook');
+
+        //     pullHook.addEventListener('changestate', function(event) {
+        //         var message = '';
+
+        //         switch (event.state) {
+        //             case 'initial':
+        //                 message = 'Pull to refresh';
+        //                 break;
+        //             case 'preaction':
+        //                 message = 'Release';
+        //                 break;
+        //             case 'action':
+        //                 message = 'Loading...';
+        //                 break;
+        //         }
+        //         pullHook.innerHTML = message;
+        //     });
+
+        //     pullHook.onAction = function(done) {
+        //         $scope.refreshCrowds(done);
+        //     };
+        // },2000);
+            
        
         $scope.MyDelegate = {
             configureItemScope: function(index, itemScope) {

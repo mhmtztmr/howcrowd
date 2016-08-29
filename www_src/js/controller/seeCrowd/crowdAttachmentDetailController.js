@@ -1,6 +1,6 @@
 app.controller('crowdAttachmentDetailController', ['$scope',
 
   function($scope) {
-    $scope.crowd = app.navi.topPage.pushedOptions.crowd;
+    $scope.crowd = app.seeCrowdNavi.topPage.pushedOptions.crowd;
   }
 ]);

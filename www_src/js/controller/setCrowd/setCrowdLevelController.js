@@ -44,7 +44,7 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
         }
       }
       if ($scope.selectedPlace && crowdLevel && $rootScope.device) {
-        app.navi.pushPage('templates/set-crowd-attachment.html', {
+        app.setCrowdNavi.pushPage('templates/set-crowd-attachment.html', {
           animation: 'slide', selectedCrowdLevel: crowdLevel, selectedPlace: $scope.selectedPlace
         });
       }

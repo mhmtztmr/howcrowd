@@ -73,7 +73,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     $scope.options = [{
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
       fnc: function() {
-        app.navi.pushPage('templates/crowd-place-detail.html', {
+        app.seeCrowdNavi.pushPage('templates/crowd-place-detail.html', {
           selectedPlaceBasedCrowd: $scope.selectedPlaceBasedCrowd, 
           animation:'lift'
         });
@@ -113,13 +113,13 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
     $scope.report = function() {
       seeCrowdService.reportCrowd($scope.selectedPlaceBasedCrowd.crowds[
         0], $scope.reportReason);
-      app.navi.resetToPage('templates/see-crowd.html');
+      app.seeCrowdNavi.resetToPage('templates/see-crowd.html');
     };
 
     $scope.reportReason = $scope.reportReasons[0].value;
 
     $scope.seeCrowdAttachment = function(crowd) {
-      app.navi.pushPage('templates/crowd-attachment-detail.html', {
+      app.seeCrowdNavi.pushPage('templates/crowd-attachment-detail.html', {
         crowd: crowd, 
         animation:'slide'
       });

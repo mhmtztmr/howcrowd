@@ -1,8 +1,8 @@
 app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
   'setCrowdModel', 'setCrowdService', 'dateService', 'mapService', 'INTERFACE',
   function($rootScope, $scope, setCrowdModel, setCrowdService, dateService, mapService, INTERFACE) {
-    $scope.selectedPlace =  app.navi.topPage.pushedOptions.selectedPlace;
-    $scope.selectedCrowdLevel = app.navi.topPage.pushedOptions.selectedCrowdLevel;
+    $scope.selectedPlace =  app.setCrowdNavi.topPage.pushedOptions.selectedPlace;
+    $scope.selectedCrowdLevel = app.setCrowdNavi.topPage.pushedOptions.selectedCrowdLevel;
 
     $scope.crowdText = {value: ''};
 
@@ -50,7 +50,7 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
                 place.vicinity = vicinity;
                 place.district = vicinity;
               }
-                                app.navi.resetToPage('templates/set-crowd.html');
+              app.navi.resetToPage('templates/crowd.html');
               setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
                 function() {
                   ons.notification.alert({

@@ -115,7 +115,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             function selectPlaceBasedCrowd(placeBasedCrowd) {
                 selectedPlaceBasedCrowd = placeBasedCrowd;
                 if (placeBasedCrowd) {
-                    app.navi.pushPage('templates/see-crowd-detail.html', {animation:'lift'});
+                    app.seeCrowdNavi.pushPage('templates/see-crowd-detail.html', {animation:'lift'});
                 }
             }
 
