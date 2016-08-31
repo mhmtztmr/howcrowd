@@ -243,8 +243,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('delete', ['clean']);
-    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'file-creator:version_dev', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
-    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'file-creator:version_dev', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
-	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'file-creator:version_prod', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
-	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'file-creator:version_prod', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
+    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
 };
