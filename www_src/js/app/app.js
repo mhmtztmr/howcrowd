@@ -4,6 +4,7 @@ var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCro
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
+    $rootScope.version = version;
     window.console.log('App running...');
 
     $rootScope.location = {};

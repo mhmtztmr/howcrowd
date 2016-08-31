@@ -1,14 +1,24 @@
 module.exports = function(grunt) {
 
+    var currentDate = new Date(),
+        currentMonth = currentDate.getMonth() + 1,
+        currentMonth = ("0" + currentMonth).slice(-2),
+        currentDay = ("0" + currentDate.getDate()).slice(-2),
+        currentHour = ("0" + currentDate.getHours()).slice(-2),
+        currentMinutes = ("0" + currentDate.getMinutes()).slice(-2),
+        buildTimestamp = "" + currentDate.getFullYear() + currentMonth + currentDay + currentHour + currentMinutes,
+        buildNumber = process.env.BUILD_NUMBER
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         clean: {
-            target: ["www/**/*"]
+            target: ["www/**/*"],
+            version: ["www/js/version.js"]
         },
         concat: {
             js: {
-                src: ['www_src/js/**/*.js'],
+                src: ['www_src/js/**/*.js','www/js/version.js'],
                 dest: 'www/js/crowd.js'
             },
             interface: {
@@ -142,15 +152,14 @@ module.exports = function(grunt) {
         'file-creator': {
             version_prod: {
                 "target/war/js/version.js": function (fs, fd, done) {
-                    var pkg = grunt.file.readJSON('package.json');
-                    var soBuildVersion = pkg.version + "." + buildNumber;
-                    fs.writeSync(fd, "var smartOfficeVersion = '" + soBuildVersion + "';");
+                    var version = pkg.version + "." + buildNumber;
+                    fs.writeSync(fd, "var version = '" + version + "';");
                     done();
                 }
             },
             version_dev: {
                 "www/js/version.js": function (fs, fd, done) {
-                    fs.writeSync(fd, "var smartOfficeVersion = '" + buildTimestamp + "';");
+                    fs.writeSync(fd, "var version = '" + buildTimestamp + "';");
                     done();
                 }
             }
@@ -193,6 +202,7 @@ module.exports = function(grunt) {
         }
     });
 
+    grunt.loadNpmTasks('grunt-file-creator');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -232,8 +242,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('delete', ['clean']);
-    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
-    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
-	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
-	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
+    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'file-creator:version_dev', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
+    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'file-creator:version_dev', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
+	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'file-creator:version_prod', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
+	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'file-creator:version_prod', 'concat', 'copy', 'replace', 'less:compile', 'sass', 'clean:version']);
 };
