@@ -151,7 +151,7 @@ module.exports = function(grunt) {
         },
         'file-creator': {
             version_prod: {
-                "target/war/js/version.js": function (fs, fd, done) {
+                "www/js/version.js": function (fs, fd, done) {
                     var version = pkg.version + "." + buildNumber;
                     fs.writeSync(fd, "var version = '" + version + "';");
                     done();
