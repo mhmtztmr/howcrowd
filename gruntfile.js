@@ -152,6 +152,7 @@ module.exports = function(grunt) {
         'file-creator': {
             version_prod: {
                 "www/js/version.js": function (fs, fd, done) {
+                    var pkg = grunt.file.readJSON('package.json');
                     var version = pkg.version + "." + buildNumber;
                     fs.writeSync(fd, "var version = '" + version + "';");
                     done();
