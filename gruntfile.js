@@ -212,10 +212,10 @@ module.exports = function(grunt) {
             global.credentials = credentials.prod;
         }  else if (t === 'dev_local') {
             global.credentials = credentials.dev_local;
-        } else if (t === 'dev_remote') {
-            global.credentials = credentials.dev_remote;
+        } else if (t === 'dev') {
+            global.credentials = credentials.dev;
         } else {
-            global.credentials = credentials.dev_remote;
+            global.credentials = credentials.dev;
         }
         grunt.option("credentials", global.credentials);
     });
@@ -233,7 +233,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('delete', ['clean']);
     grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace', 'less:compile']);
-    grunt.registerTask('dev_remote', ['clean', 'setCredentials:dev_remote', 'setReportIssue:dev_remote', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
+    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
 	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace', 'less:compile']);
 	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace', 'less:compile']);
 };
