@@ -232,8 +232,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('delete', ['clean']);
-    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace', 'less:compile']);
+    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
     grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
-	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace', 'less:compile']);
-	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace', 'less:compile']);
+	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
+	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace', 'less:compile', 'sass']);
 };
