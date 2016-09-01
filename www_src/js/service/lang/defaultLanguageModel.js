@@ -24,7 +24,8 @@ var defaultLanguageModel = function() {
             "MIN_AGO": "min(s) ago",
             "NO_PLACE": "No recent crowd. Tap to enter one!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
-            "SEARCH_INPUT": "Last 1h, Around 15kms"
+            "SEARCH_INPUT": "Last 1h, Around 15kms",
+            "YOU": "You"
         },
         "SEE_CROWD_POPOVER_MENU": {
             "DISPLAY_TYPE": "Display Type"

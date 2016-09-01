@@ -8,7 +8,7 @@ var feedbackModel = function() {
       for (feedbackId in myFeedbacks) {
         var feedback = myFeedbacks[feedbackId];
         var timeDiff = now - feedback.time;
-        if (timeDiff < 3600000) {
+        if (timeDiff < 3600000) { //one hour
           myTempFeedbacks[feedbackId] = myFeedbacks[feedbackId];
         }
       }

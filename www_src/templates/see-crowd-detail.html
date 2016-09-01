@@ -20,23 +20,16 @@
         <ons-row align="center">
           <ons-col>
             {{crowd.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+            <span class="crowd-owner" ng-if="$root.device.id === crowd.deviceId">({{$root.lang.SEE_CROWD_MENU.YOU}})</span>
           </ons-col>
-          <ons-col>
-            <ons-icon ng-if="crowd.crowdPhoto" icon="fa-picture-o"></ons-icon>
-          </ons-col>
-          <ons-col>
-            <ons-icon ng-if="crowd.crowdText" icon="fa-comment-o"></ons-icon>
-          </ons-col>
-          <ons-col width="40px" ng-class="{'feedback-done' : !$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId, 'positive-feedback' : true}">
-            <ons-icon ng-if="!$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId" icon="fa-thumbs-o-up"></ons-icon>
-            <ons-icon ng-if="$first &&  selectedPlaceBasedCrowd.distanceGroup === 0 && $root.device.id !== crowd.deviceId && myFeedback === true" icon="fa-thumbs-up"></ons-icon>
-            <ons-icon ng-if="$first &&  selectedPlaceBasedCrowd.distanceGroup === 0 && $root.device.id !== crowd.deviceId && myFeedback !== true" icon="fa-thumbs-o-up" ng-click="givePositiveFeedback()"></ons-icon>
+          <ons-col width="40px" class="positive-feedback">
+            <ons-icon ng-if="crowd.feedbackable === true && crowd.myFeedback !== true" icon="fa-thumbs-o-up" ng-click="givePositiveFeedback(crowd);$event.stopPropagation();"></ons-icon>
+            <ons-icon ng-if="crowd.feedbackable === true && crowd.myFeedback === true" icon="fa-thumbs-up"></ons-icon>
             <span>{{crowd.crowdFeedback.positiveFeedback}}</span>
           </ons-col>
-          <ons-col width="40px" ng-class="{'feedback-done' : !$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId, 'negative-feedback' : true}">
-            <ons-icon ng-if="!$first || selectedPlaceBasedCrowd.distanceGroup !== 0 || $root.device.id === crowd.deviceId" icon="fa-thumbs-o-down"></ons-icon>
-            <ons-icon ng-if="$first && selectedPlaceBasedCrowd.distanceGroup === 0 && $root.device.id !== crowd.deviceId && myFeedback === false" icon="fa-thumbs-down"></ons-icon>
-            <ons-icon ng-if="$first && selectedPlaceBasedCrowd.distanceGroup === 0 && $root.device.id !== crowd.deviceId && myFeedback !== false" icon="fa-thumbs-o-down" ng-click="giveNegativeFeedback()"></ons-icon>
+          <ons-col width="40px" class="negative-feedback">
+            <ons-icon ng-if="crowd.feedbackable === true && crowd.myFeedback !== false" icon="fa-thumbs-o-down" ng-click="giveNegativeFeedback(crowd);$event.stopPropagation();"></ons-icon>
+            <ons-icon ng-if="crowd.feedbackable === true && crowd.myFeedback === false" icon="fa-thumbs-down"></ons-icon>
             <span>{{crowd.crowdFeedback.negativeFeedback}}</span>
           </ons-col>
           <ons-col width="40px" class="crowd-last-value">
@@ -46,6 +39,12 @@
                 <div class="fill"></div>
               </div>
             </div>
+          </ons-col>
+        </ons-row>
+        <ons-row align="left">
+          <ons-col>
+            <ons-icon ng-if="crowd.crowdPhoto" icon="fa-picture-o"></ons-icon>
+            <ons-icon ng-if="crowd.crowdText" icon="fa-comment-o"></ons-icon>
           </ons-col>
         </ons-row>
       </ons-list-item>

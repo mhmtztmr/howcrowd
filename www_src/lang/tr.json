@@ -23,7 +23,8 @@
         "MIN_AGO": "dk. önce",
         "NO_PLACE": "Yeni bir kalabalık yok. Eklemek için dokun!",
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin olun!",
-        "SEARCH_INPUT": "Son 1s, 15km civarı"
+        "SEARCH_INPUT": "Son 1s, 15km civarı",
+        "YOU": "Siz"
     },
     "SEE_CROWD_POPOVER_MENU": {
         "DISPLAY_TYPE": "Görüntüleme Tipi"

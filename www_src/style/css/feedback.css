@@ -1,8 +1,10 @@
 .positive-feedback {
   color: green;
+  text-align: center;
 }
 .negative-feedback {
   color: red;
+  text-align: center;
 }
 .feedback-done {
   opacity: 0.3;

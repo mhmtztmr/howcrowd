@@ -3,42 +3,36 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
   function($rootScope, $scope, seeCrowdModel,
     feedbackModel, seeCrowdService, setCrowdModel, setCrowdService) {
     $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
-    var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
-    var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
-    if (myFeedback) {
-      $scope.myFeedback = myFeedback.isPositive;
-    }
 
-    $scope.givePositiveFeedback = function() {
-      giveFeedback(true);
+    $scope.givePositiveFeedback = function(crowd) {
+      giveFeedback(crowd, true);
     };
 
-    $scope.giveNegativeFeedback = function() {
-      giveFeedback(false);
+    $scope.giveNegativeFeedback = function(crowd) {
+      giveFeedback(crowd, false);
     };
 
-    function giveFeedback(isPositive) {
-      if ($scope.myFeedback === undefined) {
-        var crowd = $scope.selectedPlaceBasedCrowd.crowds[0];
+    function giveFeedback(crowd,isPositive) {
+      if (crowd.myFeedback === undefined) {
         if (crowd.deviceId === $rootScope.device.id) {
           return;
         }
-        $scope.myFeedback = isPositive;
+        crowd.myFeedback = isPositive;
         if (isPositive) {
-          $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.positiveFeedback++;
+          crowd.crowdFeedback.positiveFeedback++;
         } else {
-          $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback++;
+          crowd.crowdFeedback.negativeFeedback++;
         }
         seeCrowdModel.giveFeedback(crowd, isPositive,
           function() {
             feedbackModel.insertFeedback(crowd.crowdId, isPositive);
           },
           function() {
-            $scope.myFeedback = undefined;
+            crowd.myFeedback = undefined;
             if (isPositive) {
-              $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.positiveFeedback--;
+              crowd.crowdFeedback.positiveFeedback--;
             } else {
-              $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback--;
+              crowd.crowdFeedback.negativeFeedback--;
             }
           });
       }

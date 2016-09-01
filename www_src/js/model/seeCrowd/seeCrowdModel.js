@@ -1,7 +1,7 @@
-angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location.Service', 'config'])
-    .factory('seeCrowdModel', ['seeCrowdService', 'mapService',
+angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location.Service', 'config', 'feedback'])
+    .factory('seeCrowdModel', ['seeCrowdService', 'mapService', 'feedbackModel',
         'configService', 'dateService', '$rootScope', 'locationService', function(seeCrowdService, mapService,
-            configService, dateService, $rootScope, locationService) {
+            feedbackModel, configService, dateService, $rootScope, locationService) {
             var selectedPlaceBasedCrowd, placeBasedCrowdsArray = [], boundingBox,
             mapDivId = 'map', map, markers = [], reload = true;
 
@@ -20,7 +20,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 placeBasedCrowdsArray = [];
                 for (i = 0; i < crowds.length; i++) {
                     crowd = crowds[i];
-                    crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60));
+                    crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60)); //mins
                     if (!placeBasedCrowds[crowd.placeKey]) {
                         placeBasedCrowds[crowd.placeKey] = {
                             crowds: [],
@@ -68,6 +68,16 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         else {
                             placeBasedCrowds[crowd.placeKey].distanceGroup = 0; //here
                         }
+                    }
+
+                    crowd.feedbackable = 
+                        crowd.lastUpdatePass <= configService.FEEDBACK_TIME * 60 && //entered just now
+                        placeBasedCrowds[crowd.placeKey].distanceGroup === 0 && //here
+                        $rootScope.device.id !== crowd.deviceId; //not me
+
+                    crowd.myFeedback = feedbackModel.getFeedback(crowd.crowdId);
+                    if(crowd.myFeedback) {
+                        crowd.myFeedback = crowd.myFeedback.isPositive;
                     }
                 }
                 placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(function(key) {
