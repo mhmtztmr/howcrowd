@@ -307,6 +307,10 @@ angular.module('google', ['config']).
 					if(place.photos){
 						nearPlace.photo = place.photos[0].getUrl({'maxWidth': 600, 'maxHeight': 600});
 					}
+					if(place.types && place.types.length > 0){
+						nearPlace.type = place.types[0];
+					}
+						
 					nearPlaces.push(nearPlace);
 				}
 			}

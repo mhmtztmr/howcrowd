@@ -28,6 +28,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService, F
         this.placeVicinity = args.placeVicinity || '';
         this.placeDistrict = args.placeDistrict || '';
         this.placePhoto = args.placePhoto || '';
+        this.placeType = args.placeType || '';
     }
 
     function Device(args) {
@@ -48,6 +49,7 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService, F
         this.placeVicinity = args.placeVicinity || '';
         this.placeDistrict = args.placeDistrict || '';
         this.placePhoto = args.placePhoto || '';
+        this.placeType = args.placeType || '';
     }
     /* DB Models ******/
 
@@ -69,7 +71,8 @@ var backendlessService = function($rootScope, $q, crowdRest, formatterService, F
             crowdLocationLongitude: place.location.longitude,
             placeVicinity: place.vicinity,
             placeDistrict: place.district,
-            placePhoto: place.photo
+            placePhoto: place.photo,
+            placeType: place.type
         });
         crowds.save(crowdObject, new Backendless.Async(onSuccess, onFailure));
     }

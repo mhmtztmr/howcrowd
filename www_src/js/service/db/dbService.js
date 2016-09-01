@@ -9,10 +9,6 @@ var dbService = function(backendlessService) {
     backendlessService.insertCrowd(place, crowd, device, onSuccess, onFailure);
   }
 
-  // function insertPlace(place, onSuccess, onFailure) {
-  //   backendlessService.insertPlace(place, onSuccess, onFailure);
-  // }
-
   function retrieveDevice(deviceId) {
     return backendlessService.retrieveDevice(deviceId);
   }

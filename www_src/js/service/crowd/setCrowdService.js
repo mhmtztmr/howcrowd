@@ -36,7 +36,8 @@ var setCrowdService = function($rootScope, dbService, dateService, mapService, c
       name: seeCrowdItem.placeName,
       photo: seeCrowdItem.placePhoto,
       source: seeCrowdItem.placeSource,
-      sid: seeCrowdItem.placeSid
+      sid: seeCrowdItem.placeSid,
+      type: seeCrowdItem.placeType
     }
   }
 

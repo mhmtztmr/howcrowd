@@ -22,7 +22,8 @@ var formatterService = function() {
       },
       placeVicinity: crowd.placeVicinity,
       placeDistrict: crowd.placeDistrict,
-      placePhoto: crowd.placePhoto
+      placePhoto: crowd.placePhoto,
+      placeType: crowd.placeType
     };
   }
 
@@ -37,7 +38,8 @@ var formatterService = function() {
       source: crowd.placeSource,
       vicinity: crowd.placeVicinity,
       district: crowd.placeDistrict,
-      photo: crowd.placePhoto
+      photo: crowd.placePhoto,
+      type: crowd.placeType
     };
   }
 

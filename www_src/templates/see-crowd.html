@@ -25,9 +25,6 @@
                     <ons-toolbar-button ng-click="startSearch()">
                         <ons-icon icon="fa-search"></ons-icon>
                     </ons-toolbar-button>
-                    <!-- <ons-toolbar-button onclick="crowdTabbar.loadPage('templates/see-crowd-inmap.html', {animation: 'none'});">
-                        <ons-icon icon="fa-map"></ons-icon>
-                    </ons-toolbar-button> -->
                     <ons-toolbar-button onclick="app.seeCrowdNavi.pushPage('templates/see-crowd-inmap.html', {animation: 'none'});">
                         <ons-icon icon="fa-map"></ons-icon>
                     </ons-toolbar-button>
@@ -63,9 +60,19 @@
                     </div>
                   </div>
                   <div class="crowd-center">
-                    <div class="crowd-place-name"> {{item.placeName}}</div>
-                    <div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== ''"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{item.placeDistrict}}</div>
-                    <div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>
+                    <div class="crowd-place-name">
+                        {{item.placeName}}
+                    </div>
+                    <div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== ''">
+                        <ons-icon icon="fa-map-marker"></ons-icon> {{item.placeDistrict}}
+                    </div>
+                    <div class="crowd-time">
+                        <ons-icon icon="fa-clock-o"></ons-icon> {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}} [{{item.placeType}}]
+                    </div>
+                    <div class="crowd-attachments">
+                        <ons-icon ng-if="item.hasPhoto === true" icon="fa-picture-o"></ons-icon>
+                        <ons-icon ng-if="item.hasText === true" icon="fa-comment-o"></ons-icon>
+                    </div>
                   </div>
                   <div class="crowd-right">
                     <div class="crowd-circle">
