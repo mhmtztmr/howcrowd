@@ -1,4 +1,4 @@
-<ons-page>
+<ons-page ng-controller="seeCrowdInmapController" ons-show="onMapShow()">
     <ons-toolbar>
         <div class="left">
             <ons-toolbar-button ng-click="menu.toggle()">
@@ -7,7 +7,8 @@
         </div>
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
         <div class="right">
-            <ons-toolbar-button onclick="app.seeCrowdNavi.popPage();">
+            <!-- <ons-toolbar-button onclick="app.seeCrowdNavi.popPage();"> -->
+            <ons-toolbar-button onclick="app.seeCrowdNavi.bringPageTop('templates/see-crowd-inlist.html', {animation: 'none'});">
                 <ons-icon icon="fa-list"></ons-icon>
             </ons-toolbar-button>
         </div>
