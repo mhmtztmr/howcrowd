@@ -50,7 +50,7 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
                 place.vicinity = vicinity;
                 place.district = vicinity;
               }
-              app.navi.resetToPage('templates/crowd.html');
+              crowdTabbar.setActiveTab(1);
               setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
                 function() {
                   ons.notification.alert({

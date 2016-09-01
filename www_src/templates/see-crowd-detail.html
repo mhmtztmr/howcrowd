@@ -19,7 +19,12 @@
       <ons-list-item ng-repeat="crowd in selectedPlaceBasedCrowd.crowds" ng-click="seeCrowdAttachment(crowd)">
         <ons-row align="center">
           <ons-col>
-            {{crowd.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+            <span ng-if="crowd.lastUpdatePass === 0">
+              {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
+            </span>
+            <span ng-if="crowd.lastUpdatePass > 0">
+              {{crowd.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+            </span>
             <span class="crowd-owner" ng-if="$root.device.id === crowd.deviceId">({{$root.lang.SEE_CROWD_MENU.YOU}})</span>
           </ons-col>
           <ons-col width="40px" class="positive-feedback">
