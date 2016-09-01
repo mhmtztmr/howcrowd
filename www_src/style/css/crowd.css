@@ -35,6 +35,11 @@
   }
   .crowd-time {
      font-size: 12px;
+     float: left;
+  }
+  .crowd-attachments {
+     font-size: 12px;
+     float: right;
   }
   .crowd-right {
     float: right;
