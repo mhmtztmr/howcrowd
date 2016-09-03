@@ -72,11 +72,22 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
 
     ons.ready(function() {
         ons.setDefaultDeviceBackButtonListener(function() {            
-            if(menu._currentPageUrl === "templates/see-crowd.html") {
-                $rootScope.exitApp();
-            }
-            else {
-                menu.setMainPage('templates/see-crowd.html');
+            if(menu._currentPageUrl === "templates/crowd.html") {
+                if(crowdTabbar) {
+                    //if not see crowd page
+                    if(crowdTabbar.getActiveTabIndex() !== 1) {
+                        crowdTabbar.setActiveTab(1);
+                    }
+                    else {
+                        //if not see crowd list page
+                        if(app.seeCrowdTabbar.getActiveTabIndex() !== 0) {
+                            app.seeCrowdTabbar.setActiveTab(0);
+                        }
+                        else {
+                            $rootScope.exitApp();
+                        }
+                    }
+                }                
             }
         });
     });
