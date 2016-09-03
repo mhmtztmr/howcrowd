@@ -165,6 +165,13 @@ angular.module('google', ['config']).
 			fullscreenControl: false
 		});
 
+		google.maps.event.addListener(map, 'mousedown', function (event) {
+            $rootScope.$broadcast('markerDeselected');
+            if (infowindow) {
+				infowindow.close();
+			}
+        });
+
 		addYourLocationButton(map);
 		return map;
 	}
@@ -217,58 +224,20 @@ angular.module('google', ['config']).
 			}
 		});
 
-		var scope = $rootScope.$new();
-		scope.placeBasedCrowd = placeBasedCrowd;
-
-    	scope.selectPlaceBasedCrowd = clickEvent;
-
-		var contentString = '<div>'+
-		'<div class="crowd-main-body crowd-info-window" ng-click="selectPlaceBasedCrowd(placeBasedCrowd)">' +
-		'<div class="crowd-left">' +
-		'<div class="crowd-source-icon">' +
-		'<img ng-src="img/sources/{{placeBasedCrowd.placeSource}}.png" />' +
-		'</div>' +
-		'</div>' +
-		'<div class="crowd-center">' +
-		'<div class="crowd-place-name">{{placeBasedCrowd.placeName}}</div>' +
-		'<div class="crowd-city" ng-show="placeBasedCrowd.placeDistrict"><ons-icon icon="ion-ios-location-outline"></ons-icon> {{placeBasedCrowd.placeDistrict}}</div>' +
-		'<div class="crowd-time"><ons-icon icon="ion-ios-clock-outline"> {{placeBasedCrowd.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}</div>' +
-		'</div>' +
-		'<div class="crowd-right">' +
-		'<div class="crowd-last-value">{{$root.lang.SEE_CROWD_MENU.LAST_VALUE}} {{placeBasedCrowd.crowdLast.crowdValue}}%</div>' +
-		'<div class="crowd-circle">' +
-		'<div class="c100 p{{placeBasedCrowd.crowdLast.crowdValue}} crowd-size center">' +
-		'<div class="slice">' +
-		'<div class="bar"></div>' +
-		'<div class="fill"></div>' +
-		'</div>' +
-		'</div>' +
-		'</div>' +
-		'<div class="crowd-feedbacks">' +
-		'<div ng-if="placeBasedCrowd.crowdLast.crowdFeedback.negativeFeedback !== 0" class="crowd-negative-feedback">{{placeBasedCrowd.crowdLast.crowdFeedback.negativeFeedback}}</div>' +
-		'<div ng-if="placeBasedCrowd.crowdLast.crowdFeedback.positiveFeedback !== 0" class="crowd-positive-feedback">{{placeBasedCrowd.crowdLast.crowdFeedback.positiveFeedback}}</div>' +
-		'</div>' +
-		'</div>' +
-		'</div>'+
-		'<div class="crowd-average-container">'+
-		'<div class="crowd-average-text">{{$root.lang.SEE_CROWD_MENU.AVERAGE_VALUE}} {{placeBasedCrowd.crowdAverage}}%</div>'+
-		'<div class="crowd-average-indicator">'+
-		'<div class="crowd-average-bar">'+
-		'<div class="crowd-average-fill" style="width: {{placeBasedCrowd.crowdAverage}}%"></div>'+
-		'</div>'+
-		'</div>'+
-		'</div>'+
-		'</div>';
-
-		var compiledContent = $compile(contentString)(scope);
+		var contentString = '<div>'+placeBasedCrowd.placeName + '</div>';
 
 		google.maps.event.addListener(marker, 'click', function() {
+			if(clickEvent) {
+				clickEvent();
+			}
+			$rootScope.$broadcast('markerSelected', { place: placeBasedCrowd});
+          	map.setCenter(latLng);
+
 			if (infowindow) {
 				infowindow.close();
 			}
-
 			infowindow = new google.maps.InfoWindow({
-				content: compiledContent[0]
+				content: contentString
 			});
 			infowindow.open(map, marker);
 		});

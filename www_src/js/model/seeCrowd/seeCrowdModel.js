@@ -105,7 +105,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     (function(placeBasedCrowd) {
                         markers.push(mapService.markPlaceOnMap(map, placeBasedCrowd,
                             function() {
-                                selectPlaceBasedCrowd(placeBasedCrowd);
+                                // selectPlaceBasedCrowd(placeBasedCrowd);
                             })
                         );
                     })(placeBasedCrowd);
@@ -113,7 +113,8 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             }
 
             function clearMap(){
-                for (var i = 0; i < markers.length; i++ ) {
+                var i;
+                for (i = 0; i < markers.length; i++ ) {
                     markers[i].setMap(null);
                 }
                 markers.length = 0;
