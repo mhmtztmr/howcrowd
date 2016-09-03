@@ -8,11 +8,16 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             function loadCrowds(onSuccess, onFailure) {
                 boundingBox = mapService.getBoundingBox($rootScope.location, 0.1);
                 seeCrowdService.retrieveCrowds().then(function(results) {
-                        onSuccess(loadPlaceBasedCrowds(results));
+                        loadPlaceBasedCrowds(results);
+                        onSuccess();
                     },
                     function() {
                         onFailure();
                     });
+            }
+
+            function getPlaceBasedCrowds() {
+                return placeBasedCrowdsArray;
             }
 
             function loadPlaceBasedCrowds(crowds) {
@@ -147,6 +152,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
 
             return {
                 loadCrowds: loadCrowds,
+                getPlaceBasedCrowds: getPlaceBasedCrowds,
                 loadMap: loadMap,
                 clearMap: clearMap,
                 selectPlaceBasedCrowd: selectPlaceBasedCrowd,

@@ -5,8 +5,8 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
         $scope.crowds = 'pending';
 
         function loadCrowds(success){
-            seeCrowdModel.loadCrowds(function(pbca) {
-                placeBasedCrowdsArray = pbca;
+            seeCrowdModel.loadCrowds(function() {
+                placeBasedCrowdsArray = seeCrowdModel.getPlaceBasedCrowds();
                 $timeout(function() {
                     $scope.crowds = $filter('orderBy')(placeBasedCrowdsArray, ['distanceGroup', 'crowdLast.lastUpdatePass']);
                 });

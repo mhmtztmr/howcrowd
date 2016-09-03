@@ -50,14 +50,22 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
                 place.vicinity = vicinity;
                 place.district = vicinity;
               }
-              crowdTabbar.setActiveTab(1);
+
+              //reset to main set crowd page
+              app.setCrowdNavi.pages[2]._destroy();
+              app.setCrowdNavi.popPage({animation: 'lift'});
+              modal.show();
+
               setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
                 function() {
-                  ons.notification.alert({
-                    title: $rootScope.lang.ALERT.ALERT,
-                    message: $rootScope.lang.ALERT.SUCCESS,
-                    buttonLabel: $rootScope.lang.ALERT.OK,
-                  });
+                  //TODO: seecrowdmodel.loadcrowds should be called to refresh seecrowdinlist page
+                  crowdTabbar.setActiveTab(1);
+                  modal.hide();
+                  // ons.notification.alert({
+                  //   title: $rootScope.lang.ALERT.ALERT,
+                  //   message: $rootScope.lang.ALERT.SUCCESS,
+                  //   buttonLabel: $rootScope.lang.ALERT.OK,
+                  // });
                 },
                 function() {
                   ons.notification.alert({

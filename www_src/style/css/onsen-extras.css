@@ -4,3 +4,6 @@
 .popover--material {
 	top: 4px !important;
 }
+.page__content > .scroll {
+	height: 100%;
+}
