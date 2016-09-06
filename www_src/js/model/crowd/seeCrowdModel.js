@@ -1,9 +1,9 @@
 angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location.Service', 'config', 'feedback'])
-    .factory('seeCrowdModel', ['seeCrowdService', 'mapService', 'feedbackModel',
-        'configService', 'dateService', '$rootScope', 'locationService', function(seeCrowdService, mapService,
+    .factory('seeCrowdModel', ['seeCrowdService', 'mapService', 'mapConstants','feedbackModel',
+        'configService', 'dateService', '$rootScope', 'locationService', function(seeCrowdService, mapService, mapConstants,
             feedbackModel, configService, dateService, $rootScope, locationService) {
             var selectedPlaceBasedCrowd, placeBasedCrowdsArray = [], boundingBox,
-            mapDivId = 'map', map, markers = [], reload = true;
+            mapDivId = 'map', map, markers = [], reload = true, infowindow;
 
             function loadCrowds(onSuccess, onFailure) {
                 boundingBox = mapService.getBoundingBox($rootScope.location, 0.1);
@@ -42,26 +42,31 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
                     placeBasedCrowds[crowd.placeKey].placeType = crowd.placeType;
 
-                    if(crowd.crowdPhoto){
-                        placeBasedCrowds[crowd.placeKey].hasPhoto = true;
-                    }
-                    if(crowd.crowdText){
-                        placeBasedCrowds[crowd.placeKey].hasText = true;
-                    }
-
                     if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
                         placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
                     }
 
-                    //average algorithm including feedbacks
-                    crowdFeedbackMargin = 1 + crowd.crowdFeedback.positiveFeedback - crowd.crowdFeedback.negativeFeedback
-                    if(crowdFeedbackMargin > 0) {
-                        placeBasedCrowds[crowd.placeKey].crowdCount += crowdFeedbackMargin;
-                        placeBasedCrowds[crowd.placeKey].crowdValue += crowdFeedbackMargin * crowd.crowdValue;
+                    if(crowd.crowdValue >= 0) {
+                        if(crowd.crowdPhoto){
+                            placeBasedCrowds[crowd.placeKey].hasPhoto = true;
+                        }
+                        if(crowd.crowdText){
+                            placeBasedCrowds[crowd.placeKey].hasText = true;
+                        }
+                        
+                        //average algorithm including feedbacks
+                        crowdFeedbackMargin = 1 + crowd.crowdFeedback.positiveFeedback - crowd.crowdFeedback.negativeFeedback
+                        if(crowdFeedbackMargin > 0) {
+                            placeBasedCrowds[crowd.placeKey].crowdCount += crowdFeedbackMargin;
+                            placeBasedCrowds[crowd.placeKey].crowdValue += crowdFeedbackMargin * crowd.crowdValue;
+                        }
+                        placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
+                            placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
+                                crowd.placeKey].crowdCount);
                     }
-                    placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
-                        placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
-                            crowd.placeKey].crowdCount);
+                    else {
+                        placeBasedCrowds[crowd.placeKey].hasAsk = true;
+                    }
                     placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
 
                     //here algorithm
@@ -93,7 +98,23 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
 
             function markCurrentLocation() {
                 if($rootScope.location.latitude) {
-                    markers.push(mapService.markLocationOnMap(map, $rootScope.location));
+                    var marker = mapService.createMarker(
+                        map, 
+                        $rootScope.location, 
+                        {
+                            path: mapConstants.MARKERS.OTHER.PATHS.CURRENT_LOCATION,
+                            anchor: mapConstants.MARKERS.OTHER.INFO.anchor,
+                            scaledSize: mapConstants.MARKERS.OTHER.INFO.scaledSize
+                        },
+                        function(_infowindow){
+                            if (infowindow) {
+                                infowindow.close();
+                            }
+                            infowindow = _infowindow;
+                        },
+                        "your location"
+                    );
+                    markers.push(marker);
                 }
             }
 
@@ -103,11 +124,24 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 for (i = 0; i < placeBasedCrowdsArray.length; i++) {
                     placeBasedCrowd = placeBasedCrowdsArray[i];
                     (function(placeBasedCrowd) {
-                        markers.push(mapService.markPlaceOnMap(map, placeBasedCrowd,
-                            function() {
-                                // selectPlaceBasedCrowd(placeBasedCrowd);
-                            })
+                        var marker = mapService.createMarker(
+                            map, 
+                            placeBasedCrowd.crowdLocation, 
+                            {
+                                path: mapConstants.MARKERS.CROWD.PATHS[(Math.ceil(placeBasedCrowd.crowdAverage / 10) * 10)],
+                                anchor: mapConstants.MARKERS.CROWD.INFO.anchor,
+                                scaledSize: mapConstants.MARKERS.CROWD.INFO.scaledSize
+                            },
+                            function(_infowindow){
+                                if (infowindow) {
+                                    infowindow.close();
+                                }
+                                infowindow = _infowindow;
+                                $rootScope.$broadcast('markerSelected', { place: placeBasedCrowd});
+                            },
+                            placeBasedCrowd.placeName
                         );
+                        markers.push(marker);
                     })(placeBasedCrowd);
                 }
             }
@@ -124,7 +158,14 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             function loadMap() {
                 if(!map) {
                     setTimeout(function(){
-                        map = mapService.initMap(mapDivId, boundingBox.latitude.lower, boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude.upper);
+                        map = mapService.initMap(mapDivId, boundingBox.latitude.lower, boundingBox.longitude.lower, boundingBox.latitude.upper, boundingBox.longitude.upper, {
+                            'mousedown': function(){
+                                $rootScope.$broadcast('markerDeselected');
+                                if (infowindow) {
+                                    infowindow.close();
+                                }
+                            }
+                        });
                         markPlaces();
                         reload = false;
                     }, 100);

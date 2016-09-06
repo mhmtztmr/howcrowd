@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model',
+var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
     'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
 ]);

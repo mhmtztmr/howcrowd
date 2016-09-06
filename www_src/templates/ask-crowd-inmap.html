@@ -1,0 +1,22 @@
+<ons-page ng-controller="askCrowdInmapController">
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button ng-show="searchInput.value.length > 0" class="search-crowd-cancel" ng-click="clearSearchInput()"></ons-back-button>
+            <ons-toolbar-button ng-show="searchInput.value.length === 0" ng-click="menu.toggle()">
+                <ons-icon icon="fa-bars"></ons-icon>
+            </ons-toolbar-button>
+        </div>
+        <div class="center">
+            <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.ASK_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="search-input"/>
+        </div>
+        <div class="right" ng-show="searchInput.value.length > 0">
+            <ons-toolbar-button ng-click="searchPlace()">
+                <ons-icon icon="fa-search"></ons-icon>
+            </ons-toolbar-button>
+        </div>
+    </ons-toolbar>
+    <div id="askMap" style="width:100%; height:100%"></div>
+    <div ng-if="selectedPlace" class="selected-place-info" ng-click="selectPlace()">
+        {{selectedPlace.name}}
+    </div>
+</ons-page>

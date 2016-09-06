@@ -4,6 +4,10 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
         var placeBasedCrowdsArray;
         $scope.crowds = 'pending';
 
+        // app.seeCrowdTabbar.on('postchange', function(event){
+        //     console.log(event);
+        // });
+
         function loadCrowds(success){
             seeCrowdModel.loadCrowds(function() {
                 placeBasedCrowdsArray = seeCrowdModel.getPlaceBasedCrowds();

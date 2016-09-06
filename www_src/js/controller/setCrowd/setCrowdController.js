@@ -1,6 +1,5 @@
 app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapService', 'setCrowdModel', '$filter',
     function($rootScope, $scope, $timeout, mapService, setCrowdModel, $filter) {
-
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 

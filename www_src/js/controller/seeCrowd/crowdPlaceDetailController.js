@@ -8,8 +8,8 @@ app.controller('crowdPlaceDetailController', ['$scope', 'mapService', '$timeout'
 	      boundingBox.longitude.lower, boundingBox.latitude.upper,
 	      boundingBox.longitude.upper);
 
-	    mapService.markPlaceOnMap(map, $scope.selectedPlaceBasedCrowd,
-	      function() {});
+	    // mapService.markPlaceOnMap(map, $scope.selectedPlaceBasedCrowd,
+	    //   function() {});
 	},100);
   }
 ]);

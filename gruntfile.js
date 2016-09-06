@@ -247,4 +247,5 @@ module.exports = function(grunt) {
     grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
 	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
 	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+    grunt.registerTask('default', ['dev']);
 };

@@ -50,6 +50,7 @@
           <ons-col>
             <ons-icon ng-if="crowd.crowdPhoto" icon="fa-picture-o"></ons-icon>
             <ons-icon ng-if="crowd.crowdText" icon="fa-comment-o"></ons-icon>
+            <ons-icon ng-if="crowd.hasAsk === true && crowd.distanceGroup === 0" icon="fa-question"></ons-icon>
           </ons-col>
         </ons-row>
       </ons-list-item>

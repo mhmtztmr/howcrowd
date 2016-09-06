@@ -65,7 +65,7 @@ var defaultLanguageModel = function() {
             "ADD_CROWD": "Add Crowd"
         },
         "ASK_CROWD_MENU": {
-            "SEARCH_INPUT": "Search"
+            "SEARCH_INPUT": "Ask crowd by search"
         },
         "CROWD_VALUES" : {
             "0": "Empty",

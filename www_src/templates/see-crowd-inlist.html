@@ -50,12 +50,14 @@
         </div>
         <div class="no-crowd-seperator"></div>
         <div class="no-crowd-set-crowd-container">
-            <button class="no-crowd-set-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(2)">{{$root.lang.SEE_CROWD_MENU.SET_CROWD}} &raquo;</button>
+            <span class="no-crowd-set-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(2)">
+            {{$root.lang.SEE_CROWD_MENU.SET_CROWD}} &raquo;</span>
             <ons-icon icon="fa-plus-circle" class="no-crowd-set-crowd-icon"></ons-icon>
         </div>
         <div class="no-crowd-seperator"></div>
         <div class="no-crowd-ask-crowd-container">
-            <button class="no-crowd-ask-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(0)">&laquo; {{$root.lang.SEE_CROWD_MENU.ASK_CROWD}}</button>
+            <span class="no-crowd-ask-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(0)">
+            &laquo; {{$root.lang.SEE_CROWD_MENU.ASK_CROWD}}</span>
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>
     </div>
@@ -78,20 +80,18 @@
                 <ons-icon icon="fa-map-marker"></ons-icon> {{item.placeDistrict}}
             </div>
             <div class="crowd-time">
-                <ons-icon icon="fa-clock-o"></ons-icon> 
-                <span ng-if="item.crowdLast.lastUpdatePass > 0">
-                    {{item.crowdLast.lastUpdatePass}}
-                </span> 
+                <ons-icon icon="fa-clock-o"></ons-icon>  
                 <span ng-if="item.crowdLast.lastUpdatePass === 0">
                     {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
                 </span>
                 <span ng-if="item.crowdLast.lastUpdatePass > 0">
-                    {{item.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+                    {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
                 </span> [{{item.placeType}}]
             </div>
             <div class="crowd-attachments">
                 <ons-icon ng-if="item.hasPhoto === true" icon="fa-picture-o"></ons-icon>
                 <ons-icon ng-if="item.hasText === true" icon="fa-comment-o"></ons-icon>
+                <ons-icon ng-if="item.hasAsk === true && item.distanceGroup === 0" icon="fa-question"></ons-icon>
             </div>
           </div>
           <div class="crowd-right">

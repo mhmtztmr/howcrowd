@@ -43,13 +43,13 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
             locationForCustomVicinity = undefined;
           }
 
-          mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
+          // mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
 
               //TODO: To be discussed if needed or not
-              if(vicinity) {
-                place.vicinity = vicinity;
-                place.district = vicinity;
-              }
+              // if(vicinity) {
+              //   place.vicinity = vicinity;
+              //   place.district = vicinity;
+              // }
 
               //reset to main set crowd page
               app.setCrowdNavi.pages[2]._destroy();
@@ -74,7 +74,7 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
                     buttonLabel: $rootScope.lang.ALERT.OK,
                   });
                 });
-          });
+          // });
       }
       
     };

@@ -2,10 +2,6 @@
 	display: none !important;
 }
 
-.gm-style-iw ~ div {
-    display: none !important;
-}
-
 .pinpoint {
 	left: 20px !important;
 	top: 20px !important;
@@ -24,4 +20,25 @@
     padding-left: 2%;
     padding-right: 2%;
     opacity: 0.8;
+}
+
+.pac-container {
+    width: 100% !important;
+    left: 0px !important;
+    height: 60% !important;
+    overflow-y: scroll !important;
+    top: 56px !important;
+}
+.pac-item {
+    line-height: 48px !important;
+    font-size: 16px !important;
+}
+.pac-item-query {
+    float: right;
+}
+.pac-logo:after {
+    display: none !important;
+}
+.pac-icon {
+    display: none !important;
 }

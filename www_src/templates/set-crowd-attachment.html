@@ -46,7 +46,15 @@
       </ons-list-item>
     </ons-list>
     <ons-bottom-toolbar>
-      <ons-button modifier="large--quiet" ng-click="insertCrowd()">{{$root.lang.SET_CROWD_ATTACHMENT.ADD_CROWD}}</ons-button>
+        <div class="tab-bar">
+            <label class="tab-bar__item" ng-click="insertCrowd()">
+                <input type="radio" name="tab-bar-c" checked="checked">
+                <button class="tab-bar__button">
+                    <div class="tab-bar__label">{{$root.lang.SET_CROWD_ATTACHMENT.ADD_CROWD}}
+                    </div>
+                </button>
+            </label>
+        </div>
     </ons-bottom-toolbar>
   </ons-page>
 </div>

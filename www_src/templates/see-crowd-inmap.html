@@ -7,7 +7,6 @@
         </div>
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
         <div class="right">
-            <!-- <ons-toolbar-button onclick="app.seeCrowdNavi.popPage();"> -->
             <ons-toolbar-button onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
                 <ons-icon icon="fa-list"></ons-icon>
             </ons-toolbar-button>
@@ -32,15 +31,12 @@
                 <ons-icon icon="fa-map-marker"></ons-icon> {{selectedPlace.placeDistrict}}
             </div>
             <div class="crowd-time">
-                <ons-icon icon="fa-clock-o"></ons-icon> 
-                <span ng-if="selectedPlace.crowdLast.lastUpdatePass > 0">
-                    {{selectedPlace.crowdLast.lastUpdatePass}}
-                </span> 
-                <span ng-if="item.crowdLast.lastUpdatePass === 0">
+                <ons-icon icon="fa-clock-o"></ons-icon>  
+                <span ng-if="selectedPlace.crowdLast.lastUpdatePass === 0">
                     {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
                 </span>
-                <span ng-if="item.crowdLast.lastUpdatePass > 0">
-                    {{selectedPlace.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+                <span ng-if="selectedPlace.crowdLast.lastUpdatePass > 0">
+                    {{selectedPlace.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
                 </span> [{{selectedPlace.placeType}}]
             </div>
             <div class="crowd-attachments">
