@@ -49,8 +49,7 @@
                 <ons-list-item ng-repeat="place in nearbyPlaces" ng-if="$root.settings.isCustomPlacesEnabled === true || place.source !== 'custom'" ng-click="selectPlace(place)">
                     <div class="crowd-name">
                         <!-- <img ng-src="img/sources/{{place.source}}.png" />  -->
-                        <ons-icon ng-if="place.source ==='custom'" icon="fa-thumb-tack" style="color: brown"></ons-icon>
-                        [{{place.type}}] {{place.name}}
+                        <ons-icon icon="fa-{{place.typeObject.FA_ICON}}" style="color: brown"></ons-icon> {{place.name}}
                     </div>
                 </ons-list-item>
             </ons-list>

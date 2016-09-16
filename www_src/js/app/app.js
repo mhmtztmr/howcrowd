@@ -1,6 +1,6 @@
 var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
-    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
+    'seeCrowd.Service', 'setCrowd.Service', 'askCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
@@ -102,24 +102,10 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
-            identificationService.loadDeviceId(true).then(function() {
-                var deviceId = identificationService.getDeviceId();
-                $rootScope.device = {
-                    id: deviceId,
-                    positiveFeedback: 1,
-                    negativeFeedback: 0
-                }
-                dbService.retrieveDevice(deviceId).then(function(d) {
-                    if (!d) {
-                        dbService.insertDevice($rootScope.device);
-                    } else {
-                        $rootScope.device = {
-                            id: d.deviceId,
-                            positiveFeedback: d.positiveFeedback,
-                            negativeFeedback: d.negativeFeedback
-                        }
-                    }
-                });
+            identificationService.getDeviceObject().then(function(deviceObject) {
+                $rootScope.deviceObject = deviceObject;
+            }, function(e){
+                console.log(e);
             });
         }
 

@@ -1,7 +1,7 @@
 var feedbackModel = function() {
   var myFeedbacks = {};
 
-  function insertFeedback(crowdId, isPositive) {
+  function insertFeedback(crowdObjectId, isPositive) {
     var myTempFeedbacks = {},
       feedbackId, now = (new Date()).getTime();
     if (Object.keys(myFeedbacks).length > 20) {
@@ -14,15 +14,15 @@ var feedbackModel = function() {
       }
       myFeedbacks = myTempFeedbacks;
     }
-    myFeedbacks[crowdId] = {
+    myFeedbacks[crowdObjectId] = {
       time: now,
       isPositive: isPositive
     };
     saveFeedbacks();
   }
 
-  function getFeedback(crowdId) {
-    return myFeedbacks[crowdId];
+  function getFeedback(crowdObjectId) {
+    return myFeedbacks[crowdObjectId];
   }
 
   function saveFeedbacks() {

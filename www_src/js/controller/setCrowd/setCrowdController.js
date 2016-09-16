@@ -55,7 +55,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
 
 
         $scope.selectPlace = function(place) {
-            setCrowdModel.selectPlace(place);
+            setCrowdModel.selectPlace(place).then(function(_place) {
+                app.setCrowdNavi.pushPage('templates/set-crowd-level.html', {animation: 'lift', selectedPlace: _place});
+            });
         };
 
         $scope.searchStatus = {started : false};

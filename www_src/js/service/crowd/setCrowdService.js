@@ -1,53 +1,26 @@
-var setCrowdService = function($rootScope, dbService, dateService, mapService, configService) {
+angular.module('setCrowd.Service', ['db'])
+  .factory('setCrowdService', ['dbService', function(dbService) {
+    var self = {};
 
-  function insertCrowd(place, crowd, device, onSuccess, onFailure) {
-    dbService.insertCrowd(place, crowd, device, onSuccess, onFailure);
+    self.setCrowd = function(crowdData, placeData, deviceObject) {
+      return new Promise(function(resolve, reject){
+        dbService.selectPlace(placeData.sourceID).then(function(placeObject) {
+          if(placeObject) {
+            dbService.createCrowd(crowdData, placeObject, deviceObject);
+          }
+          else {
+            dbService.createPlace(placeData, crowdData).then(function(placeObject) { //a place created with given data
+              dbService.createCrowd(crowdData, placeObject, deviceObject).then(resolve, reject);
+            }, reject);
+          }
+        }, reject);
+      });
+    };
+
+    self.uploadFile = function(base64Source, fileName, onSuccess, onFailure){
+      dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
+    };
+
+    return self;
   }
-
-  function retrieveNearbyPlaces() {
-
-    function getFilter() {
-      var now = dateService.getDBDate(new Date()),
-      oneHourAgo = new Date(new Date(now).setHours(now.getHours() - configService.NEARBY_TIME)),
-      boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), configService.NEARBY_DISTANCE);
-
-      return {
-        date: {
-          start: oneHourAgo,
-          end: now
-        },
-        location: boundingBox,
-        sources: ['custom']
-      };
-    }
-
-    return dbService.retrieveNearbyPlaces(getFilter());
-  }
-
-  function uploadFile(base64Source, fileName, onSuccess, onFailure){
-    dbService.uploadFile(base64Source, fileName, onSuccess, onFailure);
-  }
-
-  function convertSeeCrowdItemToSetCrowdItem(seeCrowdItem) {
-    return {
-      district: seeCrowdItem.placeDistrict,
-      vicinity: seeCrowdItem.placeVicinity,
-      location: seeCrowdItem.crowdLocation,
-      name: seeCrowdItem.placeName,
-      photo: seeCrowdItem.placePhoto,
-      source: seeCrowdItem.placeSource,
-      sid: seeCrowdItem.placeSid,
-      type: seeCrowdItem.placeType
-    }
-  }
-
-  return {
-    insertCrowd: insertCrowd,
-    retrieveNearbyPlaces: retrieveNearbyPlaces,
-    uploadFile: uploadFile,
-    convertSeeCrowdItemToSetCrowdItem: convertSeeCrowdItemToSetCrowdItem
-  };
-};
-
-angular.module('setCrowd.Service', ['db', 'date', 'map.Service', 'config'])
-  .factory('setCrowdService', ['$rootScope' ,'dbService', 'dateService', 'mapService', 'configService', setCrowdService]);
+]);

@@ -19,7 +19,7 @@
             </ons-toolbar-button>
         </div>
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
-        <div class="right" ng-show="crowds && crowds !== 'pending' && crowds.length > 0">
+        <div class="right" ng-show="places && places !== 'pending' && places.length > 0">
             <ons-toolbar-button ng-click="startSearch()">
                 <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>
@@ -29,7 +29,7 @@
         </div>
     </ons-toolbar>
 
-    <ons-pull-hook ng-action="refreshCrowds($done)" var="loader" fixed-content threshold-height="128px" height="64px">
+    <ons-pull-hook ng-action="refreshPlaces($done)" var="loader" fixed-content threshold-height="128px" height="64px">
         <span ng-switch="loader.state">
             <span ng-switch-when="initial"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
             <span ng-switch-when="preaction"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
@@ -37,14 +37,14 @@
         </span>
     </ons-pull-hook>
 
-    <div ng-if="!crowds" class="no-location-container">
+    <div ng-if="!places" class="no-location-container">
         <button class="no-location-refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
         <ons-icon icon="fa-map-marker" class="no-location-icon"></ons-icon>
     </div>
-    <div ng-if="crowds === 'pending'" style="text-align: center; padding-top: 144px;">
+    <div ng-if="places === 'pending'" style="text-align: center; padding-top: 144px;">
         <ons-icon size="70px" spin="true" icon="fa-spinner">
     </div>
-    <div ng-if="crowds && crowds !== 'pending' && crowds.length === 0" class="no-crowd-container">
+    <div ng-if="places && places !== 'pending' && places.length === 0" class="no-crowd-container">
         <div class="no-crowd-text-container">
             <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD}}</div>
         </div>
@@ -61,50 +61,56 @@
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>
     </div>
-    <ons-list ng-if="crowds && crowds !== 'pending' && crowds.length > 0">
-      <ons-list-item ons-lazy-repeat="MyDelegate" ng-click="selectPlaceBasedCrowd(item)">
+    <ons-list ng-if="places && places !== 'pending' && places.length > 0">
+      <ons-list-item ng-repeat="item in places" ng-click="selectPlace(item)">
         <div class="crowd-main-body">
           <div class="crowd-left">
             <div>
-              <ons-icon ng-if="item.distanceGroup === 0" icon="fa-street-view"></ons-icon>
+              <ons-icon ng-if="item.isNearby" icon="fa-street-view"></ons-icon>
             </div>
             <div>
-              <ons-icon ng-if="item.placeSource ==='custom'" icon="fa-thumb-tack" style="color: brown"></ons-icon>
+              <ons-icon icon="fa-{{item.typeObject.FA_ICON}}" style="color: brown"></ons-icon>
             </div>
           </div>
           <div class="crowd-center">
             <div class="crowd-place-name">
-                {{item.placeName}}
+                {{item.name}}
             </div>
-            <div class="crowd-city" ng-show="item.placeDistrict && item.placeDistrict !== ''">
-                <ons-icon icon="fa-map-marker"></ons-icon> {{item.placeDistrict}}
+            <div class="crowd-city" ng-if="item.address">
+                <ons-icon icon="fa-map-marker"></ons-icon> {{item.address}}
             </div>
             <div class="crowd-time">
                 <ons-icon icon="fa-clock-o"></ons-icon>  
-                <span ng-if="item.crowdLast.lastUpdatePass === 0">
+                <span ng-if="item.lastUpdatePass === 0">
                     {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
                 </span>
-                <span ng-if="item.crowdLast.lastUpdatePass > 0">
-                    {{item.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
-                </span> [{{item.placeType}}]
+                <span ng-if="item.lastUpdatePass > 0">
+                    {{item.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+                </span>
             </div>
-            <div class="crowd-attachments">
+            <div ng-if="item.averageCrowdValue" class="crowd-attachments">
                 <ons-icon ng-if="item.hasPhoto === true" icon="fa-picture-o"></ons-icon>
                 <ons-icon ng-if="item.hasText === true" icon="fa-comment-o"></ons-icon>
-                <ons-icon ng-if="item.hasAsk === true && item.distanceGroup === 0" icon="fa-question"></ons-icon>
+                <ons-icon ng-if="item.hasAsk === true" icon="fa-question"></ons-icon>
             </div>
           </div>
           <div class="crowd-right">
-            <div class="crowd-circle">
-              <div class="c100 p{{item.crowdAverage}} crowd-size center">
+            <div ng-if="item.averageCrowdValue" class="crowd-circle">
+              <div class="c100 p{{item.averageCrowdValue}} crowd-size center">
                 <div class="slice">
                   <div class="bar"></div>
                   <div class="fill"></div>
                 </div>
               </div>
             </div>
+            <div ng-if="!item.averageCrowdValue" class="crowd-question">
+                <ons-icon icon="fa-question"></ons-icon>
+            </div>
           </div>
         </div>
       </ons-list-item>
     </ons-list>
+    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more"ng-click="loadMorePlaces()" modifier="large--quiet" ng-attr-disabled="{{more === 'pending'}}">
+      More
+    </ons-button>
 </ons-page>

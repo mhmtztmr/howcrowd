@@ -1,97 +1,69 @@
 app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
-  'setCrowdModel', 'setCrowdService', 'dateService', 'mapService', 'INTERFACE',
-  function($rootScope, $scope, setCrowdModel, setCrowdService, dateService, mapService, INTERFACE) {
+  'setCrowdModel', 'setCrowdService', 'mapService', 'INTERFACE', 'dbService',
+  function($rootScope, $scope, setCrowdModel, setCrowdService, mapService, INTERFACE, dbService) {
     $scope.selectedPlace =  app.setCrowdNavi.topPage.pushedOptions.selectedPlace;
     $scope.selectedCrowdLevel = app.setCrowdNavi.topPage.pushedOptions.selectedCrowdLevel;
 
     $scope.crowdText = {value: ''};
 
     $scope.insertCrowd = function() {
+      modal.show();
       if($scope.crowdPhoto){
-          var fileName = $rootScope.device.id + (new Date()).valueOf() + '.png';
-          setCrowdService.uploadFile($scope.crowdPhoto, fileName, function(photoUrl){
-              insertCrowd(photoUrl.data);
-          }, function(){
-               ons.notification.alert({
-                  title: $rootScope.lang.ALERT.ALERT,
-                  message: $rootScope.lang.ALERT.FAIL,
-                  buttonLabel: $rootScope.lang.ALERT.OK,
-                });
+        var fileName = $rootScope.deviceObject.ID + (new Date()).valueOf() + '.png';
+        setCrowdService.uploadFile($scope.crowdPhoto, fileName, function(photoUrl){
+          insertCrowd(photoUrl.data);
+        }, function(){
+          modal.hide();
+          ons.notification.alert({
+            title: $rootScope.lang.ALERT.ALERT,
+            message: $rootScope.lang.ALERT.FAIL,
+            buttonLabel: $rootScope.lang.ALERT.OK,
           });
+        });
       }
       else {
         insertCrowd();
       }
 
       function insertCrowd(photoUrl) {
-          var locationForCustomVicinity = $rootScope.location;
-          var place = $scope.selectedPlace;
-          place.key = $scope.selectedPlace.source +
-            '|' + $scope.selectedPlace.sid;
-          delete place['$$hashKey'];
-          var crowd = {
-            value: $scope.selectedCrowdLevel.value,
-            date: dateService.getDBDate(new Date()),
-            agree: 1,
-            disagree: 0,
-            photo: photoUrl,
-            text: $scope.crowdText.value
-          };
+        var locationForCustomVicinity = $rootScope.location;
+        var placeData = $scope.selectedPlace;
+        var crowdData = {
+          value: $scope.selectedCrowdLevel.value,
+          photoURL: photoUrl,
+          text: $scope.crowdText.value
+        };
 
-          //TODO: To be discussed if needed or not
-          if($scope.selectedPlace.source !== 'custom') {
-            locationForCustomVicinity = undefined;
-          }
+        app.setCrowdNavi.pages[2]._destroy();
+        app.setCrowdNavi.popPage({animation: 'lift'});
 
-          // mapService.getAddressByLocation(locationForCustomVicinity, function(vicinity){
-
-              //TODO: To be discussed if needed or not
-              // if(vicinity) {
-              //   place.vicinity = vicinity;
-              //   place.district = vicinity;
-              // }
-
-              //reset to main set crowd page
-              app.setCrowdNavi.pages[2]._destroy();
-              app.setCrowdNavi.popPage({animation: 'lift'});
-              modal.show();
-
-              setCrowdModel.insertCrowd(place, crowd, $rootScope.device,
-                function() {
-                  //TODO: seecrowdmodel.loadcrowds should be called to refresh seecrowdinlist page
-                  crowdTabbar.setActiveTab(1);
-                  modal.hide();
-                  // ons.notification.alert({
-                  //   title: $rootScope.lang.ALERT.ALERT,
-                  //   message: $rootScope.lang.ALERT.SUCCESS,
-                  //   buttonLabel: $rootScope.lang.ALERT.OK,
-                  // });
-                },
-                function() {
-                  ons.notification.alert({
-                    title: $rootScope.lang.ALERT.ALERT,
-                    message: $rootScope.lang.ALERT.FAIL,
-                    buttonLabel: $rootScope.lang.ALERT.OK,
-                  });
-                });
-          // });
+        setCrowdService.setCrowd(crowdData, placeData, $rootScope.deviceObject).then(function(){
+          modal.hide();
+          crowdTabbar.setActiveTab(1);
+        }, function(){
+          modal.hide();
+          ons.notification.alert({
+            title: $rootScope.lang.ALERT.ALERT,
+            message: $rootScope.lang.ALERT.FAIL,
+            buttonLabel: $rootScope.lang.ALERT.OK,
+          });
+        });
       }
-      
     };
 
     $scope.takePhoto= function(){
-        INTERFACE.takePhoto(function(photoData){
-            $scope.crowdPhoto = photoData;
-            if(!$scope.$$phase) {
-                $scope.$apply();
-            }
-        }, function(){
+      INTERFACE.takePhoto(function(photoData){
+        $scope.crowdPhoto = photoData;
+        if(!$scope.$$phase) {
+          $scope.$apply();
+        }
+      }, function(){
 
-        });
+      });
     };
 
     $scope.clearPhoto= function(){
-       $scope.crowdPhoto = undefined;
+      $scope.crowdPhoto = undefined;
     };
   }
 ]);

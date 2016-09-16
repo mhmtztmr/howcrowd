@@ -17,27 +17,27 @@
         <div class="crowd-main-body">
           <div class="crowd-left">
             <div>
-              <ons-icon ng-if="selectedPlace.distanceGroup === 0" icon="fa-street-view"></ons-icon>
+              <ons-icon ng-if="selectedPlace.isNearby" icon="fa-street-view"></ons-icon>
             </div>
             <div>
-              <ons-icon ng-if="selectedPlace.placeSource ==='custom'" icon="fa-thumb-tack" style="color: brown"></ons-icon>
+              <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-thumb-tack" style="color: brown"></ons-icon>
             </div>
           </div>
           <div class="crowd-center">
             <div class="crowd-place-name">
-                {{selectedPlace.placeName}}
+                {{selectedPlace.name}}
             </div>
-            <div class="crowd-city" ng-show="selectedPlace.placeDistrict && selectedPlace.placeDistrict !== ''">
+            <div class="crowd-city" ng-show="selectedPlace.district && selectedPlace.district !== ''">
                 <ons-icon icon="fa-map-marker"></ons-icon> {{selectedPlace.placeDistrict}}
             </div>
             <div class="crowd-time">
                 <ons-icon icon="fa-clock-o"></ons-icon>  
-                <span ng-if="selectedPlace.crowdLast.lastUpdatePass === 0">
+                <span ng-if="selectedPlace.lastUpdatePass === 0">
                     {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
                 </span>
-                <span ng-if="selectedPlace.crowdLast.lastUpdatePass > 0">
-                    {{selectedPlace.crowdLast.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
-                </span> [{{selectedPlace.placeType}}]
+                <span ng-if="selectedPlace.lastUpdatePass > 0">
+                    {{selectedPlace.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+                </span> [{{selectedPlace.type}}]
             </div>
             <div class="crowd-attachments">
                 <ons-icon ng-if="selectedPlace.hasPhoto === true" icon="fa-picture-o"></ons-icon>
@@ -46,7 +46,7 @@
           </div>
           <div class="crowd-right">
             <div class="crowd-circle">
-              <div class="c100 p{{selectedPlace.crowdAverage}} crowd-size center">
+              <div class="c100 p{{selectedPlace.averageCrowdValue}} crowd-size center">
                 <div class="slice">
                   <div class="bar"></div>
                   <div class="fill"></div>

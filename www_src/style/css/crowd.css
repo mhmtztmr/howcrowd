@@ -56,6 +56,12 @@
     position: relative;
     top: 20%;
   }
+  .crowd-question {
+    font-size: 30px;
+    position: relative;
+    top: 20%;
+    text-align: center;
+  }
   .crowd-feedbacks{
     font-size: 12px;
     float: left;

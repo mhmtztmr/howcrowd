@@ -1,13 +1,24 @@
-var askCrowdService = function(dbService) {
+angular.module('askCrowd.Service', ['db', 'date'])
+	.factory('askCrowdService', ['dbService', 'dateService',
+		function(dbService, dateService) {
 
-  function askCrowd(place, crowd, device, onSuccess, onFailure) {
-    dbService.askCrowd(place, crowd, device, onSuccess, onFailure);
-  }
+			var self = {};
 
-  return {
-    askCrowd: askCrowd
-  };
-};
-
-angular.module('askCrowd.Service', ['db'])
-  .factory('askCrowdService', ['dbService', askCrowdService]);
+			self.askCrowd = function(crowdData, placeData, deviceObject) {
+				return new Promise(function(resolve, reject){
+			        dbService.selectPlace(placeData.sourceID).then(function(placeObject) {
+			          if(placeObject) {
+			            dbService.createCrowd(crowdData, placeObject, deviceObject);
+			          }
+			          else {
+			            dbService.createPlace(placeData, crowdData).then(function(placeObject) { //a place created with given data
+			              dbService.createCrowd(crowdData, placeObject, deviceObject).then(resolve, reject);
+			            }, reject);
+			          }
+			        }, reject);
+			    });
+			};
+	
+			return self;
+		}
+	]);

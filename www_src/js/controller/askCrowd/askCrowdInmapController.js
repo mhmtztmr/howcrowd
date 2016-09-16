@@ -16,7 +16,7 @@ app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService',
 
         $scope.searchPlace = function() {
             if ($scope.searchInput.value.length > 1) {
-                askCrowdModel.searchByText($scope.searchInput.value);
+                askCrowdModel.searchPlaces($scope.searchInput.value);
             } 
         };
 
@@ -26,20 +26,13 @@ app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService',
         };
 
         $scope.selectPlace = function(){
-            askCrowdModel.selectPlace($scope.selectedPlace);
+            askCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                app.askCrowdNavi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
+            });
         };
 
         $scope.$on('$destroy', $rootScope.$on("askMarkerSelected", function(event, args) {
-            $scope.selectedPlace = {
-              sid: args.place.place_id,
-              name: args.place.name,
-              location: {
-                latitude: args.place.geometry.location.lat(),
-                longitude: args.place.geometry.location.lng()
-              },
-              source: 'google',
-              vicinity: args.place.vicinity
-            };
+            $scope.selectedPlace = args.place;
             $scope.$apply();
         }));
         $scope.$on('$destroy', $rootScope.$on("askMarkerDeselected", function(event, args) {
