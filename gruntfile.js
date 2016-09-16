@@ -91,7 +91,7 @@ module.exports = function(grunt) {
         },
         replace: {
             dbCredentials: {
-                src: ['www/js/*.js'],
+                src: ['www/js/*.js', 'coderunner.json'],
                 overwrite: true, // overwrite matched source files
                 replacements: [{
                     from: /<%=SERVER_URL%>/g,
@@ -106,6 +106,10 @@ module.exports = function(grunt) {
                 }, {
                     from: /<%=REST_SECRET_KEY%>/g,
                     to: '<%= grunt.option(\"credentials\").backendless.restSecretKey %>'
+
+                }, {
+                    from: /<%=CR_SECRET_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.crSecretKey %>'
 
                 }, {
                     from: /<%=VERSION%>/g,
