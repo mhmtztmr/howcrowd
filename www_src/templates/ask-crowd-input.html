@@ -3,14 +3,14 @@
         <div class="left">
             <ons-back-button></ons-back-button>
         </div>
-        <div class="center">
-	        {{selectedPlace.name}}
-	      </div>
+        <div class="center" ng-click="seePlaceDetail();">
+	        <ons-icon icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
+	    </div>
       </div>
     </ons-toolbar>
     <ons-list>
       <ons-list-item>
-        <textarea class="textarea" ng-model="askCrowdText.value" placeholder="How crowd {{selectedPlace.name}}" style="width: 100%; height: 58px;"></textarea>
+        <textarea class="textarea" maxlength="200" ng-model="askCrowdText.value" placeholder="How crowd {{selectedPlace.name}}" style="width: 100%; height: 58px;"></textarea>
       </ons-list-item>
     </ons-list>
     <ons-bottom-toolbar>

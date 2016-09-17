@@ -1,5 +1,5 @@
-app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService', '$filter', 'configService', 'askCrowdModel',
-    function($rootScope, $scope, mapService, $filter, configService, askCrowdModel) {
+app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService', '$filter', 'configService', 'askCrowdModel', 'locationService',
+    function($rootScope, $scope, mapService, $filter, configService, askCrowdModel, locationService) {
 
         function loadMap() {
             console.log('loading ask map...');
@@ -12,16 +12,18 @@ app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService',
             }
         });
 
-        $scope.searchInput = {value: ''};
+        $scope.searchInput = {value: '', searchable: true};
 
         $scope.searchPlace = function() {
             if ($scope.searchInput.value.length > 1) {
-                askCrowdModel.searchPlaces($scope.searchInput.value);
+                askCrowdModel.searchPlaces($scope.searchInput.value).then(undefined, function() {
+                    this.noPlaceFoundDialog.show();
+                });
             } 
         };
 
         $scope.clearSearchInput = function(){
-            $scope.searchInput.value = '';
+            $scope.searchInput = {value: '', searchable: true};
             askCrowdModel.clearMap();
         };
 
@@ -32,12 +34,27 @@ app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService',
         };
 
         $scope.$on('$destroy', $rootScope.$on("askMarkerSelected", function(event, args) {
+            modal.hide();
             $scope.selectedPlace = args.place;
-            $scope.$apply();
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
         }));
         $scope.$on('$destroy', $rootScope.$on("askMarkerDeselected", function(event, args) {
             $scope.selectedPlace = undefined;
-            $scope.$apply();
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
+        }));
+        $scope.$on('$destroy', $rootScope.$on("longpressForAskRequiresZoom", function(event, args) {
+            this.zoomForAskDialog.show();
+        }));
+        $scope.$on('$destroy', $rootScope.$on("unsearchableAsk", function(event, args) {
+            $scope.searchInput.value = args.value;
+            $scope.searchInput.searchable = false;
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
         }));
     }
 ]);

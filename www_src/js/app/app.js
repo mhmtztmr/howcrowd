@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
+var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
     'seeCrowd.Service', 'setCrowd.Service', 'askCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
     'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
@@ -93,12 +93,8 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
     });
 }]);
 
-app.controller('appController', ['$rootScope', '$scope', 'dbService',
-    'identificationService', 'mapService', '$interval', 'langService',
-    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation', 'INTERFACE',
-    function($rootScope, $scope, dbService, identificationService,
-        mapService, $interval, langService, configService,
-        connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
+app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'connection', 'feedbackModel', 'INTERFACE',
+    function($rootScope, $scope, identificationService, connection, feedbackModel, INTERFACE) {
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();

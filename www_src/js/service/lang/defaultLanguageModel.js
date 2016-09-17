@@ -30,18 +30,10 @@ var defaultLanguageModel = function() {
             "YOU": "You",
             "JUST_NOW": "Just now"
         },
-        "SEE_CROWD_POPOVER_MENU": {
-            "DISPLAY_TYPE": "Display Type"
-        },
         "SEE_CROWD_DETAIL_POPOVER_MENU": {
             "INFO": "Info",
             "SHARE": "Share",
             "REPORT": "Report"
-        },
-        "CROWD_SHARE_MENU": {
-            "WHATSAPP": "WhatsApp",
-            "MESSAGE": "Message",
-            "EMAIL": "E-Mail"
         },
         "CROWD_REPORT_MENU": {
             "REPORT": "Report",
@@ -65,7 +57,11 @@ var defaultLanguageModel = function() {
             "ADD_CROWD": "Add Crowd"
         },
         "ASK_CROWD_MENU": {
-            "SEARCH_INPUT": "Ask crowd by search"
+            "SEARCH_INPUT": "Ask crowd by search",
+            "TOO_FAR_TO_ASK": "Unavailable - Too far"
+        },
+        "MAP": {
+            "YOUR_LOCATION": "Your location"
         },
         "CROWD_VALUES" : {
             "0": "Empty",
@@ -123,8 +119,12 @@ var defaultLanguageModel = function() {
             "LOAD_FAIL": "Loading failure!",
             "OK": "Ok"
         },
-        "ERROR": {
-
+        "DIALOG": {
+            "CLOSE": "Close"
+        },
+        "WARNING": {
+            "ZOOM_FOR_ASK": "No places around. Zoom and retry longpress!",
+            "NO_RESULT_BY_SEARCH": "No result found. Try another search!"
         }
     }
 };

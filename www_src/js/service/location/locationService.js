@@ -1,7 +1,7 @@
 
 angular.module('location', ['map.Service', 'interface'])
     .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
-		var locationInterval, oldLocation, watchId;
+		var self = {}, locationInterval, oldLocation, watchId;
 		var intervalTime = 6000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
 		self.startLocationInterval = function() {
@@ -20,7 +20,7 @@ angular.module('location', ['map.Service', 'interface'])
 					};
 
 					if(oldLocation.latitude) {
-						$rootScope.location.delta = getDistanceBetweenLocations($rootScope.location, oldLocation);
+						$rootScope.location.delta = self.getDistanceBetweenLocations($rootScope.location, oldLocation);
 						$rootScope.location.cumulativeDelta = oldLocation.cumulativeDelta;
 						$rootScope.location.overallDelta = oldLocation.overallDelta;
 					}

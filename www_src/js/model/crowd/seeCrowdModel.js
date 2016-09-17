@@ -214,7 +214,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                             }
                             infowindow = _infowindow;
                         },
-                        "your location"
+                        $rootScope.lang.MAP.YOUR_LOCATION
                     );
                 }
             }

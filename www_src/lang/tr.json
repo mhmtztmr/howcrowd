@@ -29,18 +29,10 @@
         "YOU": "Siz",
         "JUST_NOW": "Şimdi"
     },
-    "SEE_CROWD_POPOVER_MENU": {
-        "DISPLAY_TYPE": "Görüntüleme Tipi"
-    },
     "SEE_CROWD_DETAIL_POPOVER_MENU": {
         "INFO": "Bilgi",
         "SHARE": "Paylaş",
         "REPORT": "Bildir"
-    },
-    "CROWD_SHARE_MENU": {
-        "WHATSAPP": "WhatsApp",
-        "MESSAGE": "Mesaj",
-        "EMAIL": "E-Posta"
     },
     "CROWD_REPORT_MENU": {
         "REPORT": "Bildir",
@@ -62,7 +54,11 @@
         "ADD_CROWD": "Kalabalık Ekle"
     },
     "ASK_CROWD_MENU": {
-        "SEARCH_INPUT": "Kalabalık sormak için arayın"
+        "SEARCH_INPUT": "Kalabalık sormak için arayın",
+        "TOO_FAR_TO_ASK": "Geçersiz - Çok uzak"
+    },
+    "MAP": {
+        "YOUR_LOCATION": "Konumunuz"
     },
     "CROWD_VALUES" : {
         "0": "Bomboş",
@@ -120,7 +116,11 @@
         "LOAD_FAIL": "Yükleme başarısız!",
         "OK": "Tamam"
     },
-    "ERROR": {
-
+    "DIALOG": {
+        "CLOSE": "Kapat"
+    },
+    "WARNING": {
+        "ZOOM_FOR_ASK": "Yakında yer bulunamadı.Haritayı yaklaştırıp tekrar deneyin!",
+        "NO_RESULT_BY_SEARCH": "Sonuç bulunamadı. Başka bir arama deneyin!"
     }
 }

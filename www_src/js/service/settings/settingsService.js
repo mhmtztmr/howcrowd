@@ -5,13 +5,13 @@ var settingsService = function($rootScope) {
             $rootScope.settings = {
                 //isCustomPlacesEnabled : true
                 isCustomPlacesEnabled : false
-            }
+            };
             saveSettings();
         } else {
             //$rootScope.settings = JSON.parse(settings);
             $rootScope.settings = {
                 isCustomPlacesEnabled : false
-            }
+            };
         }
         window.console.log('Settings loaded.');
     }

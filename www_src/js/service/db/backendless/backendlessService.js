@@ -120,32 +120,9 @@ angular.module('backendless', ['date'])
             self.createPlace = function(placeData, initialCrowdData) {
                 return new Promise(function(resolve, reject){
                     var callback = new Backendless.Async(resolve, reject),
-                    placeObject = new Place({
-                        name: placeData.name,
-                        address: placeData.address,
-                        latitude: placeData.location.latitude,
-                        longitude: placeData.location.longitude,
-                        photoURL: placeData.photoURL,
-                        source: placeData.source,
-                        type: placeData.type,
-                        sourceID: placeData.sourceID,
-                        averageCrowdValue: initialCrowdData.value
-                    }),
+                    placeObject = new Place(placeData),
                     now = dateService.getNow();
-
                     placeObject.lastUpdateDatetime = now;
-
-                    if(initialCrowdData.text) {
-                        placeObject.lastTextDatetime = now;
-                    }
-
-                    if(initialCrowdData.photoURL) {
-                        placeObject.lastPhotoDatetime = now;
-                    }
-
-                    if(!initialCrowdData.value) {
-                        placeObject.lastAskDatetime = now;
-                    }
 
                     Backendless.Persistence.of(Place).save(placeObject, callback);
                 });

@@ -1,6 +1,6 @@
-angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedback', 'placeType'])
-  .factory('seeCrowdService', ['dbService', 'configService', 'dateService', 'locationService', '$rootScope', 'feedbackModel', 'placeTypeService',
-    function(dbService, configService, dateService, locationService, $rootScope, feedbackModel, placeTypeService) {
+angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedback'])
+  .factory('seeCrowdService', ['dbService', 'configService', 'dateService', 'locationService', '$rootScope', 'feedbackModel',
+    function(dbService, configService, dateService, locationService, $rootScope, feedbackModel) {
 
       var self = {};
 
@@ -44,28 +44,9 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
         return filter;
       }
 
-      function formatPlaces(places) {
-        var i, place,
-        now = dateService.getNow(),
-        nearbyTime = dateService.getNearbyTime();
-        for(i = 0; i < places.length; i++) {
-          place = places[i];
-          place.lastUpdatePass = Math.round((now - place.lastUpdateDatetime) / (60000)); //mins
-          place.hasText = place.lastTextDatetime > nearbyTime;
-          place.hasPhoto = place.lastPhotoDatetime > nearbyTime;
-          place.hasAsk = place.lastAskDatetime > nearbyTime;
-          place.location = {
-            latitude: place.latitude,
-            longitude: place.longitude
-          };
-          place.typeObject = placeTypeService.getTypeObject(place);
-        }
-      }
-
       self.getNearbyPlaces = function() {
         return new Promise(function(resolve, reject){
           dbService.selectPlaces(getNearbyFilter()).then(function(placesObject) {
-            formatPlaces(placesObject.data);
             resolve(placesObject);
           }, reject);
         });
@@ -75,12 +56,10 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
         return new Promise(function(resolve, reject){
           if(nextPage) {
             var placesObject = nextPage();
-            formatPlaces(placesObject.data);
             resolve(placesObject);
           }
           else {
             dbService.selectPlaces(getFarFilter()).then(function(placesObject) {
-              formatPlaces(placesObject.data);
               resolve(placesObject);
             }, reject);
           }
@@ -90,9 +69,14 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
       self.getPlacesInBox = function(boundingBox) {
         return new Promise(function(resolve, reject){
           dbService.selectPlaces(getFilter(boundingBox)).then(function(placesObject) {
-            formatPlaces(placesObject.data);
             resolve(placesObject);
           }, reject);
+        });
+      };
+
+      self.getPlace = function(sourceID) {
+        return new Promise(function(resolve, reject){
+          dbService.selectPlace(sourceID).then(resolve, reject);
         });
       };
 

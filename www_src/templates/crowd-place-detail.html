@@ -6,21 +6,21 @@
       </div>
       <div class="center">
         <div class="crowd-name">
-          <ons-icon ng-if="selectedPlaceBasedCrowd.placeSource ==='custom'" icon="fa-thumb-tack"></ons-icon> {{selectedPlaceBasedCrowd.placeName}}
+          <ons-icon icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
         </div>
       </div>
     </ons-toolbar>
     <div style="padding: 8px; text-align: center;">
-      <div ng-if="selectedPlaceBasedCrowd.placePhoto && selectedPlaceBasedCrowd.placePhoto !== ''" style="padding: 8px;">
-        <img style="max-width: 100%" ng-src="{{selectedPlaceBasedCrowd.placePhoto}}" />
+      <div ng-if="selectedPlace.photoURL" style="padding: 8px;">
+        <img style="max-width: 100%" ng-src="{{selectedPlace.photoURL}}" />
        </div>
        <div style="padding: 8px; word-break: break-word;">
            <ons-list>
               <ons-list-item>
-                {{selectedPlaceBasedCrowd.placeName}}
+                {{selectedPlace.name}}
               </ons-list-item>
-               <ons-list-item>
-                {{selectedPlaceBasedCrowd.placeDistrict}}
+               <ons-list-item ng-if="selectedPlace.address">
+                {{selectedPlace.address}}
               </ons-list-item>
           </ons-list>
        </div>

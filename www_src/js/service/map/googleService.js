@@ -38,8 +38,12 @@ angular.module('google', ['config', 'placeType']).
 		firstChild.addEventListener('click', function() {
 			var imgX = '0';
 			var animationInterval = setInterval(function(){
-				if(imgX == '-18') imgX = '0';
-				else imgX = '-18';
+				if(imgX === '-18') {
+					imgX = '0';
+				}
+				else {
+					imgX = '-18';
+				}
 				document.getElementById('you_location_img').style.backgroundPosition = imgX+'px 0px';
 			}, 500);
 			if($rootScope.location.latitude){
@@ -61,16 +65,16 @@ angular.module('google', ['config', 'placeType']).
 
 	function addEventsToMap(map, events){
 		if(events) {
-			var mousedownEvent = events['mousedown'],
-			idleEvent = events['idle'],
-			longpressEvent = events['longpress'];
+			var mousedownEvent = events.mousedown,
+			idleEvent = events.idle,
+			longpressEvent = events.longpress;
 			if(mousedownEvent) {
 				google.maps.event.addListener(map, 'mousedown', function () {
 		            mousedownEvent();
 		        });
 			}
 			if(idleEvent) {
-				google.maps.event.addListener(map, 'idle', function(event){
+				google.maps.event.addListener(map, 'idle', function(){
 					idleEvent();
 	            });
 			}
@@ -80,7 +84,6 @@ angular.module('google', ['config', 'placeType']).
 			    	if(longpressTimer) {
 				    	clearTimeout(longpressTimer);
 				    }
-	                start = new Date().getTime();
 	                longpressTimer = setTimeout(function(){
 	                	if(longpressEvent) {
 	                		longpressEvent(event);
@@ -88,17 +91,17 @@ angular.module('google', ['config', 'placeType']).
 	                	}
 	                }, 1000);
 	            });
-			    google.maps.event.addListener(map, 'mouseup', function(event){
+			    google.maps.event.addListener(map, 'mouseup', function(){
 	                if(longpressTimer) {
 				    	clearTimeout(longpressTimer);
 				    }
 	            });
-	            google.maps.event.addListener(map, 'dragstart', function(event){
+	            google.maps.event.addListener(map, 'dragstart', function(){
 	                if(longpressTimer) {
 				    	clearTimeout(longpressTimer);
 				    }
 	            });
-	            google.maps.event.addListener(map, 'bounds_changed', function(event){
+	            google.maps.event.addListener(map, 'bounds_changed', function(){
 	                if(longpressTimer) {
 				    	clearTimeout(longpressTimer);
 				    }
@@ -179,7 +182,7 @@ angular.module('google', ['config', 'placeType']).
 			location = {
 				latitude: place.geometry.location.lat(),
             	longitude: place.geometry.location.lng(),
-			}
+			};
 		}
 		if(place.photos && place.photos.length > 0) {
 			photoURL = place.photos[0].getUrl({'maxWidth': 600, 'maxHeight': 600});
@@ -219,7 +222,7 @@ angular.module('google', ['config', 'placeType']).
         });
     };
 
-    self.createInfoWindow = function(map, marker, infoWindowData, onInfoWindowClick){
+    self.createInfoWindow = function(map, marker, infoWindowData){
     	var infowindow = new google.maps.InfoWindow({
 			content: infoWindowData
 		});
@@ -229,7 +232,7 @@ angular.module('google', ['config', 'placeType']).
 		return infowindow;
     };
 
-    self.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick){
+    self.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData){
     	var latLng = new google.maps.LatLng(location.latitude, location.longitude);
     	var marker = new google.maps.Marker({
 			map: map,
@@ -258,7 +261,7 @@ angular.module('google', ['config', 'placeType']).
     };
 
 	self.searchPlaces = function(map, query, location, radius){
-		var placeTypes = Object.keys(placeTypeConstants['google']);
+		var placeTypes = Object.keys(placeTypeConstants.google);
 		return new Promise(function(resolve, reject){
 			var tmpMap = map;
 			if(!tmpMap) {
@@ -278,7 +281,7 @@ angular.module('google', ['config', 'placeType']).
 	        };
 	                          
 	        service.nearbySearch(request, function(results, status){
-	          	if (status == google.maps.places.PlacesServiceStatus.OK) {
+	          	if (status === google.maps.places.PlacesServiceStatus.OK) {
 	          		var i, place, places = [], bounds = new google.maps.LatLngBounds();
 	          		for(i = 0 ; i < results.length; i++) {
 	          			place = results[i];

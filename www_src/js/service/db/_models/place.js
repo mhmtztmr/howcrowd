@@ -9,12 +9,11 @@
     this.photoURL = args.photoURL;
     this.address = args.address;
     this.sourceID = args.sourceID;
-
-    //followings: post-calculated
     this.averageCrowdValue = args.averageCrowdValue;
     this.lastUpdateDatetime = args.lastUpdateDatetime;
     this.lastTextDatetime = args.lastTextDatetime;
     this.lastPhotoDatetime = args.lastPhotoDatetime;
     this.lastAskDatetime = args.lastAskDatetime;
     this.__class = 'Place';
+    this.___class = 'Place';
 }

@@ -6,7 +6,7 @@ angular.module('setCrowd.Service', ['db'])
       return new Promise(function(resolve, reject){
         dbService.selectPlace(placeData.sourceID).then(function(placeObject) {
           if(placeObject) {
-            dbService.createCrowd(crowdData, placeObject, deviceObject);
+            dbService.createCrowd(crowdData, placeObject, deviceObject).then(resolve, reject);
           }
           else {
             dbService.createPlace(placeData, crowdData).then(function(placeObject) { //a place created with given data

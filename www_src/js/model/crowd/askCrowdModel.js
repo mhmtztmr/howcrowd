@@ -3,6 +3,7 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
         function(askCrowdService, mapService, mapConstants, configService, $rootScope, locationService) {
             var selectedPlace, boundingBox,
             mapDivId = 'askMap', searchInputDivId = 'search-input', 
+            placesMap = {},
             map, currentLocationMarker, markersMap = {}, infowindow;
 
             function markCurrentLocation() {
@@ -24,7 +25,7 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                             }
                             infowindow = _infowindow;
                         },
-                        "your location"
+                        $rootScope.lang.MAP.YOUR_LOCATION
                     );
                 }
             }
@@ -35,6 +36,7 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                     place = places[i];
                     if(!markersMap[place.sourceID]) {
                         (function(place) {
+                            var distance = Math.floor(locationService.getDistanceBetweenLocations(place.location, $rootScope.location));
                             var marker = mapService.createMarker(
                                 map, 
                                 place.location, 
@@ -48,9 +50,28 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                                         infowindow.close();
                                     }
                                     infowindow = _infowindow;
-                                    $rootScope.$broadcast('askMarkerSelected', { place: place});
+                                    if(distance <= configService.FAR_DISTANCE){
+                                        modal.show();
+                                        var mappedPlace = placesMap[place.sourceID];
+                                        if(mappedPlace) {
+                                            $rootScope.$broadcast('askMarkerSelected', { place: mappedPlace});
+                                        }
+                                        else {
+                                            askCrowdService.getPlace(place.sourceID).then(function(__place) {
+                                                var _place = place;
+                                                if(__place) {
+                                                    _place = __place;
+                                                }
+                                                placesMap[place.sourceID] = _place;
+                                                $rootScope.$broadcast('askMarkerSelected', { place: _place});
+                                            });
+                                        }
+                                    }
                                 },
-                                '<div><strong>' + place.name + '</strong>' + (place.address ? ('<br>' + place.address) : '')
+                                '<div><strong>' + place.name + '</strong>' + 
+                                (place.address ? ('<br>' + place.address) : '') +
+                                (distance > configService.FAR_DISTANCE ? ('<br><div style="color:red; font-style: italic">' + $rootScope.lang.ASK_CROWD_MENU.TOO_FAR_TO_ASK + ': ' + distance + ' km</div>') : '') +
+                                '</div>'
                             );
                             markersMap[place.sourceID] = marker;
                         })(place);
@@ -59,15 +80,19 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
             }
 
             self.searchPlaces = function(query){
-                self.clearMap();
-                mapService.searchPlaces(map, query, $rootScope.location, configService.FAR_DISTANCE).then(function(places){
-                    markPlaces(places);
-                });
+                return new Promise(function(resolve, reject) {
+                    mapService.searchPlaces(map, query, $rootScope.location, configService.FAR_DISTANCE).then(function(places){
+                        self.clearMap();
+                        markPlaces(places);
+                        resolve();
+                    }, reject);
+                });               
             };
 
             function initAutocomplete(){
                 var boundingBox = locationService.getBoundingBox($rootScope.location, configService.FAR_DISTANCE);
                 mapService.initAutocomplete(map, searchInputDivId, boundingBox, function(place){
+                    $rootScope.$broadcast('unsearchableAsk', {value: place.name});
                     self.clearMap();
                     if (!place.location.latitude) {
                         searchPlaces(place.name);
@@ -91,14 +116,22 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                                 }
                             },
                             'longpress': function(event){
-                                self.clearMap();
-                                var latLng = event.latLng, location = {
-                                    latitude: latLng.lat(),
-                                    longitude: latLng.lng()
-                                };
-                                mapService.searchPlaces(undefined, undefined, location, configService.LONGPRESS_ASK_DISTANCE).then(function(places){
-                                    markPlaces(places);
-                                });
+                                if(map.getZoom() < 16) {
+                                    $rootScope.$broadcast('longpressForAskRequiresZoom');
+                                }
+                                else {
+                                    var latLng = event.latLng, location = {
+                                        latitude: latLng.lat(),
+                                        longitude: latLng.lng()
+                                    };
+                                    mapService.searchPlaces(undefined, undefined, location, configService.LONGPRESS_ASK_DISTANCE).then(function(places){
+                                        self.clearMap();
+                                        markPlaces(places);
+                                        $rootScope.$broadcast('unsearchableAsk', {value: location.latitude.toFixed(2) + ', ' + location.longitude.toFixed(2)});
+                                    }, function() {
+                                        $rootScope.$broadcast('longpressForAskRequiresZoom');
+                                    });
+                                }
                             }
                         });
                         initAutocomplete();
@@ -108,6 +141,7 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
             };
 
             self.clearMap = function(){
+                $rootScope.$broadcast('askMarkerDeselected');
                 if(infowindow) {
                     infowindow.close();
                 }
