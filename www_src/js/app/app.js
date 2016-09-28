@@ -1,6 +1,6 @@
-var app = angular.module('app', ['ngCordova', 'onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
-    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location.Service', 'interface'
+var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
+    'seeCrowd.Service', 'setCrowd.Service', 'askCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
 
 app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
@@ -93,33 +93,15 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
     });
 }]);
 
-app.controller('appController', ['$rootScope', '$scope', 'dbService',
-    'identificationService', 'mapService', '$interval', 'langService',
-    'configService', 'connection', 'feedbackModel', 'settingsService', '$cordovaGeolocation', 'INTERFACE',
-    function($rootScope, $scope, dbService, identificationService,
-        mapService, $interval, langService, configService,
-        connection, feedbackModel, settingsService, $cordovaGeolocation, INTERFACE) {
+app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'connection', 'feedbackModel', 'INTERFACE',
+    function($rootScope, $scope, identificationService, connection, feedbackModel, INTERFACE) {
 
         function initAppFncs() {
             feedbackModel.loadFeedbacks();
-            identificationService.loadDeviceId(true).then(function() {
-                var deviceId = identificationService.getDeviceId();
-                $rootScope.device = {
-                    id: deviceId,
-                    positiveFeedback: 1,
-                    negativeFeedback: 0
-                }
-                dbService.retrieveDevice(deviceId).then(function(d) {
-                    if (!d) {
-                        dbService.insertDevice($rootScope.device);
-                    } else {
-                        $rootScope.device = {
-                            id: d.deviceId,
-                            positiveFeedback: d.positiveFeedback,
-                            negativeFeedback: d.negativeFeedback
-                        }
-                    }
-                });
+            identificationService.getDeviceObject().then(function(deviceObject) {
+                $rootScope.deviceObject = deviceObject;
+            }, function(e){
+                console.log(e);
             });
         }
 
@@ -129,7 +111,7 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                     title: $rootScope.lang.ALERT.ALERT,
                     message: 'No connection. App will shut down...',
                     buttonLabel: $rootScope.lang.ALERT.OK,
-                    callback: function(answer) {
+                    callback: function() {
                         navigator.app.exitApp(); // Close the app
                     }
                 });
@@ -142,7 +124,7 @@ app.controller('appController', ['$rootScope', '$scope', 'dbService',
                         title: $rootScope.lang.ALERT.ALERT,
                         message: 'Connection lost. App will shut down...',
                         buttonLabel: $rootScope.lang.ALERT.OK,
-                        callback: function(answer) {
+                        callback: function() {
                             navigator.app.exitApp(); // Close the app
                         }
                     });

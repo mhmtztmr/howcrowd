@@ -1,10 +1,10 @@
 
-angular.module('location.Service', ['map.Service', 'interface'])
+angular.module('location', ['map.Service', 'interface'])
     .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
-		var locationInterval, oldLocation, watchId;
+		var self = {}, locationInterval, oldLocation, watchId;
 		var intervalTime = 6000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
-		function startLocationInterval() {
+		self.startLocationInterval = function() {
 			console.log('starting location interval...');
 			if (!$rootScope.location) {
 				$rootScope.location = {};
@@ -20,7 +20,7 @@ angular.module('location.Service', ['map.Service', 'interface'])
 					};
 
 					if(oldLocation.latitude) {
-						$rootScope.location.delta = getDistanceBetweenLocations($rootScope.location, oldLocation);
+						$rootScope.location.delta = self.getDistanceBetweenLocations($rootScope.location, oldLocation);
 						$rootScope.location.cumulativeDelta = oldLocation.cumulativeDelta;
 						$rootScope.location.overallDelta = oldLocation.overallDelta;
 					}
@@ -53,7 +53,7 @@ angular.module('location.Service', ['map.Service', 'interface'])
 						oldLocation: oldLocation
 					});
 				}, function(err) {
-					checkLocationAvailability(function(){
+					self.checkLocationAvailability(function(){
 
 					}, function(){
 						console.log('location failed...');
@@ -80,18 +80,18 @@ angular.module('location.Service', ['map.Service', 'interface'])
 
 			findLocation();
 			locationInterval = setInterval(findLocation, intervalTime);
-		}
+		};
 		
-		function stopLocationInterval() {
+		self.stopLocationInterval = function() {
 			console.log('stopping location interval...');
 			clearInterval(locationInterval);
 			if(watchId) {
 				navigator.geolocation.clearWatch(watchId);
 				watchId = undefined;
 			}
-		}
+		};
 
-		function checkLocationAvailability(onEnabled, onDisabled){
+		self.checkLocationAvailability = function(onEnabled, onDisabled){
 			window.console.log('Checking location availability...');
 			INTERFACE.isLocationEnabled(function(enabled){
 				window.console.log('Location availability: ' + enabled);
@@ -102,9 +102,9 @@ angular.module('location.Service', ['map.Service', 'interface'])
                 	onDisabled();
                 }
 			});
-		}
+		};
 
-		function openGPSDialog(onNo, onLater, onYes){
+		self.openGPSDialog = function(onNo, onLater, onYes){
 			window.console.log('Opening GPS dialog...');
 			INTERFACE.openGPSDialog($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,
 			 $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION, 
@@ -118,11 +118,10 @@ angular.module('location.Service', ['map.Service', 'interface'])
 			 	'NO': $rootScope.lang.NATIVE_DIALOG.GPS.NO,
 			 	'YES': $rootScope.lang.NATIVE_DIALOG.GPS.YES
 			 });
-		}
-
+		};
 
 	    //in km
-	    function getDistanceBetweenLocations(location1, location2) {
+	    self.getDistanceBetweenLocations = function(location1, location2) {
 	        // helper functions (degrees<–>radians)
 	        Number.prototype.degToRad = function() {
 	            return this * (Math.PI / 180);
@@ -131,7 +130,7 @@ angular.module('location.Service', ['map.Service', 'interface'])
 	            return (180 * this) / Math.PI;
 	        };
 
-	        R = 6378.1; //Radius of the earth in km
+	        var R = 6378.1; //Radius of the earth in km
 	        var dLat = (location2.latitude - location1.latitude).degToRad(); //deg2rad below
 	        var dLon = (location2.longitude - location1.longitude).degToRad();
 	        var a =
@@ -143,13 +142,83 @@ angular.module('location.Service', ['map.Service', 'interface'])
 	        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 	        var d = R * c; // Distance in km
 	        return d;
-	    }
+	    };
 
-		return {
-			openGPSDialog: openGPSDialog,
-			checkLocationAvailability: checkLocationAvailability,
-			startLocationInterval: startLocationInterval,
-			stopLocationInterval: stopLocationInterval,
-			getDistanceBetweenLocations: getDistanceBetweenLocations
-		};
+	    /**
+         * @param {number} distance - distance (km) from the point represented by centerPoint
+         * @param {array} centerPoint - two-dimensional array containing center coords [latitude, longitude]
+         * @description
+         *   Computes the bounding coordinates of all points on the surface of a sphere
+         *   that has a great circle distance to the point represented by the centerPoint
+         *   argument that is less or equal to the distance argument.
+         *   Technique from: Jan Matuschek <http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates>
+         * @author Alex Salisbury
+         */
+        self.getBoundingBox = function(centerPoint, distance) {
+            var MIN_LAT, MAX_LAT, MIN_LON, MAX_LON, R, radDist, degLat,
+                degLon,
+                radLat, radLon, minLat, maxLat, minLon, maxLon, deltaLon;
+            if (distance < 0) {
+                return 'Illegal arguments';
+            }
+            // helper functions (degrees<–>radians)
+            Number.prototype.degToRad = function() {
+                return this * (Math.PI / 180);
+            };
+            Number.prototype.radToDeg = function() {
+                return (180 * this) / Math.PI;
+            };
+            // coordinate limits
+            MIN_LAT = (-90).degToRad();
+            MAX_LAT = (90).degToRad();
+            MIN_LON = (-180).degToRad();
+            MAX_LON = (180).degToRad();
+            // Earth's radius (km)
+            R = 6378.1;
+            // angular distance in radians on a great circle
+            radDist = distance / R;
+            // center point coordinates (deg)
+            degLat = centerPoint.latitude;
+            degLon = centerPoint.longitude;
+            // center point coordinates (rad)
+            radLat = degLat.degToRad();
+            radLon = degLon.degToRad();
+            // minimum and maximum latitudes for given distance
+            minLat = radLat - radDist;
+            maxLat = radLat + radDist;
+            // minimum and maximum longitudes for given distance
+            minLon = void 0;
+            maxLon = void 0;
+            // define deltaLon to help determine min and max longitudes
+            deltaLon = Math.asin(Math.sin(radDist) / Math.cos(radLat));
+            if (minLat > MIN_LAT && maxLat < MAX_LAT) {
+                minLon = radLon - deltaLon;
+                maxLon = radLon + deltaLon;
+                if (minLon < MIN_LON) {
+                    minLon = minLon + 2 * Math.PI;
+                }
+                if (maxLon > MAX_LON) {
+                    maxLon = maxLon - 2 * Math.PI;
+                }
+            }
+            // a pole is within the given distance
+            else {
+                minLat = Math.max(minLat, MIN_LAT);
+                maxLat = Math.min(maxLat, MAX_LAT);
+                minLon = MIN_LON;
+                maxLon = MAX_LON;
+            }
+            return {
+                latitude: {
+                    upper: maxLat.radToDeg(),
+                    lower: minLat.radToDeg()
+                },
+                longitude: {
+                    upper: maxLon.radToDeg(),
+                    lower: minLon.radToDeg()
+                }
+            };
+        };
+
+		return self;
 	}]);

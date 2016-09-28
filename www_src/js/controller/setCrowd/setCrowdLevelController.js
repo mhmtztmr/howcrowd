@@ -1,6 +1,6 @@
 app.controller('setCrowdLevelController', ['$rootScope', '$scope',
-  'setCrowdModel', 'setCrowdService', 'guidService', 'dateService', 'mapService', 'crowdDisplayService', 'INTERFACE',
-  function($rootScope, $scope, setCrowdModel, setCrowdService, guidService, dateService, mapService, crowdDisplayService, INTERFACE) {
+  'setCrowdModel', 'setCrowdService', 'guidService', 'dateService', 'mapService', 'crowdDisplayService',
+  function($rootScope, $scope, setCrowdModel, setCrowdService, guidService, dateService, mapService, crowdDisplayService) {
 
     $scope.levels = [{
       value: 95,
@@ -19,11 +19,11 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
       text: crowdDisplayService.getCrowdDisplayText(5)
     }];
 
-    $scope.selectedPlace = setCrowdModel.getSelectedPlace();
+    $scope.selectedPlace = app.setCrowdNavi.topPage.pushedOptions.selectedPlace;
     $scope.customPlaceName = {value: ''};
 
-    $scope.selectCrowd = function(crowdLevel){
-      if (!$scope.selectedPlace) {
+    $scope.selectCrowd = function(crowdLevelIndex){
+      if ($scope.selectedPlace !== undefined) {
         if ($scope.customPlaceName.value.length > 0) {
           var id = guidService.get();
           var source = 'custom';
@@ -34,18 +34,18 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
             source: source
           };
         } else {
-          $scope.selectedPlace = undefined;
-          ons.notification.alert({
-            title: $rootScope.lang.ALERT.ALERT,
-            message: 'enter place name',
-            buttonLabel: $rootScope.lang.ALERT.OK,
-          });
-          return;
+          // $scope.selectedPlace = undefined;
+          // ons.notification.alert({
+          //   title: $rootScope.lang.ALERT.ALERT,
+          //   message: 'enter place name',
+          //   buttonLabel: $rootScope.lang.ALERT.OK,
+          // });
+          // return;
         }
       }
-      if ($scope.selectedPlace && crowdLevel && $rootScope.device) {
+      if ($scope.selectedPlace && crowdLevelIndex && $rootScope.deviceObject) {
         app.setCrowdNavi.pushPage('templates/set-crowd-attachment.html', {
-          animation: 'slide', selectedCrowdLevel: crowdLevel, selectedPlace: $scope.selectedPlace
+          animation: 'slide', crowdLevels: $scope.levels,  selectedCrowdLevelIndex: crowdLevelIndex, selectedPlace: $scope.selectedPlace
         });
       }
     };

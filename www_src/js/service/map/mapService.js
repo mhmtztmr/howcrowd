@@ -3,86 +3,16 @@ angular.module('map.Service', ['google'])
         function($q, $rootScope, googleService) {
         var self = {};
 
-        /**
-         * @param {number} distance - distance (km) from the point represented by centerPoint
-         * @param {array} centerPoint - two-dimensional array containing center coords [latitude, longitude]
-         * @description
-         *   Computes the bounding coordinates of all points on the surface of a sphere
-         *   that has a great circle distance to the point represented by the centerPoint
-         *   argument that is less or equal to the distance argument.
-         *   Technique from: Jan Matuschek <http://JanMatuschek.de/LatitudeLongitudeBoundingCoordinates>
-         * @author Alex Salisbury
-         */
-        self.getBoundingBox = function(centerPoint, distance) {
-            var MIN_LAT, MAX_LAT, MIN_LON, MAX_LON, R, radDist, degLat,
-                degLon,
-                radLat, radLon, minLat, maxLat, minLon, maxLon, deltaLon;
-            if (distance < 0) {
-                return 'Illegal arguments';
-            }
-            // helper functions (degrees<–>radians)
-            Number.prototype.degToRad = function() {
-                return this * (Math.PI / 180);
-            };
-            Number.prototype.radToDeg = function() {
-                return (180 * this) / Math.PI;
-            };
-            // coordinate limits
-            MIN_LAT = (-90).degToRad();
-            MAX_LAT = (90).degToRad();
-            MIN_LON = (-180).degToRad();
-            MAX_LON = (180).degToRad();
-            // Earth's radius (km)
-            R = 6378.1;
-            // angular distance in radians on a great circle
-            radDist = distance / R;
-            // center point coordinates (deg)
-            degLat = centerPoint.latitude;
-            degLon = centerPoint.longitude;
-            // center point coordinates (rad)
-            radLat = degLat.degToRad();
-            radLon = degLon.degToRad();
-            // minimum and maximum latitudes for given distance
-            minLat = radLat - radDist;
-            maxLat = radLat + radDist;
-            // minimum and maximum longitudes for given distance
-            minLon = void 0;
-            maxLon = void 0;
-            // define deltaLon to help determine min and max longitudes
-            deltaLon = Math.asin(Math.sin(radDist) / Math.cos(radLat));
-            if (minLat > MIN_LAT && maxLat < MAX_LAT) {
-                minLon = radLon - deltaLon;
-                maxLon = radLon + deltaLon;
-                if (minLon < MIN_LON) {
-                    minLon = minLon + 2 * Math.PI;
-                }
-                if (maxLon > MAX_LON) {
-                    maxLon = maxLon - 2 * Math.PI;
-                }
-            }
-            // a pole is within the given distance
-            else {
-                minLat = Math.max(minLat, MIN_LAT);
-                maxLat = Math.min(maxLat, MAX_LAT);
-                minLon = MIN_LON;
-                maxLon = MAX_LON;
-            }
-            return {
-                latitude: {
-                    upper: maxLat.radToDeg(),
-                    lower: minLat.radToDeg()
-                },
-                longitude: {
-                    upper: maxLon.radToDeg(),
-                    lower: minLon.radToDeg()
-                }
-            };
+        self.initMap = function(DOMElementId, center, events) {
+            return googleService.initMap(DOMElementId, center, events);
         };
 
-        self.initMap = function(DOMElementId, swLat, swLng, neLat, neLng, events) {
-            var map = googleService.initMap(DOMElementId, events);
-            self.setMapBoundingBox(map, swLat, swLng, neLat, neLng);
-            return map;
+        self.resetMap = function(map, center) {
+            googleService.resetMap(map, center);
+        };
+
+        self.getMapBoundingBox = function(map) {
+            return googleService.getMapBoundingBox(map);
         };
 
         self.setMapBoundingBox = function(map, swLat, swLng, neLat, neLng) {
@@ -97,23 +27,10 @@ angular.module('map.Service', ['google'])
             googleService.initAutocomplete(map, DOMElementId, boundingBox, onPlaceSelected);
         };
 
-        self.searchByText = function(query, location, radius, map, callback){
-            googleService.searchByText(query, location, radius, map, callback);
-        };
-
-        self.retrieveNearbyPlaces = function() {
-            var def = $q.defer();
-            googleService.getNearbyPlaces(angular.fromJson(localStorage.getItem('location')), function(nearbyPlaces) {
-                def.resolve(nearbyPlaces);
-            },
-            function() {
-                def.resolve([]);
+        self.searchPlaces = function(map, query, location, radius){
+            return new Promise(function(resolve, reject){
+                googleService.searchPlaces(map, query, location, radius).then(resolve, reject).catch(reject);
             });
-            return def.promise;
-        };
-
-        self.getAddressByLocation = function(map, location, onSuccess){
-            googleService.getAddressByLocation(map, location, onSuccess);
         };
 
         return self;

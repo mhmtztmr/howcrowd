@@ -1,51 +1,28 @@
-var setCrowdModel = function($q, setCrowdService, mapService) {
-    var selectedPlace;
+angular.module('setCrowd.Model', ['setCrowd.Service', 'map.Service', 'config'])
+    .factory('setCrowdModel', ['$rootScope', 'configService', 'setCrowdService', 'mapService',
+        function($rootScope, configService, setCrowdService, mapService) {
 
-    function insertCrowd(place, crowd, device, onSuccess, onFailure) {
-        setCrowdService.insertCrowd(place, crowd, device, onSuccess, onFailure);
-    }
+            var self = {};
 
-    function selectPlace(place) {
-        selectedPlace = place;
-        app.setCrowdNavi.pushPage('templates/set-crowd-level.html', {animation: 'lift'});
-    }
+            self.insertCrowd = function(place, crowd, device, onSuccess, onFailure) {
+                setCrowdService.insertCrowd(place, crowd, device, onSuccess, onFailure);
+            };
 
-    function getSelectedPlace() {
-        return selectedPlace;
-    }
+            self.selectPlace = function(place) {
+                return new Promise(function(resolve) {
+                    resolve(place);
+                });
+            };
 
-    function loadNearbyPlaces() {
-        var def = $q.defer(), nearbyPlaces = [],
-            servicePromiseArray = [],
-            services = [mapService, setCrowdService];
+            self.loadNearbyPlaces = function() {
+                return new Promise(function(resolve, reject){
+                    var p1 = mapService.searchPlaces(undefined, undefined, $rootScope.location, configService.NEARBY_DISTANCE);
+                    Promise.all([p1]).then(function(result) {
+                        resolve(result[0]);
+                    }, reject);
+                });
+            };
 
-        angular.forEach(services, function(value, key) {
-            servicePromiseArray.push(value.retrieveNearbyPlaces().then(
-                function(entries) {
-                    if(entries && entries.length > 0) {
-                        Array.prototype.push.apply(nearbyPlaces,entries);
-                    }
-                }));
-        });
-
-        $q.all(servicePromiseArray).then(function() {
-            def.resolve(nearbyPlaces);
-        },
-        function() {
-            def.reject();
-        });
-        return def.promise;
-    }
-
-    return {
-        insertCrowd: insertCrowd,
-        selectPlace: selectPlace,
-        getSelectedPlace: getSelectedPlace,
-        loadNearbyPlaces: loadNearbyPlaces
-    };
-};
-
-angular.module('setCrowd.Model', ['setCrowd.Service', 'map.Service'])
-  .factory('setCrowdModel', ['$q', 'setCrowdService', 'mapService',
-    setCrowdModel
-  ]);
+            return self;
+        }
+    ]);

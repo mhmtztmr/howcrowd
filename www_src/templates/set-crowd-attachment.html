@@ -12,18 +12,24 @@
     <ons-list>
       <ons-list-item>
         <ons-row align="center">
-        <ons-col>
-            {{selectedCrowdLevel.text}}
-        </ons-col>
-        <ons-col width="40px" class="crowd-last-value">
-          <div class="c100 p{{selectedCrowdLevel.value}} crowd-size center">
-            <div class="slice">
-              <div class="bar"></div>
-              <div class="fill"></div>
+          <ons-col style="text-align: left;"  ng-click="decreaseCrowdLevel()">
+              <ons-icon icon="fa-chevron-left"></ons-icon>
+          </ons-col>
+          <ons-col width="110px">
+              {{selectedCrowdLevel.text}}
+          </ons-col>
+          <ons-col class="crowd-last-value">
+            <div class="c100 p{{selectedCrowdLevel.value}} crowd-size center">
+              <div class="slice">
+                <div class="bar"></div>
+                <div class="fill"></div>
+              </div>
             </div>
-          </div>
-        </ons-col>
-      </ons-row>
+          </ons-col>
+          <ons-col style="text-align: right;" ng-click="increaseCrowdLevel()">
+              <ons-icon icon="fa-chevron-right"></ons-icon>
+          </ons-col>
+        </ons-row>
       </ons-list-item>
       <ons-list-item tappable ng-show="!crowdPhoto" ng-click="takePhoto()">
         <div class="left">
@@ -42,7 +48,7 @@
         </div>
       </ons-list-item>
       <ons-list-item>
-        <textarea class="textarea" ng-model="crowdText.value" placeholder="{{selectedPlace.name}}{{$root.lang.SET_CROWD_ATTACHMENT.TEXT_PLACEHOLDER_APPENDIX}}" style="width: 100%; height: 58px;"></textarea>
+        <textarea class="textarea" maxlength="200" ng-model="crowdText.value" placeholder="{{selectedPlace.name}}{{$root.lang.SET_CROWD_ATTACHMENT.TEXT_PLACEHOLDER_APPENDIX}}" style="width: 100%; height: 58px;"></textarea>
       </ons-list-item>
     </ons-list>
     <ons-bottom-toolbar>

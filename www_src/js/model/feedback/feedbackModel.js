@@ -1,28 +1,30 @@
 var feedbackModel = function() {
   var myFeedbacks = {};
 
-  function insertFeedback(crowdId, isPositive) {
+  function insertFeedback(crowdObjectId, isPositive) {
     var myTempFeedbacks = {},
       feedbackId, now = (new Date()).getTime();
     if (Object.keys(myFeedbacks).length > 20) {
       for (feedbackId in myFeedbacks) {
-        var feedback = myFeedbacks[feedbackId];
-        var timeDiff = now - feedback.time;
-        if (timeDiff < 3600000) { //one hour
-          myTempFeedbacks[feedbackId] = myFeedbacks[feedbackId];
+        if(myFeedbacks.hasOwnProperty(feedbackId)) {
+          var feedback = myFeedbacks[feedbackId];
+          var timeDiff = now - feedback.time;
+          if (timeDiff < 3600000) { //one hour
+            myTempFeedbacks[feedbackId] = myFeedbacks[feedbackId];
+          }
         }
       }
       myFeedbacks = myTempFeedbacks;
     }
-    myFeedbacks[crowdId] = {
+    myFeedbacks[crowdObjectId] = {
       time: now,
       isPositive: isPositive
     };
     saveFeedbacks();
   }
 
-  function getFeedback(crowdId) {
-    return myFeedbacks[crowdId];
+  function getFeedback(crowdObjectId) {
+    return myFeedbacks[crowdObjectId];
   }
 
   function saveFeedbacks() {

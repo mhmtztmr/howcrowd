@@ -13,7 +13,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         clean: {
-            target: ["www/**/*"],
+            target: ["www/**/*", 'target/**/*'],
             version: ["www/js/version.js"]
         },
         concat: {
@@ -34,7 +34,6 @@ module.exports = function(grunt) {
                     'www_src/lib/onsen/js/onsenui.js',
                     'www_src/lib/onsen/js/angular-onsenui.js',
                     'www_src/lib/angular/angular-resource.min.js',
-                    'www_src/lib/angular/ng-cordova.js',
                     'www_src/lib/angular/ready.js',
                     'www_src/lib/angular/filesystem.js',
                     'www_src/lib/angular/connection.js',
@@ -91,7 +90,7 @@ module.exports = function(grunt) {
         },
         replace: {
             dbCredentials: {
-                src: ['www/js/*.js'],
+                src: ['www/js/*.js', 'coderunner.json'],
                 overwrite: true, // overwrite matched source files
                 replacements: [{
                     from: /<%=SERVER_URL%>/g,
@@ -106,6 +105,10 @@ module.exports = function(grunt) {
                 }, {
                     from: /<%=REST_SECRET_KEY%>/g,
                     to: '<%= grunt.option(\"credentials\").backendless.restSecretKey %>'
+
+                }, {
+                    from: /<%=CR_SECRET_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.crSecretKey %>'
 
                 }, {
                     from: /<%=VERSION%>/g,
@@ -167,25 +170,26 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
+                predef: ["angular", "window", "ons", "Backendless", 
+                "console", "google", "app", "modal", "crowdTabbar", "version", "menu", "Bodyparts",
+                "Crowd", "Place", "Device"],
                 curly: true,
                 eqeqeq: true,
                 forin: true,
                 freeze: true,
                 //maxparams: 1,
                 noarg: true,
-                nocomma: true,
                 nonbsp: true,
                 nonew: true,
                 unused: true,
                 undef: true,
-                futurehostile: true,
                 latedef: true,
                 maxcomplexity: 5,
                 browser: true,
                 reporter: 'checkstyle',
                 reporterOutput: 'target/jshint-result.xml'
             },
-            all: ['src/main/js/**/*.js']
+            all: ['www_src/js/**/*.js']
         },
         less: {
             compile: {
@@ -244,7 +248,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('delete', ['clean']);
     grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
-    grunt.registerTask('dev', ['clean', 'setCredentials:dev', 'setReportIssue:dev', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+    grunt.registerTask('dev', ['clean', 'jshint', 'setCredentials:dev', 'setReportIssue:dev', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
 	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
 	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
     grunt.registerTask('default', ['dev']);

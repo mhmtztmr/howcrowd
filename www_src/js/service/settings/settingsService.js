@@ -3,11 +3,15 @@ var settingsService = function($rootScope) {
         var settings = localStorage.getItem('settings');
         if (!settings) {
             $rootScope.settings = {
-                isCustomPlacesEnabled : true
-            }
+                //isCustomPlacesEnabled : true
+                isCustomPlacesEnabled : false
+            };
             saveSettings();
         } else {
-            $rootScope.settings = JSON.parse(settings);
+            //$rootScope.settings = JSON.parse(settings);
+            $rootScope.settings = {
+                isCustomPlacesEnabled : false
+            };
         }
         window.console.log('Settings loaded.');
     }
