@@ -110,7 +110,7 @@
         </div>
       </ons-list-item>
     </ons-list>
-    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more"ng-click="loadMorePlaces()" modifier="large--quiet" ng-attr-disabled="{{more === 'pending'}}">
+    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more"ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
       More
     </ons-button>
 </ons-page>

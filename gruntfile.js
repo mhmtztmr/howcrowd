@@ -170,7 +170,9 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
-                predef: ["angular", "window", "ons", "Backendless", "console", "google", "app"],
+                predef: ["angular", "window", "ons", "Backendless", 
+                "console", "google", "app", "modal", "crowdTabbar", "version", "menu", "Bodyparts",
+                "Crowd", "Place", "Device"],
                 curly: true,
                 eqeqeq: true,
                 forin: true,

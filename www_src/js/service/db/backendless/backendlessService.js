@@ -117,7 +117,7 @@ angular.module('backendless', ['date'])
                 });
             };
 
-            self.createPlace = function(placeData, initialCrowdData) {
+            self.createPlace = function(placeData) {
                 return new Promise(function(resolve, reject){
                     var callback = new Backendless.Async(resolve, reject),
                     placeObject = new Place(placeData),
@@ -129,7 +129,7 @@ angular.module('backendless', ['date'])
             };
 
             self.updatePlace = function(placeObject, crowdData) {
-                delete placeObject['$$hashKey'];
+                delete placeObject.$$hashKey;
                 return new Promise(function(resolve, reject){
                     var callback = new Backendless.Async(resolve, reject),
                     now = dateService.getNow();
@@ -175,7 +175,7 @@ angular.module('backendless', ['date'])
             self.selectCrowds = function(placeObject, filter) {
 
                 function getDataQuery(placeObject, filter) {
-                    var q = '1 = 1', j, query = new Backendless.DataQuery();
+                    var q = '1 = 1', query = new Backendless.DataQuery();
 
                     if (filter) {
                         if (filter.date) {
@@ -212,7 +212,7 @@ angular.module('backendless', ['date'])
             };
 
             self.updateCrowd = function(crowdObject) {
-                delete crowdObject['$$hashKey'];
+                delete crowdObject.$$hashKey;
                 return new Promise(function(resolve, reject){
                     var callback = new Backendless.Async(resolve, reject);
                     Backendless.Persistence.of(Crowd).save(crowdObject, callback);
@@ -244,13 +244,13 @@ angular.module('backendless', ['date'])
                 });
             };
 
-            function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
-                crowdRest.update({
-                    placeKey: crowd.placeKey
-                }, {
-                    crowdReportReason: reportReason
-                });
-            }
+            // function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
+            //     crowdRest.update({
+            //         placeKey: crowd.placeKey
+            //     }, {
+            //         crowdReportReason: reportReason
+            //     });
+            // }
 
             self.uploadFile = function(base64Source, fileName, onSuccess, onFailure){
                 fileUploaderService.upload('crowd-photos', fileName, base64Source, onSuccess, onFailure);

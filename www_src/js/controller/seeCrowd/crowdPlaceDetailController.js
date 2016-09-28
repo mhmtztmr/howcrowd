@@ -1,6 +1,6 @@
-app.controller('crowdPlaceDetailController', ['$scope', 'mapService', '$timeout',
+app.controller('crowdPlaceDetailController', ['$scope',
 
-  function($scope, mapService, $timeout) {
+  function($scope) {
     $scope.selectedPlace = app.navi.topPage.pushedOptions.selectedPlace;
  //    var boundingBox = mapService.getBoundingBox($scope.selectedPlace.crowdLocation, 0.1);
  //    $timeout(function(){

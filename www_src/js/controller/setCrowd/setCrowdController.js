@@ -8,7 +8,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
                 function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
-                    if(success) success();
+                    if(success) {
+                        success();
+                    }
                 },
                 function(){
                     ons.notification.alert({
@@ -16,14 +18,18 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
                       message: $rootScope.lang.ALERT.LOAD_FAIL,
                       buttonLabel: $rootScope.lang.ALERT.OK
                     });
-                    if(success) success();
+                    if(success) {
+                        success();
+                    }
                     $scope.nearbyPlaces = [];
                 });
         }
 
         $scope.refreshNearbyPlaces = function($done) {
             if($scope.nearbyPlaces === 'pending' || $scope.nearbyPlaces === undefined) {
-                if($done) $done();
+                if($done) {
+                    $done();
+                }
             }
             if($rootScope.location.latitude) {
                 loadNearbyPlaces($done);
@@ -31,7 +37,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
             else if($scope.nearbyPlaces !== 'pending' && $scope.nearbyPlaces !== undefined){
                 $scope.nearbyPlaces = undefined;
                 $scope.$apply();
-                if($done) $done();
+                if($done) {
+                    $done();
+                }
             }
         };
 
@@ -39,7 +47,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
             loadNearbyPlaces();
         }
 
-        $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
+        $scope.$on('$destroy', $rootScope.$on("locationChanged", function() {
             //pending or undefined
             if(!($scope.nearbyPlaces instanceof Array)) {
                 if($rootScope.location.latitude) {

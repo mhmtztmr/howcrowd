@@ -1,6 +1,6 @@
 app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter',
-    'seeCrowdModel', 'dateService', 'mapService', '$timeout',
-    function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout) {
+    'seeCrowdModel',
+    function($rootScope, $scope, $filter, seeCrowdModel) {
         
         function loadMap(){
             seeCrowdModel.loadMap();
@@ -29,7 +29,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter',
             $scope.selectedPlace = args.place;
             $scope.$apply();
         }));
-        $scope.$on('$destroy', $rootScope.$on("markerDeselected", function(event, args) {
+        $scope.$on('$destroy', $rootScope.$on("markerDeselected", function() {
             $scope.selectedPlace = undefined;
             $scope.$apply();
         }));

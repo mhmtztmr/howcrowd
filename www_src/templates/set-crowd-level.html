@@ -16,7 +16,7 @@
       </div>
     </ons-toolbar>
     <ons-list>
-      <ons-list-item modifier="tappable" ng-click="selectCrowd(level)" ng-repeat="level in levels">
+      <ons-list-item modifier="tappable" ng-click="selectCrowd(levels.indexOf(level))" ng-repeat="level in levels">
         <ons-row align="center">
           <ons-col>
               {{level.text}}

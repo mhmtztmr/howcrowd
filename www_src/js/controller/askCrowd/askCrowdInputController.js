@@ -1,5 +1,5 @@
-app.controller('askCrowdInputController', ['$rootScope', '$scope', 'askCrowdService', 'dateService',
-  function($rootScope, $scope, askCrowdService, dateService) {
+app.controller('askCrowdInputController', ['$rootScope', '$scope', 'askCrowdService',
+  function($rootScope, $scope, askCrowdService) {
     $scope.selectedPlace =  app.askCrowdNavi.topPage.pushedOptions.selectedPlace;
     
     $scope.askCrowdText = {value: ''};

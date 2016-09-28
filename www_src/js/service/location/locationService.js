@@ -130,7 +130,7 @@ angular.module('location', ['map.Service', 'interface'])
 	            return (180 * this) / Math.PI;
 	        };
 
-	        R = 6378.1; //Radius of the earth in km
+	        var R = 6378.1; //Radius of the earth in km
 	        var dLat = (location2.latitude - location1.latitude).degToRad(); //deg2rad below
 	        var dLon = (location2.longitude - location1.longitude).degToRad();
 	        var a =

@@ -41,6 +41,10 @@ var Android = function(){
       });
   };
 
+  this.socialShare = function(text){
+      window.plugins.socialsharing.share(text);
+  };
+
 	return this;
 };
 

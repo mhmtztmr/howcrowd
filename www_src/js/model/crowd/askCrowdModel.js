@@ -1,7 +1,7 @@
 angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', 'location'])
     .factory('askCrowdModel', ['askCrowdService', 'mapService', 'mapConstants', 'configService', '$rootScope', 'locationService',
         function(askCrowdService, mapService, mapConstants, configService, $rootScope, locationService) {
-            var selectedPlace, boundingBox,
+            var self = {},
             mapDivId = 'askMap', searchInputDivId = 'search-input', 
             placesMap = {},
             map, currentLocationMarker, markersMap = {}, infowindow;
@@ -95,7 +95,7 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                     $rootScope.$broadcast('unsearchableAsk', {value: place.name});
                     self.clearMap();
                     if (!place.location.latitude) {
-                        searchPlaces(place.name);
+                        self.searchPlaces(place.name);
                         return;
                     }
                     mapService.resetMap(map, place.location);
@@ -147,8 +147,10 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                 }
                 var i;
                 for(i in markersMap) {
-                    markersMap[i].setMap(null);
-                    delete markersMap[i];
+                    if(markersMap.hasOwnProperty(i)) {
+                        markersMap[i].setMap(null);
+                        delete markersMap[i];
+                    }
                 }
             };
 

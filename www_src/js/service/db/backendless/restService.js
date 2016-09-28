@@ -17,6 +17,7 @@ angular.module('backendless').
     //   }
     // ]).
     factory('fileUploaderService',['$http', function($http){
+        var self = {};
         self.upload = function(folder, fileName, fileData, onSuccess, onFailure) {
             var req = {
                method: 'PUT',
@@ -28,10 +29,10 @@ angular.module('backendless').
                 'application-type': 'REST'
                },
                data: fileData
-            }
+            };
 
             $http(req).then(onSuccess, onFailure);
-        }
+        };
 
         return self;
     }]);

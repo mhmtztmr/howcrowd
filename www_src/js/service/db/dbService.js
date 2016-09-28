@@ -53,10 +53,17 @@ angular.module('db', ['backendless', 'date', 'placeType'])
 
       self.selectPlaces = function(filter) {
         return new Promise(function(resolve, reject){
-          backendlessService.selectPlaces(filter).then(function(placesObject) {
+          if(filter.nextPage) {
+            var placesObject = filter.nextPage();
             formatPlaces(placesObject.data);
             resolve(placesObject);
-          }, reject).catch(reject);
+          }
+          else {
+            backendlessService.selectPlaces(filter).then(function(placesObject) {
+              formatPlaces(placesObject.data);
+              resolve(placesObject);
+            }, reject).catch(reject);
+          }
         });
       };
 
@@ -78,7 +85,7 @@ angular.module('db', ['backendless', 'date', 'placeType'])
         return new Promise(function(resolve, reject){
           backendlessService.selectCrowds(placeObject, filter).then(resolve, reject).catch(reject);
         });
-      }
+      };
 
       self.createCrowd = function(crowdData, placeObject, deviceObject) {
         return new Promise(function(resolve, reject){
@@ -102,9 +109,9 @@ angular.module('db', ['backendless', 'date', 'placeType'])
         });
       };
 
-      function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
-        backendlessService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
-      }
+      // function reportCrowd(crowd, reportReason, onSuccess, onFailure) {
+      //   backendlessService.reportCrowd(crowd, reportReason, onSuccess, onFailure);
+      // }
 
       self.uploadFile = function(base64Source, fileName, onSuccess, onFailure){
         backendlessService.uploadFile(base64Source, fileName, onSuccess, onFailure);

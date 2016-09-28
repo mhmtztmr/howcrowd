@@ -1,12 +1,12 @@
 angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location', 'config', 'feedback'])
     .factory('seeCrowdModel', ['seeCrowdService', 'mapService', 'mapConstants','feedbackModel',
-        'configService', 'dateService', '$rootScope', 'locationService', function(seeCrowdService, mapService, mapConstants,
-            feedbackModel, configService, dateService, $rootScope, locationService) {
+        'configService', 'dateService', '$rootScope', function(seeCrowdService, mapService, mapConstants,
+            feedbackModel, configService, dateService, $rootScope) {
             var self = {}, 
             mapDivId = 'map', map, 
             currentLocationMarker, markersMap = {}, infowindow, 
             reload = true, loading,
-            placesNextPage, placesMap = {};
+            placesNextPage, hasPlacesNextPage, placesMap = {};
 
             /*
             function loadNearbyPlaces() {
@@ -24,16 +24,13 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             }
             */
 
-            function isNearby(placeObject) {
-                return nearbyPlaceSourceIDs.indexOf(placeObject.sourceID) > -1;
-            }
-
             self.loadPlacesNextPage = function() {
                 return new Promise(function(resolve, reject){
-                    var farPromise = seeCrowdService.getPlaces(placesNextPage);
+                    var farPromise = seeCrowdService.getPlacesNextPage(placesNextPage);
                     Promise.all([farPromise]).then(function(result) {
                         var i, places = [],
                         _places = result[0].data;
+                        hasPlacesNextPage = result[0]._nextPage;
                         placesNextPage = result[0].nextPage.bind({_nextPage: result[0]._nextPage});
                         
                         for(i = 0; i < _places.length; i++) {
@@ -48,8 +45,8 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 });
             };
 
-            self.getPlacesNextPage = function() {
-                return placesNextPage;
+            self.hasPlacesNextPage = function() {
+                return hasPlacesNextPage;
             };
 
             self.loadPlaces = function() {
@@ -63,8 +60,8 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         farPromise = seeCrowdService.getPlaces();
                         Promise.all([nearbyPromise, farPromise]).then(function(result) {
                             var i, places = [],
-                            _nearbyPlaces = result[0].data;
-                            _places = result[1].data;
+                            _nearbyPlaces = result[0].data, _places = result[1].data;
+                            hasPlacesNextPage = result[1]._nextPage;
                             placesNextPage = result[1].nextPage.bind({_nextPage: result[1]._nextPage});
                             
                             for(i = 0; i < _nearbyPlaces.length; i++) {
@@ -117,82 +114,6 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         resolve(places);
                     }, reject);
                 });
-            };
-
-            function loadPlaceBasedCrowds(crowds) {
-                var i, crowd, crowdFeedbackMargin, now = new Date().getTime(), distance, placeBasedCrowds = {};
-                placeBasedCrowdsArray = [];
-                for (i = 0; i < crowds.length; i++) {
-                    crowd = crowds[i];
-                    crowd.lastUpdatePass = Math.round((now - crowd.crowdDate) / (1000 * 60)); //mins
-                    if (!placeBasedCrowds[crowd.placeKey]) {
-                        placeBasedCrowds[crowd.placeKey] = {
-                            crowds: [],
-                            crowdCount: 0,
-                            crowdValue: 0
-                        };
-                    }
-                    placeBasedCrowds[crowd.placeKey].crowdLocation = crowd.crowdLocation;
-                    placeBasedCrowds[crowd.placeKey].placeName = crowd.placeName;
-                    placeBasedCrowds[crowd.placeKey].placeSource = crowd.placeSource;
-                    placeBasedCrowds[crowd.placeKey].placeSid = crowd.placeSid;
-                    placeBasedCrowds[crowd.placeKey].placeDistrict = crowd.placeDistrict;
-                    placeBasedCrowds[crowd.placeKey].placeVicinity = crowd.placeVicinity;
-                    placeBasedCrowds[crowd.placeKey].placePhoto = crowd.placePhoto;
-                    placeBasedCrowds[crowd.placeKey].placeType = crowd.placeType;
-
-                    if (!placeBasedCrowds[crowd.placeKey].crowdLast) {
-                        placeBasedCrowds[crowd.placeKey].crowdLast = crowd;
-                    }
-
-                    if(crowd.crowdValue >= 0) {
-                        if(crowd.crowdPhoto){
-                            placeBasedCrowds[crowd.placeKey].hasPhoto = true;
-                        }
-                        if(crowd.crowdText){
-                            placeBasedCrowds[crowd.placeKey].hasText = true;
-                        }
-                        
-                        //average algorithm including feedbacks
-                        crowdFeedbackMargin = 1 + crowd.crowdFeedback.positiveFeedback - crowd.crowdFeedback.negativeFeedback
-                        if(crowdFeedbackMargin > 0) {
-                            placeBasedCrowds[crowd.placeKey].crowdCount += crowdFeedbackMargin;
-                            placeBasedCrowds[crowd.placeKey].crowdValue += crowdFeedbackMargin * crowd.crowdValue;
-                        }
-                        placeBasedCrowds[crowd.placeKey].crowdAverage = Math.round(
-                            placeBasedCrowds[crowd.placeKey].crowdValue / placeBasedCrowds[
-                                crowd.placeKey].crowdCount);
-                    }
-                    else {
-                        placeBasedCrowds[crowd.placeKey].hasAsk = true;
-                    }
-                    placeBasedCrowds[crowd.placeKey].crowds.push(crowd);
-
-                    //here algorithm
-                    if($rootScope.location.latitude) {
-                        distance = locationService.getDistanceBetweenLocations($rootScope.location, crowd.crowdLocation);
-                        if(distance > configService.NEARBY_DISTANCE) {
-                            placeBasedCrowds[crowd.placeKey].distanceGroup = 10; //not here
-                        }
-                        else {
-                            placeBasedCrowds[crowd.placeKey].distanceGroup = 0; //here
-                        }
-                    }
-
-                    crowd.feedbackable = 
-                        crowd.lastUpdatePass <= configService.FEEDBACK_TIME * 60 && //entered just now
-                        placeBasedCrowds[crowd.placeKey].distanceGroup === 0 && //here
-                        $rootScope.device.id !== crowd.deviceId; //not me
-
-                    crowd.myFeedback = feedbackModel.getFeedback(crowd.crowdId);
-                    if(crowd.myFeedback) {
-                        crowd.myFeedback = crowd.myFeedback.isPositive;
-                    }
-                }
-                placeBasedCrowdsArray = Object.keys(placeBasedCrowds).map(function(key) {
-                    return placeBasedCrowds[key];
-                });
-                return placeBasedCrowdsArray;
             }
 
             function markCurrentLocation() {
@@ -251,8 +172,10 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             self.clearMap = function() {
                 var i;
                 for(i in markersMap) {
-                    markersMap[i].setMap(null);
-                    delete markersMap[i];
+                    if(markersMap.hasOwnProperty(i)) {
+                        markersMap[i].setMap(null);
+                        delete markersMap[i];
+                    }
                 }
                 reload = true;
             };

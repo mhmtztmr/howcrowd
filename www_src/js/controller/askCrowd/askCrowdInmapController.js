@@ -1,5 +1,5 @@
-app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService', '$filter', 'configService', 'askCrowdModel', 'locationService',
-    function($rootScope, $scope, mapService, $filter, configService, askCrowdModel, locationService) {
+app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService', '$filter', 'configService', 'askCrowdModel',
+    function($rootScope, $scope, mapService, $filter, configService, askCrowdModel) {
 
         function loadMap() {
             console.log('loading ask map...');
@@ -40,13 +40,13 @@ app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService',
                 $scope.$apply();
             }
         }));
-        $scope.$on('$destroy', $rootScope.$on("askMarkerDeselected", function(event, args) {
+        $scope.$on('$destroy', $rootScope.$on("askMarkerDeselected", function() {
             $scope.selectedPlace = undefined;
             if(!$scope.$$phase) {
                 $scope.$apply();
             }
         }));
-        $scope.$on('$destroy', $rootScope.$on("longpressForAskRequiresZoom", function(event, args) {
+        $scope.$on('$destroy', $rootScope.$on("longpressForAskRequiresZoom", function() {
             this.zoomForAskDialog.show();
         }));
         $scope.$on('$destroy', $rootScope.$on("unsearchableAsk", function(event, args) {

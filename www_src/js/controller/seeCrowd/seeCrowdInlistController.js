@@ -1,6 +1,6 @@
 app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
-    'seeCrowdModel', 'dateService', 'mapService', '$timeout', 'seeCrowdService',
-    function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout, seeCrowdService) {
+    'seeCrowdModel', 'dateService', 'mapService', '$timeout',
+    function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout) {
         $scope.places = 'pending';
 
         function loadPlaces(done) {
@@ -8,9 +8,11 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
                 var places = $filter('orderBy')(_places, ['-isNearby', '-lastUpdateDatetime']);
                 $timeout(function() {
                     $scope.places = places;
-                    $scope.more = seeCrowdModel.getPlacesNextPage();
+                    $scope.more = seeCrowdModel.hasPlacesNextPage();
                 });
-                if(done) done();
+                if(done) {
+                    done();
+                }
             }, function() {
                 ons.notification.alert({
                   title: $rootScope.lang.ALERT.ALERT,
@@ -18,7 +20,9 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
                   buttonLabel: $rootScope.lang.ALERT.OK
                 });
                 $scope.places = [];
-                if(done) done();
+                if(done) {
+                    done();
+                }
             });
         }
 
@@ -27,10 +31,10 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
             seeCrowdModel.loadPlacesNextPage().then(function(_places) {
                 $timeout(function() {
                     $scope.places = $scope.places.concat(_places);
-                    $scope.more = seeCrowdModel.getPlacesNextPage();
+                    $scope.more = seeCrowdModel.hasPlacesNextPage();
                 });
             }, function() {
-                $scope.more = seeCrowdModel.getPlacesNextPage();
+                $scope.more = seeCrowdModel.hasPlacesNextPage();
                 ons.notification.alert({
                   title: $rootScope.lang.ALERT.ALERT,
                   message: $rootScope.lang.ALERT.LOAD_FAIL,
@@ -43,17 +47,21 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
             seeCrowdModel.clearMap();
         }
 
-        $scope.refreshPlaces = function($done) {
+        $scope.refreshPlaces = function(done) {
             clearMap();
             if($scope.places === 'pending' || $scope.places === undefined) {
-                if($done) $done();
+                if(done) {
+                    done();
+                }
             }
             if($rootScope.location.latitude) {
-                loadPlaces($done);
+                loadPlaces(done);
             }
             else if($scope.places !== 'pending' && $scope.places !== undefined){
                 $scope.places = undefined;
-                if($done) $done();
+                if(done) {
+                    done();
+                }
             }
         };
 
@@ -61,7 +69,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
             loadPlaces();
         }
 
-        $scope.$on('$destroy', $rootScope.$on("locationChanged", function(event, args) {
+        $scope.$on('$destroy', $rootScope.$on("locationChanged", function() {
             //pending or undefined
             if(!($scope.places instanceof Array)) {
                 clearMap();
@@ -120,7 +128,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
             configureItemScope: function(index, itemScope) {
                 itemScope.item = $scope.places[index];
             },
-            calculateItemHeight: function(index) {
+            calculateItemHeight: function() {
                 return 88;
             },
             countItems: function() {

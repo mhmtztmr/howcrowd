@@ -1,12 +1,12 @@
-app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdService', '$timeout',
-  function($rootScope, $scope, seeCrowdService, $timeout) {
+app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdService', '$timeout', 'INTERFACE',
+  function($rootScope, $scope, seeCrowdService, $timeout, INTERFACE) {
     $scope.selectedPlace = app.seeCrowdNavi.topPage.pushedOptions.selectedPlace;
 
     $scope.givePositiveFeedback = function(crowdObject) {
       giveFeedback(crowdObject, true);
     };
 
-    $scope.giveNegativeFeedback = function(crowd) {
+    $scope.giveNegativeFeedback = function(crowdObject) {
       giveFeedback(crowdObject, false);
     };
 
@@ -63,10 +63,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
     $scope.options = [{
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
       fnc: function() {
-        app.seeCrowdNavi.pushPage('templates/crowd-place-detail.html', {
-          selectedPlace: $scope.selectedPlace, 
-          animation:'lift'
-        });
+         $scope.seePlaceDetail();
       }
     }, {
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
@@ -75,7 +72,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
         lastUpdateDatetime = new Date($scope.selectedPlace.lastUpdateDatetime).toLocaleString(),
         averageValue = $scope.selectedPlace.averageCrowdValue;
 
-        window.plugins.socialsharing.share(placeName + ' [' + lastUpdateDatetime + ']\n' +
+        INTERFACE.socialShare(placeName + ' [' + lastUpdateDatetime + ']\n' +
             $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
       }
     }];
@@ -115,6 +112,13 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
         crowd: crowd, 
         animation:'slide'
       });
+    };
+
+    $scope.seePlaceDetail = function() {
+        app.navi.pushPage('templates/crowd-place-detail.html', {
+          selectedPlace: $scope.selectedPlace, 
+          animation:'lift'
+        });
     };
   }
 ]);

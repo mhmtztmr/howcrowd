@@ -126,7 +126,7 @@ var defaultLanguageModel = function() {
             "ZOOM_FOR_ASK": "No places around. Zoom and retry longpress!",
             "NO_RESULT_BY_SEARCH": "No result found. Try another search!"
         }
-    }
+    };
 };
 angular.module('lang', [])
     .factory('defaultLanguageModel', [defaultLanguageModel]);

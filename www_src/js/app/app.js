@@ -111,7 +111,7 @@ app.controller('appController', ['$rootScope', '$scope', 'identificationService'
                     title: $rootScope.lang.ALERT.ALERT,
                     message: 'No connection. App will shut down...',
                     buttonLabel: $rootScope.lang.ALERT.OK,
-                    callback: function(answer) {
+                    callback: function() {
                         navigator.app.exitApp(); // Close the app
                     }
                 });
@@ -124,7 +124,7 @@ app.controller('appController', ['$rootScope', '$scope', 'identificationService'
                         title: $rootScope.lang.ALERT.ALERT,
                         message: 'Connection lost. App will shut down...',
                         buttonLabel: $rootScope.lang.ALERT.OK,
-                        callback: function(answer) {
+                        callback: function() {
                             navigator.app.exitApp(); // Close the app
                         }
                     });

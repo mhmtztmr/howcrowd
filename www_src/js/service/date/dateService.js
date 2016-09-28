@@ -1,9 +1,5 @@
 var dateService = function(configService) {
 
-	function getParseDate(date) {
-		return new Date(date.toString() + " UTC");
-	}
-
 	function getBackendlessDate(date) {
 		return date;
 	}

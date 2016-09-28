@@ -6,7 +6,7 @@ angular.module('identification', ['guid', 'file', 'db'])
     function(guidService, fileService, dbService) {
       var self = {};
 
-      function getDeviceId(onSuccess, onFailure) {
+      function getDeviceId(onSuccess) {
         var deviceID;
         if (window.cordova) {
           deviceID = readDeviceIdFromLocalStorage();

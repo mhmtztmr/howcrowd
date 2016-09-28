@@ -1,32 +1,15 @@
 app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
-  'setCrowdModel', 'setCrowdService', 'mapService', 'INTERFACE', 'dbService',
-  function($rootScope, $scope, setCrowdModel, setCrowdService, mapService, INTERFACE, dbService) {
+  'setCrowdModel', 'setCrowdService', 'mapService', 'INTERFACE',
+  function($rootScope, $scope, setCrowdModel, setCrowdService, mapService, INTERFACE) {
     $scope.selectedPlace =  app.setCrowdNavi.topPage.pushedOptions.selectedPlace;
-    $scope.selectedCrowdLevel = app.setCrowdNavi.topPage.pushedOptions.selectedCrowdLevel;
+    var selectedCrowdLevelIndex = app.setCrowdNavi.topPage.pushedOptions.selectedCrowdLevelIndex;
+    var crowdLevels = app.setCrowdNavi.topPage.pushedOptions.crowdLevels;
+    $scope.selectedCrowdLevel = crowdLevels[selectedCrowdLevelIndex];
 
     $scope.crowdText = {value: ''};
 
     $scope.insertCrowd = function() {
-      modal.show();
-      if($scope.crowdPhoto){
-        var fileName = $rootScope.deviceObject.ID + (new Date()).valueOf() + '.png';
-        setCrowdService.uploadFile($scope.crowdPhoto, fileName, function(photoUrl){
-          insertCrowd(photoUrl.data);
-        }, function(){
-          modal.hide();
-          ons.notification.alert({
-            title: $rootScope.lang.ALERT.ALERT,
-            message: $rootScope.lang.ALERT.FAIL,
-            buttonLabel: $rootScope.lang.ALERT.OK,
-          });
-        });
-      }
-      else {
-        insertCrowd();
-      }
-
       function insertCrowd(photoUrl) {
-        var locationForCustomVicinity = $rootScope.location;
         var placeData = $scope.selectedPlace;
         var crowdData = {
           value: $scope.selectedCrowdLevel.value,
@@ -48,6 +31,40 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
             buttonLabel: $rootScope.lang.ALERT.OK,
           });
         });
+      }
+
+      modal.show();
+      if($scope.crowdPhoto){
+        var fileName = $rootScope.deviceObject.ID + (new Date()).valueOf() + '.png';
+        setCrowdService.uploadFile($scope.crowdPhoto, fileName, function(photoUrl){
+          insertCrowd(photoUrl.data);
+        }, function(){
+          modal.hide();
+          ons.notification.alert({
+            title: $rootScope.lang.ALERT.ALERT,
+            message: $rootScope.lang.ALERT.FAIL,
+            buttonLabel: $rootScope.lang.ALERT.OK,
+          });
+        });
+      }
+      else {
+        insertCrowd();
+      }
+    };
+
+    $scope.decreaseCrowdLevel = function() {
+      selectedCrowdLevelIndex = (selectedCrowdLevelIndex + 1) % crowdLevels.length;
+      $scope.selectedCrowdLevel = crowdLevels[selectedCrowdLevelIndex];
+      if(!$scope.$$phase) {
+        $scope.$apply();
+      }
+    };
+
+    $scope.increaseCrowdLevel = function() {
+      selectedCrowdLevelIndex = (selectedCrowdLevelIndex + crowdLevels.length - 1) % crowdLevels.length;
+      $scope.selectedCrowdLevel = crowdLevels[selectedCrowdLevelIndex];
+      if(!$scope.$$phase) {
+        $scope.$apply();
       }
     };
 

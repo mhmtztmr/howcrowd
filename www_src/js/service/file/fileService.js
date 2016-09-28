@@ -13,7 +13,7 @@ var fileService = function(filesystem) {
           console.log('file entry got');
           fileEntry.createWriter(function(writer) {
             console.log('file writer got');
-            writer.onwriteend = function(evt) {
+            writer.onwriteend = function() {
               console.log('data written');
               onSuccess();
             };
@@ -49,7 +49,7 @@ var fileService = function(filesystem) {
             reader.onloadend = function(evt) {
               console.log('data read');
               onSuccess(evt.target.result);
-            }
+            };
             reader.readAsText(file);
           }, function(err) {
             console.log('file reader failed: ' + err.code);

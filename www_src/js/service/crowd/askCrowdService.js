@@ -1,6 +1,6 @@
 angular.module('askCrowd.Service', ['db', 'date'])
-	.factory('askCrowdService', ['dbService', 'dateService',
-		function(dbService, dateService) {
+	.factory('askCrowdService', ['dbService',
+		function(dbService) {
 
 			var self = {};
 
