@@ -44,7 +44,7 @@
     <div ng-if="places === 'pending'" style="text-align: center; padding-top: 144px;">
         <ons-icon size="70px" spin="true" icon="fa-spinner">
     </div>
-    <div ng-if="places && places !== 'pending' && places.length === 0" class="no-crowd-container">
+    <div ng-if="places && places !== 'pending' && places.length === 0 && searchInput.value.length === 0" class="no-crowd-container">
         <div class="no-crowd-text-container">
             <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD}}</div>
         </div>
@@ -57,6 +57,17 @@
         <div class="no-crowd-seperator"></div>
         <div class="no-crowd-ask-crowd-container">
             <span class="no-crowd-ask-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(0)">
+            &laquo; {{$root.lang.SEE_CROWD_MENU.ASK_CROWD}}</span>
+            <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
+        </div>
+    </div>
+    <div ng-if="places && places !== 'pending' && places.length === 0 && searchInput.value.length > 0" class="no-crowd-container">
+        <div class="no-crowd-text-container">
+            <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD_FOR_SEARCH}}</div>
+        </div>
+        <div class="no-crowd-seperator"></div>
+        <div class="no-crowd-ask-crowd-container">
+            <span class="no-crowd-ask-crowd-button button button--quiet" ng-click="askCrowd(searchInput.value)">
             &laquo; {{$root.lang.SEE_CROWD_MENU.ASK_CROWD}}</span>
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>

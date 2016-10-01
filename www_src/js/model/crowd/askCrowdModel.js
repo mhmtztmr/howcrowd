@@ -2,11 +2,11 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
     .factory('askCrowdModel', ['askCrowdService', 'mapService', 'mapConstants', 'configService', '$rootScope', 'locationService',
         function(askCrowdService, mapService, mapConstants, configService, $rootScope, locationService) {
             var self = {},
-            mapDivId = 'askMap', searchInputDivId = 'search-input', 
+            mapDivId = 'askMap', searchInputDivId = 'ask-crowd-search-input', askQuery,
             placesMap = {},
             map, currentLocationMarker, markersMap = {}, infowindow;
 
-            function markCurrentLocation() {
+            self.markCurrentLocation = function() {
                 if($rootScope.location.latitude) {
                     if(currentLocationMarker) {
                         currentLocationMarker.setMap(null);
@@ -28,7 +28,7 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                         $rootScope.lang.MAP.YOUR_LOCATION
                     );
                 }
-            }
+            };
 
             function markPlaces(places) {
                 var place, i;
@@ -90,54 +90,61 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
             };
 
             function initAutocomplete(){
-                var boundingBox = locationService.getBoundingBox($rootScope.location, configService.FAR_DISTANCE);
-                mapService.initAutocomplete(map, searchInputDivId, boundingBox, function(place){
-                    $rootScope.$broadcast('unsearchableAsk', {value: place.name});
-                    self.clearMap();
-                    if (!place.location.latitude) {
-                        self.searchPlaces(place.name);
-                        return;
-                    }
-                    mapService.resetMap(map, place.location);
-                    var places = [];
-                    places.push(place);
-                    markPlaces(places);
-                });
+				return new Promise(function(resolve, reject) {
+					var boundingBox = locationService.getBoundingBox($rootScope.location, configService.FAR_DISTANCE);
+					mapService.initAutocomplete(map, searchInputDivId, boundingBox, function(place){
+						$rootScope.$broadcast('unsearchableAsk', {value: place.name});
+						self.clearMap();
+						if (!place.location.latitude) {
+							self.searchPlaces(place.name).then(resolve, reject);
+							return;
+						}
+						mapService.resetMap(map, place.location);
+						var places = [];
+						places.push(place);
+						markPlaces(places);
+					}).then(resolve, reject);
+				});
             }
 
             self.loadMap = function() {
-                if(!map) {
-                    setTimeout(function(){
-                        map = mapService.initMap(mapDivId, $rootScope.location, {
-                            'mousedown': function(){
-                                $rootScope.$broadcast('askMarkerDeselected');
-                                if (infowindow) {
-                                    infowindow.close();
-                                }
-                            },
-                            'longpress': function(event){
-                                if(map.getZoom() < 16) {
-                                    $rootScope.$broadcast('longpressForAskRequiresZoom');
-                                }
-                                else {
-                                    var latLng = event.latLng, location = {
-                                        latitude: latLng.lat(),
-                                        longitude: latLng.lng()
-                                    };
-                                    mapService.searchPlaces(undefined, undefined, location, configService.LONGPRESS_ASK_DISTANCE).then(function(places){
-                                        self.clearMap();
-                                        markPlaces(places);
-                                        $rootScope.$broadcast('unsearchableAsk', {value: location.latitude.toFixed(2) + ', ' + location.longitude.toFixed(2)});
-                                    }, function() {
-                                        $rootScope.$broadcast('longpressForAskRequiresZoom');
-                                    });
-                                }
-                            }
-                        });
-                        initAutocomplete();
-                        markCurrentLocation();
-                    }, 100);
-                }
+				return new Promise(function(resolve, reject) {
+					if(!map) {
+						setTimeout(function() {
+							map = mapService.initMap(mapDivId, $rootScope.location, {
+								'mousedown': function(){
+									$rootScope.$broadcast('askMarkerDeselected');
+									if (infowindow) {
+										infowindow.close();
+									}
+								},
+								'longpress': function(event){
+									if(map.getZoom() < 16) {
+										$rootScope.$broadcast('longpressForAskRequiresZoom');
+									}
+									else {
+										var latLng = event.latLng, location = {
+											latitude: latLng.lat(),
+											longitude: latLng.lng()
+										};
+										mapService.searchPlaces(undefined, undefined, location, configService.LONGPRESS_ASK_DISTANCE).then(function(places){
+											self.clearMap();
+											markPlaces(places);
+											$rootScope.$broadcast('unsearchableAsk', {value: location.latitude.toFixed(2) + ', ' + location.longitude.toFixed(2)});
+										}, function() {
+											$rootScope.$broadcast('longpressForAskRequiresZoom');
+										});
+									}
+								}
+							});
+							self.markCurrentLocation();							
+							initAutocomplete().then(resolve, reject);
+						}, 100);
+					}
+					else {
+						resolve();
+					}
+				});
             };
 
             self.clearMap = function(){
@@ -159,6 +166,16 @@ angular.module('askCrowd.Model', ['askCrowd.Service', 'map.Service', 'config', '
                     resolve(place);
                 });
             };
+			
+			self.setAskQuery = function(query) {
+				askQuery = query;
+			};
+			
+			self.getAskQuery = function() {
+				var q = askQuery;
+				askQuery = undefined;
+				return q;
+			};
 
             return self;
         }

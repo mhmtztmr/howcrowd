@@ -13,11 +13,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
                     }
                 },
                 function(){
-                    ons.notification.alert({
-                      title: $rootScope.lang.ALERT.ALERT,
-                      message: $rootScope.lang.ALERT.LOAD_FAIL,
-                      buttonLabel: $rootScope.lang.ALERT.OK
-                    });
+                    this.loadingFailedDialog.show();
                     if(success) {
                         success();
                     }

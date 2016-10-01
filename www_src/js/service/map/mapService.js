@@ -24,7 +24,9 @@ angular.module('map.Service', ['google'])
         };
 
         self.initAutocomplete = function(map, DOMElementId, boundingBox, onPlaceSelected){
-            googleService.initAutocomplete(map, DOMElementId, boundingBox, onPlaceSelected);
+            return new Promise(function(resolve, reject){
+                googleService.initAutocomplete(map, DOMElementId, boundingBox, onPlaceSelected).then(resolve, reject).catch(reject);
+            });
         };
 
         self.searchPlaces = function(map, query, location, radius){

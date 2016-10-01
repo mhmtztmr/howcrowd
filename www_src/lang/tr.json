@@ -22,10 +22,11 @@
         "AVERAGE_VALUE": "Ort.",
         "MIN_AGO": "dk. önce",
         "NO_CROWD": "Gösterilecek bir kalabalık bilgisi mevcut değil. Siz bir tane girebilir yada sorabilirsiniz!",
+        "NO_CROWD_FOR_SEARCH": "Aramanıza uygun kalabalık bulunamadı. Sormayı deneyin!",
         "SET_CROWD": "Kalabalık girmek için dokunun!",
         "ASK_CROWD": "Kalabalık sormak için dokunun!",
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin olun!",
-        "SEARCH_INPUT": "Son 1s, 15km civarı",
+        "SEARCH_INPUT": "Kalabalık görmek için arayın",
         "YOU": "Siz",
         "JUST_NOW": "Şimdi"
     },
@@ -121,6 +122,7 @@
     },
     "WARNING": {
         "ZOOM_FOR_ASK": "Yakında yer bulunamadı.Haritayı yaklaştırıp tekrar deneyin!",
-        "NO_RESULT_BY_SEARCH": "Sonuç bulunamadı. Başka bir arama deneyin!"
+        "NO_RESULT_BY_SEARCH": "Sonuç bulunamadı. Başka bir arama deneyin!",
+        "LOADING_FAILED": "Yükleme başarısız!"
     }
 }

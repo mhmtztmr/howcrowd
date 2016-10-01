@@ -23,10 +23,11 @@ var defaultLanguageModel = function() {
             "AVERAGE_VALUE": "Avg.",
             "MIN_AGO": "min(s) ago",
             "NO_CROWD": "No recent crowd to display. You can set one or ask for it!",
+            "NO_CROWD_FOR_SEARCH": "No crowd for your search. Try to ask for it!",
             "SET_CROWD": "Tap to set a crowd!",
             "ASK_CROWD": "Tap to ask for a crowd!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
-            "SEARCH_INPUT": "Last 1h, Around 15kms",
+            "SEARCH_INPUT": "See crowd by search",
             "YOU": "You",
             "JUST_NOW": "Just now"
         },
@@ -124,7 +125,8 @@ var defaultLanguageModel = function() {
         },
         "WARNING": {
             "ZOOM_FOR_ASK": "No places around. Zoom and retry longpress!",
-            "NO_RESULT_BY_SEARCH": "No result found. Try another search!"
+            "NO_RESULT_BY_SEARCH": "No result found. Try another search!",
+            "LOADING_FAILED": "Loading failed!"
         }
     };
 };

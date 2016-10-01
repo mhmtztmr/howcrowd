@@ -90,6 +90,9 @@ angular.module('backendless', ['date'])
                             }
                             q += ")";
                         }
+                        if(filter.query && filter.query.length > 0){
+                            q += " and name LIKE '%" + filter.query + "%'";
+                        }
                     }
 
                     //q += " and (crowdReportReason is null or crowdReportReason = '')";
@@ -100,7 +103,7 @@ angular.module('backendless', ['date'])
 
                     query.options = {
                         sortBy: 'lastUpdateDatetime desc',
-                        pageSize: 3
+                        pageSize: 100
                     };
                     query.condition = q;
 
