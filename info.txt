@@ -2,6 +2,7 @@ Backendless Standalone download link for Linux x64:
 https://downloads.bitnami.com/files/stacks/backendless/3.0.0-27/backendless-3.0.0-27-linux-x64-installer.run
 
 Greenhouse CI Post Clonse Script
+http://docs.greenhouseci.com/docs/custom-build-steps
 --------------------------------
 #!/bin/sh
 sudo apt-get install ruby-full
@@ -9,5 +10,6 @@ gem install sass
 npm install -g grunt-cli
 npm install
 grunt alpha
+npm run deploy
 cordova prepare
 ---------------------------------
