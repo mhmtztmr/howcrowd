@@ -43,7 +43,7 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
           // return;
         }
       }
-      if ($scope.selectedPlace && crowdLevelIndex && $rootScope.deviceObject) {
+      if ($scope.selectedPlace && crowdLevelIndex !== undefined && $rootScope.deviceObject) {
         app.setCrowdNavi.pushPage('templates/set-crowd-attachment.html', {
           animation: 'slide', crowdLevels: $scope.levels,  selectedCrowdLevelIndex: crowdLevelIndex, selectedPlace: $scope.selectedPlace
         });

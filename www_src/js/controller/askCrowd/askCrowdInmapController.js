@@ -3,7 +3,19 @@ app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService',
 
         function loadMap() {
             console.log('loading ask map...');
-            askCrowdModel.loadMap();
+            askCrowdModel.loadMap().then(function(){
+                var askQuery = askCrowdModel.getAskQuery();
+                if(askQuery) {
+                    document.getElementById("ask-crowd-search-input").value = askQuery;
+                    $scope.searchInput.value = askQuery;
+                    if(!$scope.$$phase) {
+                        $scope.$apply();
+                    }
+                    setTimeout(function() {
+                        document.getElementById("ask-crowd-search-input").focus();
+                    }, 1000);
+                }
+			});
         }
 
         crowdTabbar.on('prechange', function(event){
@@ -32,6 +44,12 @@ app.controller('askCrowdInmapController', ['$rootScope', '$scope', 'mapService',
                 app.askCrowdNavi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
             });
         };
+
+        $scope.$on('$destroy', $rootScope.$on("locationChanged", function() {
+            if($rootScope.location.latitude) {
+                askCrowdModel.markCurrentLocation();
+            }
+        }));
 
         $scope.$on('$destroy', $rootScope.$on("askMarkerSelected", function(event, args) {
             modal.hide();

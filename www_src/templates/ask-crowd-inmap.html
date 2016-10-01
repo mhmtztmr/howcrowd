@@ -7,9 +7,9 @@
             </ons-toolbar-button>
         </div>
         <div class="center">
-            <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.ASK_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="search-input" ng-disabled="!searchInput.searchable"/>
+            <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.ASK_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="ask-crowd-search-input" ng-disabled="!searchInput.searchable"/>
         </div>
-        <div class="right" ng-show="searchInput.value.length > 0 && searchInput.searchable">
+        <div class="right" ng-show="searchInput.value.length > 2 && searchInput.searchable">
             <ons-toolbar-button ng-click="searchPlace()">
                 <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>

@@ -17,11 +17,7 @@ app.controller('askCrowdInputController', ['$rootScope', '$scope', 'askCrowdServ
           crowdTabbar.setActiveTab(1);
         }, function(){
           modal.hide();
-          ons.notification.alert({
-            title: $rootScope.lang.ALERT.ALERT,
-            message: $rootScope.lang.ALERT.FAIL,
-            buttonLabel: $rootScope.lang.ALERT.OK,
-          });
+          this.loadingFailedDialog.show();
         });
     };
 

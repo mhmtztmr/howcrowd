@@ -1,6 +1,7 @@
 app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
-    'seeCrowdModel', 'dateService', 'mapService', '$timeout',
-    function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout) {
+    'seeCrowdModel', 'dateService', 'mapService', '$timeout', 'askCrowdModel',
+    function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout, askCrowdModel) {
+        var searchTimeout, initialPlaces;
         $scope.places = 'pending';
 
         function loadPlaces(done) {
@@ -9,16 +10,13 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
                 $timeout(function() {
                     $scope.places = places;
                     $scope.more = seeCrowdModel.hasPlacesNextPage();
+                    initialPlaces = $scope.places;
                 });
                 if(done) {
                     done();
                 }
             }, function() {
-                ons.notification.alert({
-                  title: $rootScope.lang.ALERT.ALERT,
-                  message: $rootScope.lang.ALERT.LOAD_FAIL,
-                  buttonLabel: $rootScope.lang.ALERT.OK
-                });
+                this.loadingFailedDialog.show();
                 $scope.places = [];
                 if(done) {
                     done();
@@ -35,11 +33,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
                 });
             }, function() {
                 $scope.more = seeCrowdModel.hasPlacesNextPage();
-                ons.notification.alert({
-                  title: $rootScope.lang.ALERT.ALERT,
-                  message: $rootScope.lang.ALERT.LOAD_FAIL,
-                  buttonLabel: $rootScope.lang.ALERT.OK
-                });
+                this.loadingFailedDialog.show();
             });
         };
 
@@ -49,6 +43,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
 
         $scope.refreshPlaces = function(done) {
             clearMap();
+            $scope.stopSearch();
             if($scope.places === 'pending' || $scope.places === undefined) {
                 if(done) {
                     done();
@@ -74,6 +69,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
             if(!($scope.places instanceof Array)) {
                 clearMap();
                 if($rootScope.location.latitude) {
+                    seeCrowdModel.markCurrentLocation();
                     $scope.places = 'pending';
                     loadPlaces();
                 }
@@ -90,11 +86,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
                 app.seeCrowdNavi.pushPage('templates/see-crowd-detail.html', {animation:'lift', selectedPlace: _place});
             }, function() {
                 modal.hide();
-                ons.notification.alert({
-                  title: $rootScope.lang.ALERT.ALERT,
-                  message: $rootScope.lang.ALERT.LOAD_FAIL,
-                  buttonLabel: $rootScope.lang.ALERT.OK
-                });
+                this.loadingFailedDialog.show();
             });
         };
 
@@ -112,16 +104,38 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
         };
 
         $scope.searchInputChange = function() {
-            if ($scope.searchInput.value.length > 1) {
-                $scope.crowds = $filter('filter')(placeBasedCrowdsArray, $scope.searchInput.value);
-            } else {
-                $scope.crowds = placeBasedCrowdsArray;
+            if($scope.searchInput.value.length > 2) {
+                if(searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+                searchTimeout = setTimeout(function() {
+                    seeCrowdModel.searchPlaces($scope.searchInput.value).then(function(_places) {
+                        var places = $filter('orderBy')(_places, ['-isNearby', '-lastUpdateDatetime']);
+                        $timeout(function() {
+                            $scope.places = places;
+                        });
+                    }, function() {
+                        this.loadingFailedDialog.show();
+                        $scope.places = [];
+                    });
+                }, 1000);
             }
-            $scope.crowds = $filter('orderBy')($scope.crowds, ['distanceGroup', 'crowdLast.lastUpdatePass']);
+            else if($scope.searchInput.value.length === 0) {
+                if(searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+                $scope.places = initialPlaces;
+            }
         };
         $scope.clearSearchInput = function(){
             $scope.searchInput.value = '';
             $scope.searchInputChange();
+        };
+
+        $scope.askCrowd = function(query) {
+			askCrowdModel.setAskQuery(query);
+            $scope.stopSearch    ();
+            crowdTabbar.setActiveTab(0);
         };
        
         $scope.MyDelegate = {

@@ -97,6 +97,24 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 });
             };
 
+            self.searchPlaces = function(query) {
+                return new Promise(function(resolve, reject){
+                    var farPromise = seeCrowdService.searchPlaces(query);
+                    Promise.all([farPromise]).then(function(result) {
+                        var i, places = [],
+                        _places = result[0].data;
+                        for(i = 0; i < _places.length; i++) {
+                            if(!placesMap[_places[i].sourceID]) {
+                                _places[i].isNearby = false;
+                                placesMap[_places[i].sourceID] = _places[i];
+                            }
+                            places.push(placesMap[_places[i].sourceID]);
+                        }
+                        resolve(places);
+                    }, reject);
+                });
+            };
+
             function loadPlacesInMapBox() {
                 return new Promise(function(resolve, reject){
                     var boundingBox = mapService.getMapBoundingBox(map),
@@ -116,7 +134,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 });
             }
 
-            function markCurrentLocation() {
+            self.markCurrentLocation = function() {
                 if($rootScope.location.latitude) {
                     if(currentLocationMarker) {
                         currentLocationMarker.setMap(null);
@@ -138,7 +156,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         $rootScope.lang.MAP.YOUR_LOCATION
                     );
                 }
-            }
+            };
 
             function markPlaces(places) {
                 var place, i;
@@ -204,13 +222,13 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
 
                             }
                         });
-                        markCurrentLocation();
+                        self.markCurrentLocation();
                         reload = false;
                     }, 100);
                 }
                 else if(reload && Object.keys(markersMap).length === 0) {
                     //mapService.resetMap(map, $rootScope.location);
-                    markCurrentLocation();
+                    self.markCurrentLocation();
                     loadPlacesInMapBox().then(function(places) {
                         markPlaces(places);
                     });

@@ -25,11 +25,7 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
           crowdTabbar.setActiveTab(1);
         }, function(){
           modal.hide();
-          ons.notification.alert({
-            title: $rootScope.lang.ALERT.ALERT,
-            message: $rootScope.lang.ALERT.FAIL,
-            buttonLabel: $rootScope.lang.ALERT.OK,
-          });
+          this.loadingFailedDialog.show();
         });
       }
 
@@ -40,11 +36,7 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
           insertCrowd(photoUrl.data);
         }, function(){
           modal.hide();
-          ons.notification.alert({
-            title: $rootScope.lang.ALERT.ALERT,
-            message: $rootScope.lang.ALERT.FAIL,
-            buttonLabel: $rootScope.lang.ALERT.OK,
-          });
+          this.loadingFailedDialog.show();
         });
       }
       else {

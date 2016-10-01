@@ -206,19 +206,22 @@ angular.module('google', ['config', 'placeType']).
 	}
 
     self.initAutocomplete = function(map, DOMElementId, boundingBox, onPlaceSelected){
-        var input = document.getElementById(DOMElementId);
-        var defaultBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(boundingBox.latitude.lower, boundingBox.longitude.lower),
-            new google.maps.LatLng(boundingBox.latitude.upper, boundingBox.longitude.upper));
-        var options = {
-            bounds: defaultBounds,
-            types: ['establishment']
-        };
-        var autocomplete = new google.maps.places.Autocomplete(input, options);
+    	return new Promise(function(resolve, reject){
+	        var input = document.getElementById(DOMElementId);
+	        var defaultBounds = new google.maps.LatLngBounds(
+	            new google.maps.LatLng(boundingBox.latitude.lower, boundingBox.longitude.lower),
+	            new google.maps.LatLng(boundingBox.latitude.upper, boundingBox.longitude.upper));
+	        var options = {
+	            bounds: defaultBounds,
+	            types: ['establishment']
+	        };
+	        var autocomplete = new google.maps.places.Autocomplete(input, options);
 
-        autocomplete.addListener('place_changed', function() {
-          	var place = autocomplete.getPlace();
-          	onPlaceSelected(getFormattedPlace(place));
+	        autocomplete.addListener('place_changed', function() {
+	          	var place = autocomplete.getPlace();
+	          	onPlaceSelected(getFormattedPlace(place));
+	        });
+	        resolve();
         });
     };
 

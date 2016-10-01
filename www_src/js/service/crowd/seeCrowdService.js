@@ -26,16 +26,17 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
         return getFilter(location);
       }
 
-      function getFarFilter() {
+      function getFarFilter(query) {
         var center = angular.fromJson(localStorage.getItem('location')),
         location = locationService.getBoundingBox(center, configService.FAR_DISTANCE);
-        return getFilter(location);
+        return getFilter(location, query);
       }
 
-      function getFilter(location, nextPage) {
+      function getFilter(location, query, nextPage) {
         var filter = {
           date: {},
           location: location,
+          query: query,
           nextPage: nextPage
         };
 
@@ -55,7 +56,7 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
 
       self.getPlacesNextPage = function(nextPage) {
         return new Promise(function(resolve, reject){
-          dbService.selectPlaces(getFilter(undefined, nextPage)).then(function(placesObject) {
+          dbService.selectPlaces(getFilter(undefined, undefined, nextPage)).then(function(placesObject) {
             resolve(placesObject);
           }, reject);
         });
@@ -72,6 +73,14 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
       self.getPlacesInBox = function(boundingBox) {
         return new Promise(function(resolve, reject){
           dbService.selectPlaces(getFilter(boundingBox)).then(function(placesObject) {
+            resolve(placesObject);
+          }, reject);
+        });
+      };
+
+      self.searchPlaces = function(query) {
+        return new Promise(function(resolve, reject){
+          dbService.selectPlaces(getFarFilter(query)).then(function(placesObject) {
             resolve(placesObject);
           }, reject);
         });
