@@ -85,6 +85,13 @@ module.exports = function(grunt) {
                     src: '**',
                     dest: 'www/css/material-design-iconic-font',
                     expand: true
+                }, {
+                    src: 'coderunner_src.json',
+                    dest: '.',
+                    expand: true,
+                    rename: function(dest, src) {
+                        return src.replace('coderunner_src','coderunner');
+                    }
                 }]
             }
         },

@@ -1,0 +1,20 @@
+{
+  "backendless": {
+    "apiServer": "<%=SERVER_URL%>",
+
+    "msgBroker": {
+      "host": "cl.backendless.com",
+      "port": 6379
+    }
+  },
+
+  "app": {
+    "id": "<%=APPLICATION_ID%>",
+    "secretKey": "<%=CR_SECRET_KEY%>",
+    "version": "<%=VERSION%>",
+
+    "files": [
+      "servercode/**"
+    ]
+  }
+}
