@@ -63,7 +63,7 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
     $scope.options = [{
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
       fnc: function() {
-         $scope.seePlaceDetail();
+        $rootScope.seePlaceDetail($scope.selectedPlace);
       }
     }, {
       label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
@@ -112,13 +112,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
         crowd: crowd, 
         animation:'slide'
       });
-    };
-
-    $scope.seePlaceDetail = function() {
-        app.navi.pushPage('templates/crowd-place-detail.html', {
-          selectedPlace: $scope.selectedPlace, 
-          animation:'lift'
-        });
     };
   }
 ]);

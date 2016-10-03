@@ -1,32 +1,34 @@
 var langService = function($q, $http, $rootScope, defaultLanguageModel) {
-  function loadLangData(callback) {
-    window.console.log('Loading language data...');
-    if (navigator.globalization !== null && navigator.globalization !==
-      undefined) {
-      navigator.globalization.getPreferredLanguage(
-        function(language) {
-          getLangFile(language.value).then(function(){
-            window.console.log('Lang loaded: ' + language.value);
-            callback();
-          });
-        },
-        function() {
-          getLangFile().then(function(){
-            window.console.log('Lang loaded');
-            callback();
+  function loadLangData() {
+    return new Promise(function(resolve, reject){
+      window.console.log('Loading language data...');
+      if (navigator.globalization !== null && navigator.globalization !==
+        undefined) {
+        navigator.globalization.getPreferredLanguage(
+          function(language) {
+            getLangFile(language.value).then(function(){
+              window.console.log('Lang loaded: ' + language.value);
+              resolve();
+            });
+          },
+          function() {
+            getLangFile().then(function(){
+              window.console.log('Lang loaded');
+              resolve();
+            });
+          }
+        );
+        //Normal browser detection
+      } else {
+        if (window.navigator.language !== null && window.navigator.language !==
+          undefined) {
+          getLangFile(window.navigator.language).then(function(){
+            window.console.log('Lang loaded: ' + window.navigator.language);
+            resolve();
           });
         }
-      );
-      //Normal browser detection
-    } else {
-      if (window.navigator.language !== null && window.navigator.language !==
-        undefined) {
-        getLangFile(window.navigator.language).then(function(){
-          window.console.log('Lang loaded: ' + window.navigator.language);
-          callback();
-        });
       }
-    }
+    });
   }
 
   function getLangFile(lang) {

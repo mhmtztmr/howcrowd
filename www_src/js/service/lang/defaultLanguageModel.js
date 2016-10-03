@@ -121,12 +121,14 @@ var defaultLanguageModel = function() {
             "OK": "Ok"
         },
         "DIALOG": {
-            "CLOSE": "Close"
+            "CLOSE": "Close",
+            "QUIT": "Quit"
         },
         "WARNING": {
             "ZOOM_FOR_ASK": "No places around. Zoom and retry longpress!",
             "NO_RESULT_BY_SEARCH": "No result found. Try another search!",
-            "LOADING_FAILED": "Loading failed!"
+            "LOADING_FAILED": "Loading failed!",
+            "CONNECTION_LOST": "Connection lost! Please check your internet connection, or you can quit the app!"
         }
     };
 };

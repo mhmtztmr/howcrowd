@@ -20,12 +20,5 @@ app.controller('askCrowdInputController', ['$rootScope', '$scope', 'askCrowdServ
           this.loadingFailedDialog.show();
         });
     };
-
-    $scope.seePlaceDetail = function() {
-        app.navi.pushPage('templates/crowd-place-detail.html', {
-          selectedPlace: $scope.selectedPlace, 
-          animation:'lift'
-        });
-    };
   }
 ]);

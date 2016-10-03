@@ -118,11 +118,13 @@
         "OK": "Tamam"
     },
     "DIALOG": {
-        "CLOSE": "Kapat"
+        "CLOSE": "Kapat",
+        "QUIT": "Çıkış"
     },
     "WARNING": {
         "ZOOM_FOR_ASK": "Yakında yer bulunamadı.Haritayı yaklaştırıp tekrar deneyin!",
         "NO_RESULT_BY_SEARCH": "Sonuç bulunamadı. Başka bir arama deneyin!",
-        "LOADING_FAILED": "Yükleme başarısız!"
+        "LOADING_FAILED": "Yükleme başarısız!",
+        "CONNECTION_LOST": "Bağlantı başarısız! İnternet bağlantınızı kontrol edebilir, ya da dilerseniz uygulamadan çıkabilirsiniz!"
     }
 }

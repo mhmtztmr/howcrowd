@@ -1,7 +1,7 @@
 var feedbackModel = function() {
-  var myFeedbacks = {};
+  var self = {}, myFeedbacks = {};
 
-  function insertFeedback(crowdObjectId, isPositive) {
+  self.insertFeedback = function(crowdObjectId, isPositive) {
     var myTempFeedbacks = {},
       feedbackId, now = (new Date()).getTime();
     if (Object.keys(myFeedbacks).length > 20) {
@@ -21,28 +21,27 @@ var feedbackModel = function() {
       isPositive: isPositive
     };
     saveFeedbacks();
-  }
+  };
 
-  function getFeedback(crowdObjectId) {
+  self.getFeedback = function(crowdObjectId) {
     return myFeedbacks[crowdObjectId];
-  }
+  };
 
   function saveFeedbacks() {
     localStorage.setItem('feedbacks', angular.toJson(myFeedbacks));
   }
 
-  function loadFeedbacks() {
-    myFeedbacks = angular.fromJson(localStorage.getItem('feedbacks'));
-    if (!myFeedbacks) {
-      myFeedbacks = {};
-    }
-  }
-
-  return {
-    loadFeedbacks: loadFeedbacks,
-    insertFeedback: insertFeedback,
-    getFeedback: getFeedback
+  self.loadFeedbacks = function() {
+    return new Promise(function(resolve, reject){
+      myFeedbacks = angular.fromJson(localStorage.getItem('feedbacks'));
+      if (!myFeedbacks) {
+        myFeedbacks = {};
+      }
+      resolve();
+    });
   };
+
+  return self;
 };
 
 angular.module('feedback', [])

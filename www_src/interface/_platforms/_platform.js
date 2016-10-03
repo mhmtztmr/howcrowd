@@ -1,8 +1,16 @@
 var Platform = function(){
   
-	this.getConnectionType = function(callback){
-		callback('wifi');
+	this.getConnectionType = function(){
+		return 'wifi';
 	};
+
+	this.registerConnectionOfflineEvent = function(fn) {
+	    document.addEventListener("offline", fn, false);
+	  };
+
+	  this.registerConnectionOnlineEvent = function(fn) {
+	    document.addEventListener("online", fn, false);
+	  };
 
 	this.isLocationEnabled = function(callback){
 		navigator.geolocation.getCurrentPosition(function(){

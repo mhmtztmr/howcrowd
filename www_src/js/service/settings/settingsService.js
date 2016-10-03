@@ -1,19 +1,18 @@
 var settingsService = function($rootScope) {
     function loadSettings() {
-        var settings = localStorage.getItem('settings');
-        if (!settings) {
-            $rootScope.settings = {
-                //isCustomPlacesEnabled : true
-                isCustomPlacesEnabled : false
-            };
-            saveSettings();
-        } else {
-            //$rootScope.settings = JSON.parse(settings);
-            $rootScope.settings = {
-                isCustomPlacesEnabled : false
-            };
-        }
-        window.console.log('Settings loaded.');
+        return new Promise(function(resolve, reject){
+            var settings = localStorage.getItem('settings');
+            if (!settings) {
+                $rootScope.settings = {
+                    isCustomPlacesEnabled : true
+                };
+                saveSettings();
+            } else {
+                $rootScope.settings = JSON.parse(settings);
+            }
+            window.console.log('Settings loaded.');
+            resolve();
+        });
     }
 
     function saveSettings() {

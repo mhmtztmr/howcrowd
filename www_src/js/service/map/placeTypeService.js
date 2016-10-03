@@ -25,17 +25,27 @@ angular.module('placeType', [])
 			},
 			'amusement_park':{ID: 'amusement_park', NAME: 'Amusement Park', LANG_KEY: 'AMUSEMENT_PARK', FA_ICON: 'gamepad', ICON_PATH: ''},
 			'aquarium':{ID: 'aquarium', NAME: 'Aquarium', LANG_KEY: 'AQUARIUM', FA_ICON: 'building', ICON_PATH: ''},
-			'art_gallery':{ID: 'art_gallery', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'art_gallery':{
+				ID: 'art_gallery', NAME: '', LANG_KEY: '', FA_ICON: 'paint-brush', ICON_PATH: ''
+			},
 			'atm':{ID: 'atm', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'bakery':{ID: 'bakery', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'bank':{ID: 'bank', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'bar':{ID: 'bar', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'bar':{
+				ID: 'bar', NAME: '', LANG_KEY: '', FA_ICON: 'beer', ICON_PATH: ''
+			},
 			'beauty_salon':{ID: 'beauty_salon', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'bicycle_store':{ID: 'bicycle_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'bicycle_store':{
+				ID: 'bicycle_store', NAME: '', LANG_KEY: '', FA_ICON: 'bicycle', ICON_PATH: ''
+			},
 			'book_store':{ID: 'book_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'bowling_alley':{ID: 'bowling_alley', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'bus_station':{ID: 'bus_station', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'cafe':{ID: 'cafe', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'bus_station':{
+				ID: 'bus_station', NAME: '', LANG_KEY: '', FA_ICON: 'bus', ICON_PATH: ''
+			},
+			'cafe':{
+				ID: 'cafe', NAME: '', LANG_KEY: '', FA_ICON: 'coffee', ICON_PATH: ''
+			},
 			'campground':{ID: 'campground', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'car_dealer':{ID: 'car_dealer', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'car_rental':{ID: 'car_rental', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
@@ -56,30 +66,42 @@ angular.module('placeType', [])
 			'embassy':{ID: 'embassy', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'establishment':{ID: 'establishment', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'finance':{ID: 'finance', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'fire_station':{ID: 'fire_station', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'fire_station':{
+				ID: 'fire_station', NAME: '', LANG_KEY: '', FA_ICON: 'fire-extinguisher', ICON_PATH: ''
+			},
 			'florist':{ID: 'florist', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'food':{ID: 'food', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'funeral_home':{ID: 'funeral_home', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'furniture_store':{ID: 'furniture_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'gas_station':{ID: 'gas_station', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'general_contractor':{ID: 'general_contractor', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'grocery_or_supermarket':{ID: 'grocery_or_supermarket', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'grocery_or_supermarket':{
+				ID: 'grocery_or_supermarket', NAME: '', LANG_KEY: '', FA_ICON: 'shopping-cart', ICON_PATH: ''
+			},
 			'gym':{ID: 'gym', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'hair_care':{ID: 'hair_care', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'hardware_store':{ID: 'hardware_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'health':{ID: 'health', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'hindu_temple':{ID: 'hindu_temple', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'home_goods_store':{ID: 'home_goods_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'hospital':{ID: 'hospital', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'hospital':{
+				ID: 'hospital', NAME: '', LANG_KEY: '', FA_ICON: 'h-square', ICON_PATH: ''
+			},
 			'insurance_agency':{ID: 'insurance_agency', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'jewelry_store':{ID: 'jewelry_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'jewelry_store':{
+				ID: 'jewelry_store', NAME: '', LANG_KEY: '', FA_ICON: 'diamond', ICON_PATH: ''
+			},
 			'laundry':{ID: 'laundry', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'lawyer':{ID: 'lawyer', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'library':{ID: 'library', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'library':{
+				ID: 'library', NAME: '', LANG_KEY: '', FA_ICON: 'book', ICON_PATH: ''
+			},
 			'liquor_store':{ID: 'liquor_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'local_government_office':{ID: 'local_government_office', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'locksmith':{ID: 'locksmith', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'lodging':{ID: 'lodging', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'lodging':{
+				ID: 'lodging', NAME: '', LANG_KEY: '', FA_ICON: 'bed', ICON_PATH: ''
+			},
 			'meal_delivery':{ID: 'meal_delivery', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'meal_takeaway':{ID: 'meal_takeaway', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'mosque':{ID: 'mosque', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
@@ -98,26 +120,46 @@ angular.module('placeType', [])
 			'plumber':{ID: 'plumber', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'point_of_interest':{ID: 'point_of_interest', NAME: '', LANG_KEY: '', FA_ICON: 'thumb-tack', ICON_PATH: ''},
 			'police':{ID: 'police', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'post_office':{ID: 'post_office', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'post_office':{
+				ID: 'post_office', NAME: '', LANG_KEY: '', FA_ICON: 'envelope', ICON_PATH: ''
+			},
 			'real_estate_agency':{ID: 'real_estate_agency', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'restaurant':{ID: 'restaurant', NAME: '', LANG_KEY: '', FA_ICON: 'cutlery', ICON_PATH: ''},
+			'restaurant':{
+				ID: 'restaurant', NAME: '', LANG_KEY: '', FA_ICON: 'cutlery', ICON_PATH: ''
+			},
 			'roofing_contractor':{ID: 'roofing_contractor', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'rv_park':{ID: 'rv_park', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'school':{ID: 'school', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'school':{
+				ID: 'school', NAME: '', LANG_KEY: '', FA_ICON: 'graduation-cap', ICON_PATH: ''
+			},
 			'shoe_store':{ID: 'shoe_store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'shopping_mall':{ID: 'shopping_mall', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'shopping_mall':{
+				ID: 'shopping_mall', NAME: '', LANG_KEY: '', FA_ICON: 'shopping-bag', ICON_PATH: ''
+			},
 			'spa':{ID: 'spa', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'stadium':{ID: 'stadium', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'storage':{ID: 'storage', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
 			'store':{ID: 'store', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'subway_station':{ID: 'subway_station', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'subway_station':{
+				ID: 'subway_station', NAME: '', LANG_KEY: '', FA_ICON: 'subway', ICON_PATH: ''
+			},
 			'synagogue':{ID: 'synagogue', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'taxi_stand':{ID: 'taxi_stand', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'train_station':{ID: 'train_station', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'travel_agency':{ID: 'travel_agency', NAME: '', LANG_KEY: '', FA_ICON: 'suitcase', ICON_PATH: ''},
-			'university':{ID: 'university', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
+			'taxi_stand':{
+				ID: 'taxi_stand', NAME: '', LANG_KEY: '', FA_ICON: 'taxi', ICON_PATH: ''
+			},
+			'train_station':{
+				ID: 'train_station', NAME: '', LANG_KEY: '', FA_ICON: 'train', ICON_PATH: ''
+			},
+			'travel_agency':{
+				ID: 'travel_agency', NAME: '', LANG_KEY: '', FA_ICON: 'suitcase', ICON_PATH: ''
+			},
+			'university':{
+				ID: 'university', NAME: '', LANG_KEY: '', FA_ICON: 'graduation-cap', ICON_PATH: ''
+			},
 			'veterinary_care':{ID: 'veterinary_care', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''},
-			'zoo':{ID: 'zoo', NAME: '', LANG_KEY: '', FA_ICON: 'building', ICON_PATH: ''}
+			'zoo':{
+				ID: 'zoo', NAME: '', LANG_KEY: '', FA_ICON: 'paw', ICON_PATH: ''
+			}
 		},
 		'custom': {
 			'custom':{ID: 'custom', NAME: '', LANG_KEY: '', FA_ICON: 'map-signs', ICON_PATH: ''}

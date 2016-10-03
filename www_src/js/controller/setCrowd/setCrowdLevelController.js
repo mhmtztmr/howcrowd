@@ -23,26 +23,28 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
     $scope.customPlaceName = {value: ''};
 
     $scope.selectCrowd = function(crowdLevelIndex){
-      if ($scope.selectedPlace !== undefined) {
+      if ($scope.selectedPlace === undefined) {
         if ($scope.customPlaceName.value.length > 0) {
           var id = guidService.get();
           var source = 'custom';
-          $scope.selectedPlace = {
-            sid: id,
+          $scope.selectedPlace = new Place({
+            sourceID: id,
             name: $scope.customPlaceName.value,
-            location: $rootScope.location,
+            latitude: $rootScope.location.latitude,
+            longitude: $rootScope.location.longitude,
             source: source
-          };
+          });
         } else {
-          // $scope.selectedPlace = undefined;
-          // ons.notification.alert({
-          //   title: $rootScope.lang.ALERT.ALERT,
-          //   message: 'enter place name',
-          //   buttonLabel: $rootScope.lang.ALERT.OK,
-          // });
-          // return;
+          $scope.selectedPlace = undefined;
+          ons.notification.alert({
+            title: $rootScope.lang.ALERT.ALERT,
+            message: 'enter place name',
+            buttonLabel: $rootScope.lang.ALERT.OK,
+          });
+          return;
         }
       }
+
       if ($scope.selectedPlace && crowdLevelIndex !== undefined && $rootScope.deviceObject) {
         app.setCrowdNavi.pushPage('templates/set-crowd-attachment.html', {
           animation: 'slide', crowdLevels: $scope.levels,  selectedCrowdLevelIndex: crowdLevelIndex, selectedPlace: $scope.selectedPlace

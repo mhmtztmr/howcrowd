@@ -40,6 +40,17 @@
                 </p>
             </div>
         </ons-dialog>
+        <ons-dialog var="connectionLostDialog" animation="none">
+            <div style="text-align: center; padding: 10px;">
+                <p>
+                    {{$root.lang.WARNING.CONNECTION_LOST}}
+                </p>
+
+                <p>
+                    <ons-button ng-click="$root.exitApp()">{{$root.lang.DIALOG.QUIT}}</ons-button>
+                </p>
+            </div>
+        </ons-dialog>
     </div>
     <div id="preload">
         <!-- <img src="img/sources/google.png" width="1" height="1" alt="Image 01" />

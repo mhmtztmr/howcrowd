@@ -2,9 +2,17 @@ var IOS = function(){
 
 	this.Platform = "IOS";
   
-	this.getConnectionType = function(callback){
-		navigator.connection.getInfo(callback);
+	this.getConnectionType = function(){
+		return navigator.connection.type;
 	};
+
+	this.registerConnectionOfflineEvent = function(fn) {
+	    document.addEventListener("offline", fn, false);
+	  };
+
+	  this.registerConnectionOnlineEvent = function(fn) {
+	    document.addEventListener("online", fn, false);
+	  };
 
 	this.isLocationEnabled = function(callback){
 		// cordova.plugins.diagnostic.isLocationEnabled(function(enabled){

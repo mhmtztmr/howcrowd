@@ -5,10 +5,13 @@ angular.module('backendless', ['date'])
             var self = {};
 
             self.init = function() {
-                var APPLICATION_ID = '<%=APPLICATION_ID%>',
-                    JS_SECRET_KEY = '<%=JS_SECRET_KEY%>',
-                    VERSION = '<%=VERSION%>'; //default application version;
-                Backendless.initApp(APPLICATION_ID, JS_SECRET_KEY, VERSION);
+                return new Promise(function(resolve, reject){
+                    var APPLICATION_ID = '<%=APPLICATION_ID%>',
+                        JS_SECRET_KEY = '<%=JS_SECRET_KEY%>',
+                        VERSION = '<%=VERSION%>'; //default application version;
+                    Backendless.initApp(APPLICATION_ID, JS_SECRET_KEY, VERSION);
+                    resolve();
+                });
             };
 
             self.selectDevice = function(ID){

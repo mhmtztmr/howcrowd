@@ -4,7 +4,7 @@
       <div class="left">
         <ons-back-button></ons-back-button>
       </div>
-      <div class="center" ng-click="seePlaceDetail()">
+      <div class="center" ng-click="$root.seePlaceDetail(selectedPlace)">
         <div class="crowd-name truncate">
            <ons-icon icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
         </div>

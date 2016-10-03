@@ -1,21 +1,23 @@
 var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
     'seeCrowd.Service', 'setCrowd.Service', 'askCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
-    'config', 'connection', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
+    'config', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
 
-app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', function(langService, dbService, settingsService, locationService, $rootScope) {
+app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', 'feedbackModel', 
+    function(langService, dbService, settingsService, locationService, $rootScope, feedbackModel) {
     $rootScope.version = version;
     window.console.log('App running...');
 
     $rootScope.location = {};
-    dbService.init();
-    settingsService.loadSettings();
 
-    function exitApp() {
-        navigator.app.exitApp();
-    }
-
-    langService.loadLangData(function(){   
+    var dbPromise = dbService.init(),
+    settingsPromise = settingsService.loadSettings(),
+    langPromise = langService.loadLangData(),
+    feedbackPromise = feedbackModel.loadFeedbacks();
+    
+    Promise.all([dbPromise, settingsPromise, langPromise, feedbackPromise]).then(function() {
+        $rootScope.$emit('init');
+        console.log('app run init');
         locationService.checkLocationAvailability(function(){
             //location is enabled
             locationService.startLocationInterval();
@@ -51,7 +53,13 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
                 }, 2000);
             });
         });
+    }, function() {
+        console.log('app run init failed');
     });
+
+    function exitApp() {
+        navigator.app.exitApp();
+    }
 
     $rootScope.exitApp = function() {
         menu.closeMenu();
@@ -59,8 +67,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
             title: $rootScope.lang.CONFIRM.CONFIRM,
             message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
             modifier: 'material',
-            buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang
-                .CONFIRM.OK
+            buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang.CONFIRM.OK
             ],
             callback: function(answer) {
                 if (answer === 1) { // OK button
@@ -93,43 +100,51 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
     });
 }]);
 
-app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'connection', 'feedbackModel', 'INTERFACE',
-    function($rootScope, $scope, identificationService, connection, feedbackModel, INTERFACE) {
+app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'INTERFACE',
+    function($rootScope, $scope, identificationService, INTERFACE) {
 
-        function initAppFncs() {
-            feedbackModel.loadFeedbacks();
-            identificationService.getDeviceObject().then(function(deviceObject) {
-                $rootScope.deviceObject = deviceObject;
-            }, function(e){
-                console.log(e);
-            });
-        }
-
-        INTERFACE.getConnectionType(function(connType) {
-            if (connType === 'none') {
-                ons.notification.alert({
-                    title: $rootScope.lang.ALERT.ALERT,
-                    message: 'No connection. App will shut down...',
-                    buttonLabel: $rootScope.lang.ALERT.OK,
-                    callback: function() {
-                        navigator.app.exitApp(); // Close the app
-                    }
-                });
-            } else {
-                initAppFncs();
-                connection.addConnectionListener(function() {
-                    //alert('connected');
-                }, function() {
-                    ons.notification.alert({
-                        title: $rootScope.lang.ALERT.ALERT,
-                        message: 'Connection lost. App will shut down...',
-                        buttonLabel: $rootScope.lang.ALERT.OK,
-                        callback: function() {
-                            navigator.app.exitApp(); // Close the app
-                        }
-                    });
+        function identifyDevice() {
+            if(!$rootScope.deviceObject) {
+                console.log('identifying device');
+                identificationService.getDeviceObject().then(function(deviceObject) {
+                    console.log('device identified');
+                    $rootScope.deviceObject = deviceObject;
+                }, function(e){
+                    console.log('identification failed: ' + e);
                 });
             }
+        }
+
+        function init() {
+            var connectionType = INTERFACE.getConnectionType();
+            if(connectionType  === 'none') {
+                connectionLostDialog.show();
+            }
+            else {
+                identifyDevice();
+            }
+            INTERFACE.registerConnectionOfflineEvent(function() {
+                console.log('connection lost');
+                connectionLostDialog.show();
+            });
+            INTERFACE.registerConnectionOnlineEvent(function() {
+                console.log('connected');
+                connectionLostDialog.hide();
+                identifyDevice();
+            });
+
+
+            $rootScope.seePlaceDetail = function(place) {
+                app.navi.pushPage('templates/crowd-place-detail.html', {
+                  selectedPlace: place, 
+                  animation:'lift'
+                });
+            };
+        }
+
+        var unbindHandler = $rootScope.$on('init', function () {
+            init();
+            unbindHandler();
         });
     }
 ]);
