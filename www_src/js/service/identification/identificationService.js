@@ -8,31 +8,31 @@ angular.module('identification', ['guid', 'file', 'db'])
 
       function getDeviceId(onSuccess) {
         var deviceID;
-        if (window.cordova) {
-          deviceID = readDeviceIdFromLocalStorage();
-          if (deviceID) {
-            onSuccess(deviceID);
-            writeDeviceIdToInternalStorage(deviceID);
-          } else {
-            readDeviceIdFromInternalStorage(function(_deviceId) {
-              deviceID = _deviceId;
-              if (deviceID) {
-                onSuccess(deviceID);
-                writeDeviceIdToLocalStorage(deviceID);
-              } else {
-                deviceID = guidService.get();
-                onSuccess(deviceID);
-                writeDeviceIdToLocalStorage(deviceID);
-                writeDeviceIdToInternalStorage(deviceID);
-              }
-            }, function() {
-              deviceID = guidService.get();
-              onSuccess(deviceID);
-              writeDeviceIdToLocalStorage(deviceID);
-              writeDeviceIdToInternalStorage(deviceID);
-            });
-          }
-        } else {
+        // if (window.cordova) {
+        //   deviceID = readDeviceIdFromLocalStorage();
+        //   if (deviceID) {
+        //     onSuccess(deviceID);
+        //     writeDeviceIdToInternalStorage(deviceID);
+        //   } else {
+        //     readDeviceIdFromInternalStorage(function(_deviceId) {
+        //       deviceID = _deviceId;
+        //       if (deviceID) {
+        //         onSuccess(deviceID);
+        //         writeDeviceIdToLocalStorage(deviceID);
+        //       } else {
+        //         deviceID = guidService.get();
+        //         onSuccess(deviceID);
+        //         writeDeviceIdToLocalStorage(deviceID);
+        //         writeDeviceIdToInternalStorage(deviceID);
+        //       }
+        //     }, function() {
+        //       deviceID = guidService.get();
+        //       onSuccess(deviceID);
+        //       writeDeviceIdToLocalStorage(deviceID);
+        //       writeDeviceIdToInternalStorage(deviceID);
+        //     });
+        //   }
+        // } else {
           deviceID = readDeviceIdFromLocalStorage();
           if (deviceID) {
             onSuccess(deviceID);
@@ -41,7 +41,7 @@ angular.module('identification', ['guid', 'file', 'db'])
             writeDeviceIdToLocalStorage(deviceID);
             onSuccess(deviceID);
           }
-        }
+        // }
       }
 
       self.getDeviceObject = function() {
