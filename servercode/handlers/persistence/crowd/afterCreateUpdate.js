@@ -28,7 +28,7 @@ function calculateAverageCrowdForPlace(crowds) {
 function updatePlace(req, updateFunction) {
   var crowdStorage = Backendless.Persistence.of('Crowd');
   var placeStorage = Backendless.Persistence.of('Place');
-  var now = new Date();
+  var now = new Date(parseInt(req.item.datetime));
 
   function getDataQuery() {
     var q, j, query = new Backendless.DataQuery(),
