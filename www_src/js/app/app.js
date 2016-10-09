@@ -1,5 +1,5 @@
-var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
-    'seeCrowd.Service', 'setCrowd.Service', 'askCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model',
+    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
     'config', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
 

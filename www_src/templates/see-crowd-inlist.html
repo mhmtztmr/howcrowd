@@ -19,8 +19,8 @@
             </ons-toolbar-button>
         </div>
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
-        <div class="right" ng-show="places && places !== 'pending' && places.length > 0">
-            <ons-toolbar-button ng-click="startSearch()">
+        <div class="right">
+            <ons-toolbar-button ng-show="places && places !== 'pending' && places.length > 0" ng-click="startSearch()">
                 <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>
             <ons-toolbar-button onclick="app.seeCrowdTabbar.setActiveTab(1, {animation: 'none'});">

@@ -1,14 +1,20 @@
 <ons-page ng-controller="seeCrowdInmapController" ons-show="onMapShow()">
     <ons-toolbar>
         <div class="left">
-            <ons-toolbar-button ng-click="menu.toggle()">
+            <ons-back-button ng-show="searchInput.value.length > 0" class="search-crowd-cancel" ng-click="clearSearchInput()"></ons-back-button>
+            <ons-toolbar-button ng-show="searchInput.value.length === 0" ng-click="menu.toggle()">
                 <ons-icon icon="fa-bars"></ons-icon>
             </ons-toolbar-button>
         </div>
-        <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
+        <div class="center">
+            <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="map-search-input" ng-disabled="!searchInput.searchable"/>
+        </div>
         <div class="right">
-            <ons-toolbar-button onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
+            <ons-toolbar-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
                 <ons-icon icon="fa-list"></ons-icon>
+            </ons-toolbar-button>
+            <ons-toolbar-button ng-show="searchInput.value.length > 2 && searchInput.searchable" ng-click="searchPlace()">
+                <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>
         </div>
     </ons-toolbar>
@@ -30,7 +36,7 @@
             <div class="crowd-city" ng-if="selectedPlace.address">
                 <ons-icon icon="fa-map-marker"></ons-icon> {{selectedPlace.address}}
             </div>
-            <div class="crowd-time">
+            <div ng-if="selectedPlace.averageCrowdValue || selectedPlace.hasAsk" class="crowd-time">
                 <ons-icon icon="fa-clock-o"></ons-icon>  
                 <span ng-if="selectedPlace.lastUpdatePass === 0">
                     {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
@@ -45,7 +51,7 @@
                 <ons-icon ng-if="selectedPlace.hasAsk === true" icon="fa-question"></ons-icon>
             </div>
           </div>
-          <div class="crowd-right">
+          <div ng-if="selectedPlace.averageCrowdValue || selectedPlace.hasAsk" class="crowd-right">
             <div ng-if="selectedPlace.averageCrowdValue" class="crowd-circle">
               <div class="c100 p{{selectedPlace.averageCrowdValue}} crowd-size center">
                 <div class="slice">
@@ -54,10 +60,32 @@
                 </div>
               </div>
             </div>
-            <div ng-if="!selectedPlace.averageCrowdValue" class="crowd-question">
+            <div ng-if="!selectedPlace.averageCrowdValue && selectedPlace.hasAsk" class="crowd-question">
                 <ons-icon icon="fa-question"></ons-icon>
             </div>
           </div>
         </div>
     </div>
+    <ons-dialog var="zoomForAskDialog" animation="none">
+      <div style="text-align: center; padding: 10px;">
+        <p>
+          {{$root.lang.WARNING.ZOOM_FOR_ASK}}
+        </p>
+
+        <p>
+          <ons-button ng-click="zoomForAskDialog.hide()">{{$root.lang.DIALOG.CLOSE}}</ons-button>
+        </p>
+      </div>
+    </ons-dialog>
+    <ons-dialog var="noPlaceFoundDialog" animation="none">
+      <div style="text-align: center; padding: 10px;">
+        <p>
+          {{$root.lang.WARNING.NO_RESULT_BY_SEARCH}}
+        </p>
+
+        <p>
+          <ons-button ng-click="noPlaceFoundDialog.hide()">{{$root.lang.DIALOG.CLOSE}}</ons-button>
+        </p>
+      </div>
+    </ons-dialog>
 </ons-page>

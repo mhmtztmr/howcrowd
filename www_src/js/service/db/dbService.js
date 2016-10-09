@@ -21,6 +21,9 @@ angular.module('db', ['backendless', 'date', 'placeType'])
           if(place.lastUpdateDatetime > nearbyTime) {
             place.lastUpdatePass = Math.round((now - place.lastUpdateDatetime) / (60000)); //mins
           }
+          else {
+            place.averageCrowdValue = undefined;
+          }
           place.hasText = place.lastTextDatetime > nearbyTime;
           place.hasPhoto = place.lastPhotoDatetime > nearbyTime;
           place.hasAsk = place.lastAskDatetime > nearbyTime;

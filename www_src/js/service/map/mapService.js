@@ -40,6 +40,7 @@ angular.module('map.Service', ['google'])
     .constant('mapConstants', {
         MARKERS: {
             CROWD: {
+                ID: "crowd",
                 INFO: {
                     anchor: {x:7, y: 40},
                     scaledSize: {w: 14, h: 40}
@@ -56,10 +57,32 @@ angular.module('map.Service', ['google'])
                     '80': '80',
                     '90': '90',
                     '100': '100',
-                    'ASK': 'ask'
+                    'DEFAULT': 'default'
+                }
+            },
+            SEARCH: {
+                ID: "search",
+                INFO: {
+                    anchor: {x:14, y: 80},
+                    scaledSize: {w: 28, h: 80}
+                },
+                PATHS: {
+                    '0': '0',
+                    '10': '10',
+                    '20': '20',
+                    '30': '30',
+                    '40': '40',
+                    '50': '50',
+                    '60': '60',
+                    '70': '70',
+                    '80': '80',
+                    '90': '90',
+                    '100': '100',
+                    'DEFAULT': 'default'
                 }
             },
             OTHER: {
+                ID: "other",
                 INFO: {
                     anchor: {x:12, y: 12},
                     scaledSize: {w: 24, h: 24}

@@ -28,7 +28,9 @@
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin olun!",
         "SEARCH_INPUT": "Kalabalık görmek için arayın",
         "YOU": "Siz",
-        "JUST_NOW": "Şimdi"
+        "JUST_NOW": "Şimdi",
+        "SEARCH_INPUT": "Ara: Gör & Sor",
+        "TOO_FAR_TO_ASK": "Geçersiz - Çok uzak"
     },
     "SEE_CROWD_DETAIL_POPOVER_MENU": {
         "INFO": "Bilgi",
@@ -53,10 +55,6 @@
         "ATTACH_PHOTO": "Fotoğraf Ekle",
         "TEXT_PLACEHOLDER_APPENDIX": "...",
         "ADD_CROWD": "Kalabalık Ekle"
-    },
-    "ASK_CROWD_MENU": {
-        "SEARCH_INPUT": "Kalabalık sormak için arayın",
-        "TOO_FAR_TO_ASK": "Geçersiz - Çok uzak"
     },
     "MAP": {
         "YOUR_LOCATION": "Konumunuz"
