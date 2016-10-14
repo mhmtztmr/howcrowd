@@ -19,6 +19,7 @@
     <plugin name="cordova-plugin-network-information" spec="https://git-wip-us.apache.org/repos/asf/cordova-plugin-network-information.git"/>
     <plugin name="cordova-plugin-splashscreen" spec="3.2.2"/>
     <plugin name="cordova.plugin.diagnostic.api-22" spec="https://github.com/dpa99c/cordova-diagnostic-plugin.git#api-22"/>
+	<plugin name="cordova-plugin-x-socialsharing" spec="https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git"/>
     <plugin name="cordova-plugin-whitelist" spec="1" />
 
     <preference name="permissions" value="none"/>
