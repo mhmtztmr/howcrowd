@@ -8,11 +8,13 @@ function calculateAverageCrowdForPlace(crowds) {
       console.log('Crowd [' + (i+1) + ']: Timestamp: ' + crowd.datetime + 
         ', Value: ' + crowd.value + ', Positive Feedback: ' + crowd.positiveFeedback + ', Negative Feedback: ' + crowd.negativeFeedback);
 
-      //average algorithm including feedbacks
-      feedbackMargin = 1 + crowd.positiveFeedback - crowd.negativeFeedback
-      if(feedbackMargin > 0) {
-          count += feedbackMargin;
-          total += feedbackMargin * crowd.value;
+      if(crowd.value) {
+        //average algorithm including feedbacks
+        feedbackMargin = 1 + crowd.positiveFeedback - crowd.negativeFeedback
+        if(feedbackMargin > 0) {
+            count += feedbackMargin;
+            total += feedbackMargin * crowd.value;
+        }
       }
     }
     if(total > 0) {

@@ -14,7 +14,7 @@ app.controller('askCrowdInputController', ['$rootScope', '$scope', 'seeCrowdServ
 
       seeCrowdService.askCrowd(crowdData, $scope.selectedPlace, $rootScope.deviceObject).then(function(){
           modal.hide();
-          crowdTabbar.setActiveTab(1);
+          crowdTabbar.setActiveTab(0);
         }, function(){
           modal.hide();
           this.loadingFailedDialog.show();

@@ -22,7 +22,7 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
 
         setCrowdService.setCrowd(crowdData, placeData, $rootScope.deviceObject).then(function(){
           modal.hide();
-          crowdTabbar.setActiveTab(1);
+          crowdTabbar.setActiveTab(0);
         }, function(){
           modal.hide();
           this.loadingFailedDialog.show();

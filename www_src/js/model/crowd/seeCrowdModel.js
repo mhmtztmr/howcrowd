@@ -5,7 +5,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             var self = {}, 
             mapDivId = 'map', map, searchInputDivId = 'map-search-input',
             currentLocationMarker, markersMap = {}, searchMarkersMap = {}, infowindow, 
-            reload = true, loading,
+            loading,
             placesNextPage, hasPlacesNextPage, placesMap = {};
 
             /*
@@ -55,6 +55,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         resolve(places);
                     }
                     else {
+                        placesMap = {};
                         loading = true;
                         var nearbyPromise = seeCrowdService.getNearbyPlaces(),
                         farPromise = seeCrowdService.getPlaces();
@@ -257,6 +258,10 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     if(!markersMap[place.sourceID]) {
                         markPlace(place,  mapConstants.MARKERS.CROWD);
                     }
+
+                    if(searchMarkersMap[place.sourceID]){
+                        markersMap[place.sourceID].setVisible(false);
+                    }
                 }
             }
 
@@ -393,16 +398,13 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                             });
                             self.markCurrentLocation();
                             initAutocomplete().then(resolve, reject);
-                            reload = false;
                         }, 100);
                     }
-                    else if(reload && Object.keys(markersMap).length === 0) {
+                    else if(Object.keys(markersMap).length === 0) {
                         //mapService.resetMap(map, $rootScope.location);
-                        self.markCurrentLocation();
                         loadPlacesInMapBox().then(function(places) {
                             markPlaces(places);
                         });
-                        reload = false;
                     }
                 });
             };

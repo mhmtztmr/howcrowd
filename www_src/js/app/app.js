@@ -82,8 +82,8 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
             if(menu._currentPageUrl === "templates/crowd.html") {
                 if(crowdTabbar) {
                     //if not see crowd page
-                    if(crowdTabbar.getActiveTabIndex() !== 1) {
-                        crowdTabbar.setActiveTab(1);
+                    if(crowdTabbar.getActiveTabIndex() !== 0) {
+                        crowdTabbar.setActiveTab(0);
                     }
                     else {
                         //if not see crowd list page
