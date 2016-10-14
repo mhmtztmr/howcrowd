@@ -19,8 +19,8 @@
         </div>
     </ons-toolbar>
     <div id="map" style="width:100%; height:100%"></div>
-    <div ng-if="selectedPlace" class="selected-place-info" ng-click="selectPlace()">
-        <div class="crowd-main-body">
+    <div ng-if="selectedPlace" class="selected-place-info">
+        <div class="crowd-main-body" ng-click="selectPlace()">
           <div class="crowd-left">
             <div>
               <ons-icon ng-if="selectedPlace.isNearby" icon="fa-street-view"></ons-icon>
@@ -64,6 +64,17 @@
                 <ons-icon icon="fa-question"></ons-icon>
             </div>
           </div>
+        </div>
+        <div class="selected-place-buttons">
+            <div class="selected-place-button" ng-click="askCrowd()">
+                <ons-icon icon="fa-question"></ons-icon>
+            </div>
+            <div ng-if="selectedPlace.isNearby" class="selected-place-button">
+                <ons-icon icon="fa-plus"></ons-icon>
+            </div>
+            <div ng-if="selectedPlace.averageCrowdValue || selectedPlace.hasAsk" class="selected-place-button" ng-click="seeCrowd()">
+                <ons-icon icon="fa-info"></ons-icon>
+            </div>
         </div>
     </div>
     <ons-dialog var="zoomForAskDialog" animation="none">

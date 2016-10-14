@@ -9,7 +9,27 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
             loadMap();
         };
 
-        $scope.searchInput = {value: '', searchable: true};
+        $scope.askCrowd = function() {
+            modal.show();
+            seeCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                modal.hide();
+                app.seeCrowdNavi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
+            }, function() {
+                modal.hide();
+                this.loadingFailedDialog.show();
+            });
+        };
+
+        $scope.seeCrowd = function() {
+            modal.show();
+            seeCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                modal.hide();
+                app.seeCrowdNavi.pushPage('templates/see-crowd-detail.html', {animation:'lift', selectedPlace: _place});
+            }, function() {
+                modal.hide();
+                this.loadingFailedDialog.show();
+            });
+        };
 
         $scope.selectPlace = function() {
             modal.show();
@@ -26,6 +46,8 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
                 this.loadingFailedDialog.show();
             });
         };
+
+        $scope.searchInput = {value: '', searchable: true};
 
         $scope.searchPlace = function() {
             if ($scope.searchInput.value.length > 1) {
