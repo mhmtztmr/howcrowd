@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 
         androidVersioncode = 0;
         if(buildNumber) {
-            androidVersioncode += buildNumber;
+            androidVersioncode += parseInt(buildNumber);
         }
         androidVersioncode += 100 * parseInt(patch);
         androidVersioncode += 10000 * parseInt(minor);
