@@ -218,3 +218,14 @@
     border-radius: 25%;
     background-color: lightgray;
   }
+  .nonblocking-modal {
+    position: absolute;
+    z-index: 999999999999;
+    margin: auto;
+    left: 0;
+    right: 0;
+    width: 35px;
+    height: 35px;
+    top: 0;
+    bottom: 0;
+  }

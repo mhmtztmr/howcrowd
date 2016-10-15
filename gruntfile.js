@@ -7,11 +7,11 @@ module.exports = function(grunt) {
         currentHour = ("0" + currentDate.getHours()).slice(-2),
         currentMinutes = ("0" + currentDate.getMinutes()).slice(-2),
         buildTimestamp = "" + currentDate.getFullYear() + currentMonth + currentDay + currentHour + currentMinutes,
-        buildNumber = process.env.BUILD_NUMBER
+        buildNumber = process.env.BUILD_NUMBER,
+        pkg = grunt.file.readJSON('package.json');
 
     // Project configuration.
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
         clean: {
             target: ["www/**/*", 'target/**/*'],
             version: ["www/js/version.js"]
@@ -92,6 +92,13 @@ module.exports = function(grunt) {
                     rename: function(dest, src) {
                         return src.replace('coderunner_src','coderunner');
                     }
+                }, {
+                    src: 'config_src.xml',
+                    dest: '.',
+                    expand: true,
+                    rename: function(dest, src) {
+                        return src.replace('config_src','config');
+                    }
                 }]
             }
         },
@@ -137,6 +144,14 @@ module.exports = function(grunt) {
                     from: /<%=REPORT_ISSUE%>/g,
                     to: '<%= grunt.option(\"reportIssue\") %>'
                 }]
+            },
+            appVersion: {
+                src: ['config.xml'],
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: /<%=APP_VERSION%>/g,
+                    to: pkg.version + (buildNumber ? ('.' + buildNumber) : '')
+                }]
             }
         },
         uglify: {
@@ -162,7 +177,6 @@ module.exports = function(grunt) {
         'file-creator': {
             version_prod: {
                 "www/js/version.js": function (fs, fd, done) {
-                    var pkg = grunt.file.readJSON('package.json');
                     var version = pkg.version + "." + buildNumber;
                     fs.writeSync(fd, "var version = '" + version + "';");
                     done();
