@@ -1,6 +1,6 @@
 {
   "name": "HowCrowd",
-  "version": "0.1",
+  "version": "0.1.0",
   "scripts": {
     "debug": "coderunner debug",
     "deploy": "coderunner deploy"
