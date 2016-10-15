@@ -17,7 +17,7 @@ module.exports = function(grunt) {
         var numbers = appVersion.split('.'),
         major = numbers[0], minor = numbers[1], patch = numbers[2];
 
-        androidVersioncode = 0;
+        androidVersioncode = 1000000000; //to get rid of mistakenly set versioncode in Google Play
         if(buildNumber) {
             androidVersioncode += parseInt(buildNumber);
         }
