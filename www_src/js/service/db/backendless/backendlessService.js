@@ -96,6 +96,16 @@ angular.module('backendless', ['date'])
                         if(filter.query && filter.query.length > 0){
                             q += " and name LIKE '%" + filter.query + "%'";
                         }
+                        if(filter.mapPlaces && filter.mapPlaces.length > 0) {
+                            q += ' and (';
+                            for (j = 0; j < filter.mapPlaces.length; j++) {
+                                q += " sourceID = '" + filter.mapPlaces[j].sourceID + "'";
+                                if(j !==  filter.mapPlaces.length - 1) {
+                                    q += " or ";
+                                }
+                            }
+                            q += ")";
+                        }
                     }
 
                     //q += " and (crowdReportReason is null or crowdReportReason = '')";

@@ -1,5 +1,5 @@
-var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model', 'askCrowd.Model',
-    'seeCrowd.Service', 'setCrowd.Service', 'askCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
+var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model',
+    'seeCrowd.Service', 'setCrowd.Service', 'identification', 'map.Service', 'crowdDisplay.Service',
     'config', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
 
@@ -82,8 +82,8 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
             if(menu._currentPageUrl === "templates/crowd.html") {
                 if(crowdTabbar) {
                     //if not see crowd page
-                    if(crowdTabbar.getActiveTabIndex() !== 1) {
-                        crowdTabbar.setActiveTab(1);
+                    if(crowdTabbar.getActiveTabIndex() !== 0) {
+                        crowdTabbar.setActiveTab(0);
                     }
                     else {
                         //if not see crowd list page

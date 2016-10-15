@@ -1,6 +1,6 @@
 app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
-    'seeCrowdModel', 'dateService', 'mapService', '$timeout', 'askCrowdModel',
-    function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout, askCrowdModel) {
+    'seeCrowdModel', 'dateService', 'mapService', '$timeout',
+    function($rootScope, $scope, $filter, seeCrowdModel, dateService, mapService, $timeout) {
         var searchTimeout, initialPlaces;
         $scope.places = 'pending';
 
@@ -38,7 +38,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
         };
 
         function clearMap() {
-            seeCrowdModel.clearMap();
+            seeCrowdModel.clearMarkers();
         }
 
         $scope.refreshPlaces = function(done) {
@@ -109,7 +109,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
                     clearTimeout(searchTimeout);
                 }
                 searchTimeout = setTimeout(function() {
-                    seeCrowdModel.searchPlaces($scope.searchInput.value).then(function(_places) {
+                    seeCrowdModel.searchPlacesInList($scope.searchInput.value).then(function(_places) {
                         var places = $filter('orderBy')(_places, ['-isNearby', '-lastUpdateDatetime']);
                         $timeout(function() {
                             $scope.places = places;
@@ -130,12 +130,6 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter',
         $scope.clearSearchInput = function(){
             $scope.searchInput.value = '';
             $scope.searchInputChange();
-        };
-
-        $scope.askCrowd = function(query) {
-			askCrowdModel.setAskQuery(query);
-            $scope.stopSearch    ();
-            crowdTabbar.setActiveTab(0);
         };
        
         $scope.MyDelegate = {

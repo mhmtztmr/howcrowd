@@ -39,19 +39,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
       });
     }
 
-    /*
-    $scope.dialogs = {
-      'templates/report-crowd.html': {}
-    };
-    ons.createDialog('templates/report-crowd.html',  {
-      parentScope: $scope
-    }).then(
-    function(
-      dialog) {
-      $scope.dialogs['templates/report-crowd.html'] = dialog;
-    });
-    */
-
     ons.createPopover('templates/popover.html', {
       parentScope: $scope
     }).then(function(popover) {
@@ -76,36 +63,6 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
             $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
       }
     }];
-
-    /*
-    if ($scope.selectedPlace.source === 'custom') {
-      $scope.options.push({
-        label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.REPORT,
-        fnc: function() {
-          $scope.dialogs['templates/report-crowd.html'].show();
-        }
-      });
-    }
-
-    $scope.reportReasons = [{
-      label: $rootScope.lang.CROWD_REPORT_MENU.INAPPROPRIATE,
-      value: 'inappropriate'
-    }, {
-      label: $rootScope.lang.CROWD_REPORT_MENU.PRIVATE,
-      value: 'private'
-    }, {
-      label: $rootScope.lang.CROWD_REPORT_MENU.MISLEADING,
-      value: 'misleading'
-    }];
-
-    $scope.report = function() {
-      seeCrowdService.reportCrowd($scope.selectedPlaceBasedCrowd.crowds[
-        0], $scope.reportReason);
-      app.seeCrowdNavi.resetToPage('templates/see-crowd.html');
-    };
-
-    $scope.reportReason = $scope.reportReasons[0].value;
-    */
 
     $scope.seeCrowdAttachment = function(crowd) {
       app.seeCrowdNavi.pushPage('templates/crowd-attachment-detail.html', {

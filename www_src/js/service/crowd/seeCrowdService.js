@@ -4,22 +4,6 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
 
       var self = {};
 
-      //filter.date.start, filter.date.end,
-      //filter.location.latitude.upper, filter.location.latitude.lower, filter.location.longitude.upper, filter.location.longitude.lower
-      // function retrieveCrowds() {
-      //    function getFilter() {
-      //         var boundingBox = mapService.getBoundingBox(angular.fromJson(localStorage.getItem('location')), configService.FAR_DISTANCE);
-      //         return {
-      //             date: {
-      //                 start: dateService.getNearbyTime(),
-      //                 end: dateService.getNow()
-      //             },
-      //             location: boundingBox
-      //         };
-      //     }
-      //     return dbService.retrieveCrowds(getFilter());
-      // }
-
       function getNearbyFilter() {
         var center = angular.fromJson(localStorage.getItem('location')),
         location = locationService.getBoundingBox(center, configService.NEARBY_DISTANCE);
@@ -29,19 +13,29 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
       function getFarFilter(query) {
         var center = angular.fromJson(localStorage.getItem('location')),
         location = locationService.getBoundingBox(center, configService.FAR_DISTANCE);
-        return getFilter(location, query);
+        return getFilter(location, undefined, query);
       }
 
-      function getFilter(location, query, nextPage) {
+      /**
+        *
+        *
+      */
+      function getFilter(location, date, query, mapPlaces, nextPage) {
         var filter = {
           date: {},
           location: location,
           query: query,
-          nextPage: nextPage
+          nextPage: nextPage,
+          mapPlaces: mapPlaces
         };
 
-        filter.date.start = dateService.getNearbyTime();
-        filter.date.end = dateService.getNow();
+        if(date) {
+          filter.date = date;
+        }
+        else{
+          filter.date.start = dateService.getNearbyTime();
+          filter.date.end = dateService.getNow();
+        }
 
         return filter;
       }
@@ -56,7 +50,15 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
 
       self.getPlacesNextPage = function(nextPage) {
         return new Promise(function(resolve, reject){
-          dbService.selectPlaces(getFilter(undefined, undefined, nextPage)).then(function(placesObject) {
+          dbService.selectPlaces(getFilter(undefined, {}, undefined, undefined, nextPage)).then(function(placesObject) {
+            resolve(placesObject);
+          }, reject);
+        });
+      };
+
+      self.getPlacesBySourceIDs = function(mapPlaces) {
+        return new Promise(function(resolve, reject){
+          dbService.selectPlaces(getFilter(undefined, {}, undefined, mapPlaces)).then(function(placesObject) {
             resolve(placesObject);
           }, reject);
         });
@@ -86,10 +88,21 @@ angular.module('seeCrowd.Service', ['db', 'config', 'date', 'location', 'feedbac
         });
       };
 
-      self.getPlace = function(sourceID) {
+      self.getPlaceBySourceID = function(mapPlace) {
+        return self.getPlacesBySourceIDs([mapPlace]);
+      };
+
+      self.askCrowd = function(crowdData, placeObject, deviceObject) {
         return new Promise(function(resolve, reject){
-          dbService.selectPlace(sourceID).then(resolve, reject);
-        });
+          if(placeObject.objectId) {
+            dbService.createCrowd(crowdData, placeObject, deviceObject).then(resolve, reject);
+          }
+          else {
+            dbService.createPlace(placeObject, crowdData).then(function(placeObject) { //a place created with given data
+                dbService.createCrowd(crowdData, placeObject, deviceObject).then(resolve, reject);
+              }, reject);
+            }
+          });
       };
 
       self.getCrowds = function(placeObject) {

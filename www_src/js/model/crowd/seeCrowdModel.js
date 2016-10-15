@@ -1,11 +1,11 @@
 angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'location', 'config', 'feedback'])
     .factory('seeCrowdModel', ['seeCrowdService', 'mapService', 'mapConstants','feedbackModel',
-        'configService', 'dateService', '$rootScope', function(seeCrowdService, mapService, mapConstants,
-            feedbackModel, configService, dateService, $rootScope) {
+        'configService', 'dateService', '$rootScope', 'locationService', function(seeCrowdService, mapService, mapConstants,
+            feedbackModel, configService, dateService, $rootScope, locationService) {
             var self = {}, 
-            mapDivId = 'map', map, 
-            currentLocationMarker, markersMap = {}, infowindow, 
-            reload = true, loading,
+            mapDivId = 'map', map, searchInputDivId = 'map-search-input',
+            currentLocationMarker, markersMap = {}, searchMarkersMap = {}, infowindow, 
+            loading,
             placesNextPage, hasPlacesNextPage, placesMap = {};
 
             /*
@@ -55,6 +55,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         resolve(places);
                     }
                     else {
+                        placesMap = {};
                         loading = true;
                         var nearbyPromise = seeCrowdService.getNearbyPlaces(),
                         farPromise = seeCrowdService.getPlaces();
@@ -97,7 +98,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 });
             };
 
-            self.searchPlaces = function(query) {
+            self.searchPlacesInList = function(query) {
                 return new Promise(function(resolve, reject){
                     var farPromise = seeCrowdService.searchPlaces(query);
                     Promise.all([farPromise]).then(function(result) {
@@ -113,6 +114,20 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         resolve(places);
                     }, reject);
                 });
+            };
+
+            self.searchPlacesOnMap = function(query){
+                return new Promise(function(resolve, reject) {
+                    mapService.searchPlaces(map, query, $rootScope.location, configService.FAR_DISTANCE).then(function(__places){
+                        self.clearSearchMarkers();
+                        var promise = seeCrowdService.getPlacesBySourceIDs(__places);
+                        Promise.all([promise]).then(function(result) {
+                            var i, places = mergePlaces(__places, result[0].data);
+                            markSearchPlaces(places);
+                            resolve();
+                        }, reject);
+                    }, reject);
+                });               
             };
 
             function loadPlacesInMapBox() {
@@ -158,36 +173,101 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 }
             };
 
+            function markPlace(place, _markerType) {
+                var markerType = mapConstants.MARKERS.CROWD;
+                if(_markerType) {
+                    markerType = _markerType;
+                }
+                (function(place) {
+                    var distance = Math.floor(locationService.getDistanceBetweenLocations(place.location, $rootScope.location));
+                    var markerPath = markerType.PATHS.DEFAULT;
+                    if(place.averageCrowdValue) {
+                        markerPath = markerType.PATHS[(Math.ceil(place.averageCrowdValue / 10) * 10)];
+                    }
+                    var marker = mapService.createMarker(
+                        map, 
+                        place.location, 
+                        {
+                            path: markerPath,
+                            anchor: markerType.INFO.anchor,
+                            scaledSize: markerType.INFO.scaledSize
+                        },
+                        function(_infowindow){
+                            if (infowindow) {
+                                infowindow.close();
+                            }
+                            infowindow = _infowindow;
+                            if(distance <= configService.FAR_DISTANCE){
+                                modal.show();
+                                var mappedPlace = placesMap[place.sourceID];
+                                if(mappedPlace) {
+                                    $rootScope.$broadcast('markerSelected', { place: mappedPlace});
+                                }
+                                else {
+                                    seeCrowdService.getPlaceBySourceID(place).then(function(result) {
+                                        var _place = place, __place = result.data[0];
+                                        if(__place) {
+                                            _place = __place;
+                                        }
+                                        placesMap[place.sourceID] = _place;
+                                        $rootScope.$broadcast('markerSelected', { place: _place});
+                                    });
+                                }
+                            }
+                        },
+                        '<div><strong>' + place.name + '</strong>' + 
+                        (place.address ? ('<br>' + place.address) : '') +
+                        (distance > configService.FAR_DISTANCE ? ('<br><div style="color:red; font-style: italic">' + $rootScope.lang.SEE_CROWD_MENU.TOO_FAR_TO_ASK + ': ' + distance + ' km</div>') : '') +
+                        '</div>'
+                    );
+                    if(markerType.ID === mapConstants.MARKERS.SEARCH.ID){
+                        searchMarkersMap[place.sourceID] = marker;
+                    }
+                    else {
+                        markersMap[place.sourceID] = marker;
+                    }
+                })(place);
+            }
+
+            function markSearchPlaces(places) {
+                console.log('marking search places...');
+                var place, i;
+                for (i = 0; i < places.length; i++) {
+                    place = places[i];
+
+                    if(markersMap[place.sourceID]) {
+                        markersMap[place.sourceID].setMap(null);
+                        delete markersMap[place.sourceID];
+                        markPlace(place,  mapConstants.MARKERS.CROWD);
+                        markersMap[place.sourceID].setVisible(false);
+                    }
+
+                    if(searchMarkersMap[place.sourceID]){
+                        searchMarkersMap[place.sourceID].setMap(null);
+                        delete searchMarkersMap[place.sourceID];
+                    }
+                    markPlace(place, mapConstants.MARKERS.SEARCH);
+                }
+            }
+
             function markPlaces(places) {
+                console.log('marking places...');
                 var place, i;
                 for (i = 0; i < places.length; i++) {
                     place = places[i];
                     if(!markersMap[place.sourceID]) {
-                        (function(place) {
-                            var marker = mapService.createMarker(
-                                map, 
-                                place.location, 
-                                {
-                                    path: mapConstants.MARKERS.CROWD.PATHS[(Math.ceil(place.averageCrowdValue / 10) * 10)],
-                                    anchor: mapConstants.MARKERS.CROWD.INFO.anchor,
-                                    scaledSize: mapConstants.MARKERS.CROWD.INFO.scaledSize
-                                },
-                                function(_infowindow){
-                                    if (infowindow) {
-                                        infowindow.close();
-                                    }
-                                    infowindow = _infowindow;
-                                    $rootScope.$broadcast('markerSelected', { place: place});
-                                },
-                                '<div><strong>' + place.name + '</strong>' + (place.address ? ('<br>' + place.address) : '')
-                            );
-                            markersMap[place.sourceID] = marker;
-                        })(place);
+                        markPlace(place,  mapConstants.MARKERS.CROWD);
+                    }
+
+                    if(searchMarkersMap[place.sourceID]){
+                        markersMap[place.sourceID].setVisible(false);
                     }
                 }
             }
 
-            self.clearMap = function() {
+            self.clearMarkers = function() {
+                console.log('clearing all markers...');
+                self.clearSearchMarkers();
                 var i;
                 for(i in markersMap) {
                     if(markersMap.hasOwnProperty(i)) {
@@ -195,45 +275,138 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         delete markersMap[i];
                     }
                 }
-                reload = true;
             };
 
-            self.loadMap = function() {
-                if(!map) {
-                    setTimeout(function(){
-                        var loaderTimeout;
-                        map = mapService.initMap(mapDivId, $rootScope.location, {
-                            'mousedown': function(){
-                                $rootScope.$broadcast('markerDeselected');
-                                if (infowindow) {
-                                    infowindow.close();
-                                }
-                            },
-                            'idle': function() {
-                                if(loaderTimeout) {
-                                    clearTimeout(loaderTimeout);
-                                }
-                                loaderTimeout = setTimeout(function() {
-                                    loadPlacesInMapBox().then(function(places) {
-                                        //self.clearMap();
-                                        markPlaces(places);
-                                    });
-                                }, 1000);
+            self.clearSearchMarkers = function() {
+                console.log('clearing search markers...');
+                $rootScope.$broadcast('markerDeselected');
+                if(infowindow) {
+                    infowindow.close();
+                }
+                var i;
+                for(i in searchMarkersMap) {
+                    if(searchMarkersMap.hasOwnProperty(i)) {
+                        if(markersMap[i]){
+                            markersMap[i].setVisible(true);
+                        }
+                        searchMarkersMap[i].setMap(null);
+                        delete searchMarkersMap[i];
+                    }
+                }
+            };
 
+            function initAutocomplete(){
+                return new Promise(function(resolve, reject) {
+                    var boundingBox = locationService.getBoundingBox($rootScope.location, configService.FAR_DISTANCE);
+                    mapService.initAutocomplete(map, searchInputDivId, boundingBox, function(place){
+                        $rootScope.$broadcast('unsearchableAsk', {value: place.name});
+                        self.clearSearchMarkers();
+                        if (!place.location.latitude) {
+                            self.searchPlaces(place.name).then(resolve, reject);
+                        }
+                        else{
+                            seeCrowdService.getPlaceBySourceID(place).then(function(result) {
+                                var __place = result.data[0];
+                                if(__place) {
+                                    place = __place;
+                                }
+                                mapService.resetMap(map, place.location);
+                                var places = [];
+                                places.push(place);
+                                markSearchPlaces(places);
+                                placesMap[place.sourceID] = place;
+                                $rootScope.$broadcast('markerSelected', { 'place': place});
+                            });
+                        }
+                    }).then(resolve, reject);
+                });
+            }
+
+            function mergePlaces(mapPlaces, dbPlaces) {
+                var i, j, existInDB, places = [];
+                for(i = 0; i < mapPlaces.length; i++) {
+                    existInDB = false;
+                    for(j = 0; j < dbPlaces.length; j++) {
+                        if(mapPlaces[i].sourceID === dbPlaces[j].sourceID) {
+                            existInDB = true;
+                            if(!placesMap[dbPlaces[j].sourceID]) {
+                                dbPlaces[j].isNearby = false;
+                                placesMap[dbPlaces[j].sourceID] = dbPlaces[j];
                             }
+                            places.push(placesMap[dbPlaces[j].sourceID]);
+                        }
+                        else {
+                            existInDB = false;
+                            break;
+                        }
+                    }
+                    if(!existInDB){
+                        places.push(mapPlaces[i]);
+                    }
+                }
+                return places;
+            }
+
+            self.loadMap = function() {
+                return new Promise(function(resolve, reject) {
+                    if(!map) {
+                        setTimeout(function(){
+                            var loaderTimeout;
+                            map = mapService.initMap(mapDivId, $rootScope.location, {
+                                'mousedown': function(){
+                                    $rootScope.$broadcast('markerDeselected');
+                                    if (infowindow) {
+                                        infowindow.close();
+                                    }
+                                },
+                                'idle': function() {
+                                    if(loaderTimeout) {
+                                        clearTimeout(loaderTimeout);
+                                    }
+                                    loaderTimeout = setTimeout(function() {
+                                        loadPlacesInMapBox().then(function(places) {
+                                            markPlaces(places);
+                                        });
+                                    }, 1000);
+
+                                },
+                                'longpress': function(event){
+                                    if(map.getZoom() < 16) {
+                                        $rootScope.$broadcast('longpressForAskRequiresZoom');
+                                    }
+                                    else {
+                                        var latLng = event.latLng, location = {
+                                            latitude: latLng.lat(),
+                                            longitude: latLng.lng()
+                                        };
+                                        mapService.searchPlaces(undefined, undefined, location, configService.LONGPRESS_ASK_DISTANCE).then(function(__places){
+                                            self.clearSearchMarkers();
+                                            var promise = seeCrowdService.getPlacesBySourceIDs(__places);
+                                            Promise.all([promise]).then(function(result) {
+                                                var i, j, places = mergePlaces(__places, result[0].data);
+                                                //resolve();
+                                                markSearchPlaces(places);
+                                            }, function() {
+                                                //reject();
+                                            });
+                                            $rootScope.$broadcast('unsearchableAsk', {value: location.latitude.toFixed(2) + ', ' + location.longitude.toFixed(2)});
+                                        }, function() {
+                                            $rootScope.$broadcast('longpressForAskRequiresZoom');
+                                        });
+                                    }
+                                }
+                            });
+                            self.markCurrentLocation();
+                            initAutocomplete().then(resolve, reject);
+                        }, 100);
+                    }
+                    else if(Object.keys(markersMap).length === 0) {
+                        //mapService.resetMap(map, $rootScope.location);
+                        loadPlacesInMapBox().then(function(places) {
+                            markPlaces(places);
                         });
-                        self.markCurrentLocation();
-                        reload = false;
-                    }, 100);
-                }
-                else if(reload && Object.keys(markersMap).length === 0) {
-                    //mapService.resetMap(map, $rootScope.location);
-                    self.markCurrentLocation();
-                    loadPlacesInMapBox().then(function(places) {
-                        markPlaces(places);
-                    });
-                    reload = false;
-                }
+                    }
+                });
             };
 
             self.selectPlace = function(place) {
