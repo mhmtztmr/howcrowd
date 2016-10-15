@@ -8,11 +8,13 @@ function calculateAverageCrowdForPlace(crowds) {
       console.log('Crowd [' + (i+1) + ']: Timestamp: ' + crowd.datetime + 
         ', Value: ' + crowd.value + ', Positive Feedback: ' + crowd.positiveFeedback + ', Negative Feedback: ' + crowd.negativeFeedback);
 
-      //average algorithm including feedbacks
-      feedbackMargin = 1 + crowd.positiveFeedback - crowd.negativeFeedback
-      if(feedbackMargin > 0) {
-          count += feedbackMargin;
-          total += feedbackMargin * crowd.value;
+      if(crowd.value) {
+        //average algorithm including feedbacks
+        feedbackMargin = 1 + crowd.positiveFeedback - crowd.negativeFeedback
+        if(feedbackMargin > 0) {
+            count += feedbackMargin;
+            total += feedbackMargin * crowd.value;
+        }
       }
     }
     if(total > 0) {
@@ -28,7 +30,7 @@ function calculateAverageCrowdForPlace(crowds) {
 function updatePlace(req, updateFunction) {
   var crowdStorage = Backendless.Persistence.of('Crowd');
   var placeStorage = Backendless.Persistence.of('Place');
-  var now = new Date();
+  var now = new Date(parseInt(req.item.datetime));
 
   function getDataQuery() {
     var q, j, query = new Backendless.DataQuery(),

@@ -13,13 +13,23 @@
     bottom: 12px;
     width: 92%;
     left: 2%;
-    height: 64px;
+    height: 90px;
     background-color: white;
     border-radius: 2%;
     padding-top: 12px;
     padding-left: 2%;
     padding-right: 2%;
     opacity: 0.8;
+}
+
+.selected-place-buttons {
+    font-size: 20px;
+}
+
+.selected-place-button {
+    float: left;
+    width: 33%;
+    text-align: center;
 }
 
 .pac-container {

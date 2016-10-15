@@ -19,8 +19,8 @@
             </ons-toolbar-button>
         </div>
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
-        <div class="right" ng-show="places && places !== 'pending' && places.length > 0">
-            <ons-toolbar-button ng-click="startSearch()">
+        <div class="right">
+            <ons-toolbar-button ng-show="places && places !== 'pending' && places.length > 0" ng-click="startSearch()">
                 <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>
             <ons-toolbar-button onclick="app.seeCrowdTabbar.setActiveTab(1, {animation: 'none'});">
@@ -50,13 +50,13 @@
         </div>
         <div class="no-crowd-seperator"></div>
         <div class="no-crowd-set-crowd-container">
-            <span class="no-crowd-set-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(2)">
+            <span class="no-crowd-set-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(1)">
             {{$root.lang.SEE_CROWD_MENU.SET_CROWD}} &raquo;</span>
             <ons-icon icon="fa-plus-circle" class="no-crowd-set-crowd-icon"></ons-icon>
         </div>
         <div class="no-crowd-seperator"></div>
         <div class="no-crowd-ask-crowd-container">
-            <span class="no-crowd-ask-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(0)">
+            <span class="no-crowd-ask-crowd-button button button--quiet" onclick="app.seeCrowdTabbar.setActiveTab(1)">
             &laquo; {{$root.lang.SEE_CROWD_MENU.ASK_CROWD}}</span>
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>

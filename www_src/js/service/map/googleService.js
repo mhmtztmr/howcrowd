@@ -48,7 +48,8 @@ angular.module('google', ['config', 'placeType']).
 			}, 500);
 			if($rootScope.location.latitude){
         		var center = {lat: $rootScope.location.latitude, lng: $rootScope.location.longitude};
-          		map.panTo(center);
+          		map.setZoom(16);
+          		map.setCenter(center);
           		clearInterval(animationInterval);
 				document.getElementById('you_location_img').style.backgroundPosition = '-144px 0px';
         	}
@@ -112,7 +113,7 @@ angular.module('google', ['config', 'placeType']).
 
 	self.initMap = function(DOMElementId, center, events) {
 		var map = new google.maps.Map(document.getElementById(DOMElementId), {
-			zoom: 15,
+			zoom: 16,
 			center: {lat: center.latitude, lng: center.longitude},
 			mapTypeControl: false,
 			zoomControl: false,
@@ -129,7 +130,7 @@ angular.module('google', ['config', 'placeType']).
 	};
 
 	self.resetMap = function(map, center) {
-		map.setZoom(15);
+		map.setZoom(16);
 		map.setCenter({lat: center.latitude, lng: center.longitude});
 	};
 
@@ -160,7 +161,7 @@ angular.module('google', ['config', 'placeType']).
 			lat: neLat,
 			lng: neLng
 		}));
-		map.setZoom(15);
+		map.setZoom(16);
 	};
 
 	function getFormattedPlace(place) {
@@ -257,7 +258,7 @@ angular.module('google', ['config', 'placeType']).
 					infowindow.open(map, marker);
 				}
 				onMarkerClick(infowindow);
-          		map.panTo({lat: location.latitude, lng: location.longitude});
+          		map.setCenter({lat: location.latitude, lng: location.longitude});
 			});
 		}
 		return marker;

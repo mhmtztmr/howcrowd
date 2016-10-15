@@ -29,7 +29,9 @@ var defaultLanguageModel = function() {
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "SEARCH_INPUT": "See crowd by search",
             "YOU": "You",
-            "JUST_NOW": "Just now"
+            "JUST_NOW": "Just now",
+            "SEARCH_INPUT": "Search: See & Ask",
+            "TOO_FAR_TO_ASK": "Unavailable - Too far"
         },
         "SEE_CROWD_DETAIL_POPOVER_MENU": {
             "INFO": "Info",
@@ -56,10 +58,6 @@ var defaultLanguageModel = function() {
             "ATTACH_PHOTO": "Attach Photo",
             "TEXT_PLACEHOLDER_APPENDIX": " is...",
             "ADD_CROWD": "Add Crowd"
-        },
-        "ASK_CROWD_MENU": {
-            "SEARCH_INPUT": "Ask crowd by search",
-            "TOO_FAR_TO_ASK": "Unavailable - Too far"
         },
         "MAP": {
             "YOUR_LOCATION": "Your location"
