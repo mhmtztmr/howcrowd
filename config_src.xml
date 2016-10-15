@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.oztemur.howcrowd" version="<%=APP_VERSION%>" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.oztemur.howcrowd" version="<%=APP_VERSION%>" android-versionCode="<%=ANDROID_VERSIONCODE%>" ios-CFBundleVersion="<%=IOS_VERSIONCODE%>" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>HowCrowd</name>
     <description>
         HowCrowd is an application that provides how places are crowded.

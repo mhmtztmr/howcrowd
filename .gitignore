@@ -5,3 +5,4 @@ platforms/*
 www/*
 target/*
 coderunner.json
+config.xml

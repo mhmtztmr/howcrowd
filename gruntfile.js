@@ -8,7 +8,27 @@ module.exports = function(grunt) {
         currentMinutes = ("0" + currentDate.getMinutes()).slice(-2),
         buildTimestamp = "" + currentDate.getFullYear() + currentMonth + currentDay + currentHour + currentMinutes,
         buildNumber = process.env.BUILD_NUMBER,
-        pkg = grunt.file.readJSON('package.json');
+        pkg = grunt.file.readJSON('package.json'),
+        appVersion, androidVersioncode, iosVersioncode;
+
+    appVersion = pkg.version + (buildNumber ? ('.' + buildNumber) : '');
+
+    function defineVersioncodes() {
+        var numbers = appVersion.split('.'),
+        major = numbers[0], minor = numbers[1], patch = numbers[2];
+
+        androidVersioncode = 0;
+        if(buildNumber) {
+            androidVersioncode += buildNumber;
+        }
+        androidVersioncode += 100 * parseInt(patch);
+        androidVersioncode += 10000 * parseInt(minor);
+        androidVersioncode += 1000000 * parseInt(major);
+
+        iosVersioncode = appVersion;
+    }
+
+    defineVersioncodes();
 
     // Project configuration.
     grunt.initConfig({
@@ -150,7 +170,23 @@ module.exports = function(grunt) {
                 overwrite: true, // overwrite matched source files
                 replacements: [{
                     from: /<%=APP_VERSION%>/g,
-                    to: pkg.version + (buildNumber ? ('.' + buildNumber) : '')
+                    to: appVersion
+                }]
+            },
+            androidVersioncode: {
+                src: ['config.xml'],
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: /<%=ANDROID_VERSIONCODE%>/g,
+                    to: androidVersioncode
+                }]
+            },
+            iosVersioncode: {
+                src: ['config.xml'],
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: /<%=IOS_VERSIONCODE%>/g,
+                    to: iosVersioncode
                 }]
             }
         },
@@ -184,7 +220,7 @@ module.exports = function(grunt) {
             },
             version_dev: {
                 "www/js/version.js": function (fs, fd, done) {
-                    fs.writeSync(fd, "var version = '" + buildTimestamp + "';");
+                    fs.writeSync(fd, "var version = '" + pkg.version + "." + buildTimestamp + "';");
                     done();
                 }
             }
