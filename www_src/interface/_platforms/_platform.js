@@ -1,4 +1,10 @@
 var Platform = function(){
+
+	this.getDeviceInfo = function() {
+      	return new Promise(function(resolve) {
+        	resolve(window.deviceInfo);
+      	});
+  	};
   
 	this.getConnectionType = function(){
 		return 'wifi';

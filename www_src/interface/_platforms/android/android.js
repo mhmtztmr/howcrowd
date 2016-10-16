@@ -2,6 +2,14 @@ var Android = function(){
 
 	this.Platform = "Android";
 
+  this.getDeviceInfo = function() {
+      return new Promise(function(resolve, reject) {
+        device.getInfo(function(deviceInfo) {
+          resolve(deviceInfo);
+        }, reject);
+      });
+  };
+
 	this.getConnectionType = function(){
 		  return navigator.connection.type;
 	};

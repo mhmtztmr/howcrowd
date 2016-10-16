@@ -5,7 +5,7 @@ var configService = function() {
     LONGPRESS_ASK_DISTANCE: 0.02, //km
     NEARBY_TIME: 1, //hour
     FEEDBACK_TIME: 0.5, //hour
-    REPORT_EMAIL: 'muhahmut@gmail.com'
+    REPORT_EMAIL: ['muhahmut@gmail.com']
   };
 };
 
