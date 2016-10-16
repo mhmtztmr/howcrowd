@@ -3,10 +3,10 @@ var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model',
     'config', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
 
-app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', 'feedbackModel', 
-    function(langService, dbService, settingsService, locationService, $rootScope, feedbackModel) {
+app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', 'feedbackModel', '$log',
+    function(langService, dbService, settingsService, locationService, $rootScope, feedbackModel, $log) {
     $rootScope.version = version;
-    window.console.log('App running...');
+    $log.log('App running...');
 
     $rootScope.location = {};
 
@@ -17,7 +17,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
     
     Promise.all([dbPromise, settingsPromise, langPromise, feedbackPromise]).then(function() {
         $rootScope.$emit('init');
-        console.log('app run init');
+        $log.log('app run init');
         locationService.checkLocationAvailability(function(){
             //location is enabled
             locationService.startLocationInterval();
@@ -29,23 +29,23 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
                 //turn gps on skipped. not available now.
             }, function(){
                 //turn gps on accepted, going to settings...
-                window.console.log('gps settings initiazlied');
+                $log.log('gps settings initiazlied');
                 var stillNotTurnedOn = 0;
                 var locationAvailabilityInterval = setInterval(function(){
                     if(stillNotTurnedOn < 5) {
-                        console.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
+                        $log.log('gps not turned on: ' + stillNotTurnedOn + ', checking location availability...');
                         locationService.checkLocationAvailability(function(){
-                            console.log('location now available. clearing hard check interval...reseting counter...starting location interval');
+                            $log.log('location now available. clearing hard check interval...reseting counter...starting location interval');
                             stillNotTurnedOn = 0;
                             clearInterval(locationAvailabilityInterval);
                             locationService.startLocationInterval();
                         }, function(){
-                            console.log('location not available. incrementing counter...');
+                            $log.log('location not available. incrementing counter...');
                             stillNotTurnedOn++;
                         });
                     }
                     else {
-                        console.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
+                        $log.log('counter exceeded. clearing hard check interval...reseting counter...starting location interval');
                         stillNotTurnedOn = 0;
                         clearInterval(locationAvailabilityInterval);
                         locationService.startLocationInterval();
@@ -54,7 +54,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
             });
         });
     }, function() {
-        console.log('app run init failed');
+        $log.error('app run init failed');
     });
 
     function exitApp() {
@@ -100,17 +100,17 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
     });
 }]);
 
-app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'INTERFACE',
-    function($rootScope, $scope, identificationService, INTERFACE) {
+app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'INTERFACE', '$log',
+    function($rootScope, $scope, identificationService, INTERFACE, $log) {
 
         function identifyDevice() {
             if(!$rootScope.deviceObject) {
-                console.log('identifying device');
+                $log.log('identifying device');
                 identificationService.getDeviceObject().then(function(deviceObject) {
-                    console.log('device identified');
+                    $log.log('device identified');
                     $rootScope.deviceObject = deviceObject;
                 }, function(e){
-                    console.log('identification failed: ' + e);
+                    $log.error('identification failed: ' + e);
                 });
             }
         }
@@ -124,11 +124,11 @@ app.controller('appController', ['$rootScope', '$scope', 'identificationService'
                 identifyDevice();
             }
             INTERFACE.registerConnectionOfflineEvent(function() {
-                console.log('connection lost');
+                $log.log('connection lost');
                 connectionLostDialog.show();
             });
             INTERFACE.registerConnectionOnlineEvent(function() {
-                console.log('connected');
+                $log.log('connected');
                 connectionLostDialog.hide();
                 identifyDevice();
             });

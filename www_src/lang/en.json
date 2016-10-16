@@ -68,6 +68,13 @@
         "3": "Crowded",
         "4": "Congested"
     },
+    "REPORT_ISSUE": {
+        "TITLE": "Report Issue",
+        "EXPLANATION": "You can report any issue or suggest any improvement!",
+        "EMAIL": "Email",
+        "DESCRIPTION": "Description",
+        "SUBMIT": "Submit"
+    },
     "ABOUT": {
         "DESCRIPTION": "Crowd (Kalabalık), etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır.Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
         "SEE_CROWD": {
