@@ -23,7 +23,7 @@
             <ons-toolbar-button ng-show="places && places !== 'pending' && places.length > 0" ng-click="startSearch()">
                 <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>
-            <ons-toolbar-button onclick="app.seeCrowdTabbar.setActiveTab(1, {animation: 'none'});">
+            <ons-toolbar-button onclick="app.seeCrowdTabbar.setActiveTab(1, {animation: 'none'});crowdTabbar.setTabbarVisibility(false);">
                 <ons-icon icon="fa-map"></ons-icon>
             </ons-toolbar-button>
         </div>

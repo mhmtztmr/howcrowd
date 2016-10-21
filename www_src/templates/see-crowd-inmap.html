@@ -1,18 +1,18 @@
-<ons-page ng-controller="seeCrowdInmapController" ons-show="onMapShow()">
+<ons-page ng-controller="seeCrowdInmapController" ons-show="onMapShow()" ons-hide="onMapHide()">
     <ons-toolbar>
         <div class="left">
-            <ons-back-button ng-show="searchInput.value.length > 0" class="search-crowd-cancel" ng-click="clearSearchInput()"></ons-back-button>
-            <ons-toolbar-button ng-show="searchInput.value.length === 0" ng-click="menu.toggle()">
-                <ons-icon icon="fa-bars"></ons-icon>
+            <ons-toolbar-button ng-show="searchInput.value.length > 0" ng-click="clearSearchInput()" class="search-crowd-cancel" >
+                <ons-icon icon="fa-times"></ons-icon>
             </ons-toolbar-button>
+            <!-- <ons-toolbar-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
+                <ons-icon icon="fa-list"></ons-icon>
+            </ons-toolbar-button> -->
+            <ons-back-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});crowdTabbar.setTabbarVisibility(true);"></ons-back-button>
         </div>
         <div class="center">
             <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="map-search-input" ng-disabled="!searchInput.searchable"/>
         </div>
         <div class="right">
-            <ons-toolbar-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
-                <ons-icon icon="fa-list"></ons-icon>
-            </ons-toolbar-button>
             <ons-toolbar-button ng-show="searchInput.value.length > 2 && searchInput.searchable" ng-click="searchPlace()">
                 <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>

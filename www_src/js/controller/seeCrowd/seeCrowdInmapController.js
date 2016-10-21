@@ -7,6 +7,15 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
 
         $scope.onMapShow = function(){
             loadMap();
+            [].forEach.call(document.querySelectorAll('.page__background'), function (el) {
+              el.style.display = 'none';
+            });
+        };
+
+        $scope.onMapHide = function(){
+            [].forEach.call(document.querySelectorAll('.page__background'), function (el) {
+              el.style.display = null;
+            });
         };
 
         $scope.askCrowd = function() {

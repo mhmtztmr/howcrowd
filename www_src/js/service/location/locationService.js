@@ -1,11 +1,11 @@
 
 angular.module('location', ['map.Service', 'interface'])
-    .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', function($rootScope, mapService, INTERFACE){
+    .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', '$log', function($rootScope, mapService, INTERFACE, $log){
 		var self = {}, locationInterval, oldLocation, watchId;
 		var intervalTime = 6000, geolocationTimeout = 5000, cumulativeDeltaResetValue = 1; // km
 		
 		self.startLocationInterval = function() {
-			console.log('starting location interval...');
+			$log.log('starting location interval...');
 			if (!$rootScope.location) {
 				$rootScope.location = {};
 			}
@@ -43,7 +43,7 @@ angular.module('location', ['map.Service', 'interface'])
 						$rootScope.location.overallDelta += $rootScope.location.delta;
 					}
 
-					console.log('location successfully gained: ' + JSON.stringify(
+					$log.log('location successfully gained: ' + JSON.stringify(
 						$rootScope.location));
 					if(!watchId) {
 						watchId = navigator.geolocation.watchPosition(function() {});
@@ -56,7 +56,7 @@ angular.module('location', ['map.Service', 'interface'])
 					self.checkLocationAvailability(function(){
 
 					}, function(){
-						console.log('location failed...');
+						$log.error('location failed...');
 						$rootScope.location = {
 							error: {
 								code: err.code,
@@ -83,7 +83,7 @@ angular.module('location', ['map.Service', 'interface'])
 		};
 		
 		self.stopLocationInterval = function() {
-			console.log('stopping location interval...');
+			$log.log('stopping location interval...');
 			clearInterval(locationInterval);
 			if(watchId) {
 				navigator.geolocation.clearWatch(watchId);
@@ -92,9 +92,9 @@ angular.module('location', ['map.Service', 'interface'])
 		};
 
 		self.checkLocationAvailability = function(onEnabled, onDisabled){
-			window.console.log('Checking location availability...');
+			$log.log('Checking location availability...');
 			INTERFACE.isLocationEnabled(function(enabled){
-				window.console.log('Location availability: ' + enabled);
+				$log.log('Location availability: ' + enabled);
 				if(enabled) {
                     onEnabled();
                 }
@@ -105,7 +105,7 @@ angular.module('location', ['map.Service', 'interface'])
 		};
 
 		self.openGPSDialog = function(onNo, onLater, onYes){
-			window.console.log('Opening GPS dialog...');
+			$log.log('Opening GPS dialog...');
 			INTERFACE.openGPSDialog($rootScope.lang.NATIVE_DIALOG.GPS.MESSAGE,
 			 $rootScope.lang.NATIVE_DIALOG.GPS.DESCRIPTION, 
 			 $rootScope.lang.NATIVE_DIALOG.GPS.TITLE, 

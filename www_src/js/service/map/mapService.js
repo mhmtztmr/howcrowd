@@ -15,12 +15,12 @@ angular.module('map.Service', ['google'])
             return googleService.getMapBoundingBox(map);
         };
 
-        self.setMapBoundingBox = function(map, swLat, swLng, neLat, neLng) {
-            googleService.setMapBoundingBox(map, swLat, swLng, neLat, neLng);
+        self.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData) {
+            return googleService.createMarker(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData);
         };
 
-        self.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick) {
-            return googleService.createMarker(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick);
+        self.removeMarker = function(marker) {
+            googleService.removeMarker(marker);
         };
 
         self.initAutocomplete = function(map, DOMElementId, boundingBox, onPlaceSelected){

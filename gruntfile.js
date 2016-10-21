@@ -150,11 +150,17 @@ module.exports = function(grunt) {
                 }]
             },
             mapsCredentials: {
-                src: ['www/main.html'],
+                src: ['www/main.html', 'config.xml'],
                 overwrite: true, // overwrite matched source files
                 replacements: [{
-                    from: /<%=MAPS_KEY%>/g,
-                    to: '<%= grunt.option(\"credentials\").googleMaps.key %>'
+                    from: /<%=MAPS_JS_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.jsKey %>'
+                }, {
+                    from: /<%=MAPS_ANDROID_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.androidKey %>'
+                }, {
+                    from: /<%=MAPS_IOS_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.iosKey %>'
                 }]
             },
             reportIssue: {
