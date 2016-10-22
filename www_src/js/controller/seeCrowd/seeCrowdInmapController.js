@@ -7,12 +7,14 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
 
         $scope.onMapShow = function(){
             loadMap();
+            crowdTabbar.setTabbarVisibility(false);
             [].forEach.call(document.querySelectorAll('.page__background'), function (el) {
               el.style.display = 'none';
             });
         };
 
         $scope.onMapHide = function(){
+            crowdTabbar.setTabbarVisibility(true);
             [].forEach.call(document.querySelectorAll('.page__background'), function (el) {
               el.style.display = null;
             });
@@ -56,12 +58,22 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
             });
         };
 
-        $scope.searchInput = {value: '', searchable: true};
+        $scope.searchInputChange = function() {
+            setTimeout(function() {
+                $scope.setMapClickable(!seeCrowdModel.isAutocompleteVisible());
+            }, 300);
+        };
 
+        $scope.searchInput = {value: '', searchable: true};
         $scope.searchPlace = function() {
             if ($scope.searchInput.value.length > 1) {
-                seeCrowdModel.searchPlacesOnMap($scope.searchInput.value).then(undefined, function() {
+                modal.show();
+                seeCrowdModel.searchPlacesOnMap($scope.searchInput.value).then(function() {
+                    modal.hide();
+                }, function() {
+                    modal.hide();
                     this.noPlaceFoundDialog.show();
+                    $scope.setMapClickable(false);
                 });
             } 
         };
@@ -69,6 +81,10 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
         $scope.clearSearchInput = function(){
             $scope.searchInput = {value: '', searchable: true};
             seeCrowdModel.clearSearchMarkers();
+        };
+
+        $scope.setMapClickable = function(clickable) {
+            seeCrowdModel.setMapClickable(clickable);
         };
 
         $scope.$on('$destroy', $rootScope.$on("markerSelected", function(event, args) {
@@ -86,6 +102,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
         }));
         $scope.$on('$destroy', $rootScope.$on("longpressForAskRequiresZoom", function() {
             this.zoomForAskDialog.show();
+            $scope.setMapClickable(false);
         }));
         //means the place is either selected from dropdown or selected from longpress options
         $scope.$on('$destroy', $rootScope.$on("unsearchableAsk", function(event, args) {

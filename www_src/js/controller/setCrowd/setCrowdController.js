@@ -48,7 +48,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
             if(!($scope.nearbyPlaces instanceof Array)) {
                 if($rootScope.location.latitude) {
                     $scope.nearbyPlaces = 'pending';
-                    loadNearbyPlaces();
+                    //loadNearbyPlaces();
                 }
                 else {
                     $scope.nearbyPlaces = undefined;

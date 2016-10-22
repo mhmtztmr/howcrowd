@@ -103,7 +103,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     var farPromise = seeCrowdService.searchPlaces(query);
                     Promise.all([farPromise]).then(function(result) {
                         var i, places = [],
-                        _places = result[0].data;
+                        _places = result[0].data.places;
                         for(i = 0; i < _places.length; i++) {
                             if(!placesMap[_places[i].sourceID]) {
                                 _places[i].isNearby = false;
@@ -118,13 +118,15 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
 
             self.searchPlacesOnMap = function(query){
                 return new Promise(function(resolve, reject) {
-                    mapService.searchPlaces(map, query, $rootScope.location, configService.FAR_DISTANCE).then(function(__places){
+                    mapService.searchPlaces(mapDivId, query, $rootScope.location, configService.FAR_DISTANCE).then(function(mapResults){
+                        var __places = mapResults.places;
                         self.clearSearchMarkers();
                         var promise = seeCrowdService.getPlacesBySourceIDs(__places);
                         Promise.all([promise]).then(function(result) {
                             var i, places = mergePlaces(__places, result[0].data);
-                            markSearchPlaces(places);
                             resolve();
+                            mapService.moveMapTo(map, mapResults.center, mapResults.zoom);
+                            markSearchPlaces(places);
                         }, reject);
                     }, reject);
                 });
@@ -156,7 +158,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         if(currentLocationMarker) {
                             mapService.removeMarker(currentLocationMarker);
                         }
-                        mapService.createMarker(
+                        mapService.createCurrentLocationMarker(
                             map,
                             $rootScope.location,
                             {
@@ -196,88 +198,115 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 if(place.averageCrowdValue) {
                     markerPath = markerType.PATHS[(Math.ceil(place.averageCrowdValue / 10) * 10)];
                 }
-                mapService.createMarker(
-                    map,
-                    place.location,
-                    {
-                        path: markerPath,
-                        anchor: markerType.INFO.anchor,
-                        scaledSize: markerType.INFO.scaledSize
-                    },
-                    function(_infowindow){
-                        if(_infowindow){
-                            if (infowindow) {
-                                infowindow.close();
+                return new Promise(function(resolve, reject) {
+                    mapService.createMarker(
+                        map,
+                        place.location,
+                        {
+                            path: markerPath,
+                            anchor: markerType.INFO.anchor,
+                            scaledSize: markerType.INFO.scaledSize
+                        },
+                        function(_infowindow){
+                            if(_infowindow){
+                                if (infowindow) {
+                                    infowindow.close();
+                                }
+                                infowindow = _infowindow;
                             }
-                            infowindow = _infowindow;
+                            if(distance <= configService.FAR_DISTANCE){
+                                modal.show();
+                                var mappedPlace = placesMap[place.sourceID];
+                                if(mappedPlace) {
+                                    $rootScope.$broadcast('markerSelected', { place: mappedPlace});
+                                }
+                                else {
+                                    seeCrowdService.getPlaceBySourceID(place).then(function(result) {
+                                        var _place = place, __place = result.data[0];
+                                        if(__place) {
+                                            _place = __place;
+                                        }
+                                        placesMap[place.sourceID] = _place;
+                                        $rootScope.$broadcast('markerSelected', { place: _place});
+                                    });
+                                }
+                            }
+                        }, {
+                            title: place.name,
+                            snippet: place.address
+                        }, undefined, {
+                            distanceTooFar: (distance > configService.FAR_DISTANCE ? $rootScope.lang.SEE_CROWD_MENU.TOO_FAR_TO_ASK+ ': ' + distance + ' km' : undefined)
                         }
-                        if(distance <= configService.FAR_DISTANCE){
-                            modal.show();
-                            var mappedPlace = placesMap[place.sourceID];
-                            if(mappedPlace) {
-                                $rootScope.$broadcast('markerSelected', { place: mappedPlace});
-                            }
-                            else {
-                                seeCrowdService.getPlaceBySourceID(place).then(function(result) {
-                                    var _place = place, __place = result.data[0];
-                                    if(__place) {
-                                        _place = __place;
-                                    }
-                                    placesMap[place.sourceID] = _place;
-                                    $rootScope.$broadcast('markerSelected', { place: _place});
-                                });
-                            }
+                    ).then(function(_marker) {
+                        if(markerType.ID === mapConstants.MARKERS.SEARCH.ID){
+                            searchMarkersMap[place.sourceID] = _marker;
                         }
-                    }, {
-                        title: place.name,
-                        snippet: place.address
-                    }, undefined, {
-                        distanceTooFar: (distance > configService.FAR_DISTANCE ? $rootScope.lang.SEE_CROWD_MENU.TOO_FAR_TO_ASK+ ': ' + distance + ' km' : undefined)
-                    }
-                ).then(function(_marker) {
-                    if(markerType.ID === mapConstants.MARKERS.SEARCH.ID){
-                        searchMarkersMap[place.sourceID] = _marker;
-                    }
-                    else {
-                        markersMap[place.sourceID] = _marker;
-                    }
+                        else {
+                            markersMap[place.sourceID] = _marker;
+                        }
+                        resolve();
+                    });
                 });
             }
 
             function markSearchPlaces(places) {
-                $log.log('marking search places...');
-                var place, i;
-                for (i = 0; i < places.length; i++) {
-                    place = places[i];
-
-                    if(markersMap[place.sourceID]) {
-                        markersMap[place.sourceID].setMap(null);
-                        delete markersMap[place.sourceID];
-                        markPlace(place,  mapConstants.MARKERS.CROWD);
-                        markersMap[place.sourceID].setVisible(false);
+                return new Promise(function(resolve, reject) {
+                    $log.log('marking search places...');
+                    var place, i, promiseArray = [];
+                    for (i = 0; i < places.length; i++) {
+                        place = places[i];
+                        if(markersMap[place.sourceID]) {
+                            mapService.removeMarker(markersMap[place.sourceID]);
+                            delete markersMap[place.sourceID];
+                            promiseArray.push(markPlace(place, mapConstants.MARKERS.CROWD));
+                        }
                     }
 
-                    if(searchMarkersMap[place.sourceID]){
-                        searchMarkersMap[place.sourceID].setMap(null);
-                        delete searchMarkersMap[place.sourceID];
-                    }
-                    markPlace(place, mapConstants.MARKERS.SEARCH);
-                }
+                    Promise.all(promiseArray).then(function(result) {
+                        var searchPromiseArray = [];
+                        for (i = 0; i < places.length; i++) {
+                            place = places[i];
+                            
+                            if(markersMap[place.sourceID]) {
+                                markersMap[place.sourceID].setVisible(false);
+                            }
+
+                            if(searchMarkersMap[place.sourceID]){
+                                mapService.removeMarker(searchMarkersMap[place.sourceID]);
+                                delete searchMarkersMap[place.sourceID];
+                            }
+
+                            searchPromiseArray.push(markPlace(place, mapConstants.MARKERS.SEARCH));
+                        }
+
+                        Promise.all(searchPromiseArray).then(resolve, reject);
+
+                    }, reject);
+                });
             }
 
             function markPlaces(places) {
-                $log.log('marking places...');
-                var place, i;
-                for (i = 0; i < places.length; i++) {
-                    place = places[i];
-                    if(!markersMap[place.sourceID]) {
-                        markPlace(place,  mapConstants.MARKERS.CROWD);
+                return new Promise(function(resolve, reject) {
+                    $log.log('marking places...');
+                    var place, i, promiseArray = [];
+                    for (i = 0; i < places.length; i++) {
+                        place = places[i];
+                        if(!markersMap[place.sourceID]) {
+                            promiseArray.push(markPlace(place, mapConstants.MARKERS.CROWD));
+                        }
                     }
 
-                    if(searchMarkersMap[place.sourceID]){
-                        markersMap[place.sourceID].setVisible(false);
-                    }
-                }
+                    Promise.all(promiseArray).then(function(result) {
+                        for (i = 0; i < places.length; i++) {
+                            place = places[i];
+                            if(searchMarkersMap[place.sourceID]){
+                                if(markersMap[place.sourceID]) {
+                                    markersMap[place.sourceID].setVisible(false);
+                                }
+                            }
+                        }
+                    }, reject);
+                });
             }
 
             self.clearMarkers = function() {
@@ -286,7 +315,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 var i;
                 for(i in markersMap) {
                     if(markersMap.hasOwnProperty(i)) {
-                        markersMap[i].setMap(null);
+                        mapService.removeMarker(markersMap[i]);
                         delete markersMap[i];
                     }
                 }
@@ -304,7 +333,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         if(markersMap[i]){
                             markersMap[i].setVisible(true);
                         }
-                        searchMarkersMap[i].setMap(null);
+                        mapService.removeMarker(searchMarkersMap[i]);
                         delete searchMarkersMap[i];
                     }
                 }
@@ -325,6 +354,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                                 if(__place) {
                                     place = __place;
                                 }
+                                mapService.moveMapTo(map, place.location, 17);
                                 //mapService.resetMap(map, place.location);
                                 var places = [];
                                 places.push(place);
@@ -336,6 +366,10 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     }).then(resolve, reject);
                 });
             }
+
+            self.isAutocompleteVisible = function() {
+                return mapService.isAutocompleteVisible();
+            };
 
             function mergePlaces(mapPlaces, dbPlaces) {
                 var i, j, existInDB, places = [];
@@ -381,30 +415,30 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                                         });
                                     }, 1000);
                                 },
-                                'longpress': function(latLng){
-                                    // if(map.getZoom() < 16) {
-                                    //     $rootScope.$broadcast('longpressForAskRequiresZoom');
-                                    // }
-                                    // else {
-                                        var location = {
-                                            latitude: latLng.lat(),
-                                            longitude: latLng.lng()
-                                        };
-                                        mapService.searchPlaces(undefined, undefined, location, configService.LONGPRESS_ASK_DISTANCE).then(function(__places){
-                                            self.clearSearchMarkers();
-                                            var promise = seeCrowdService.getPlacesBySourceIDs(__places);
-                                            Promise.all([promise]).then(function(result) {
-                                                var i, j, places = mergePlaces(__places, result[0].data);
-                                                //resolve();
-                                                markSearchPlaces(places);
-                                            }, function() {
-                                                //reject();
-                                            });
-                                            $rootScope.$broadcast('unsearchableAsk', {value: location.latitude.toFixed(2) + ', ' + location.longitude.toFixed(2)});
-                                        }, function() {
+                                'longpress': function(location){
+                                    mapService.getMapZoom(map).then(function(_zoom) {
+                                        if(_zoom < 16) {
                                             $rootScope.$broadcast('longpressForAskRequiresZoom');
-                                        });
-                                    // }
+                                        }
+                                        else {
+                                            mapService.searchPlaces(mapDivId, undefined, location, configService.LONGPRESS_ASK_DISTANCE).then(function(mapResults){
+                                                var __places = mapResults.places;
+                                                self.clearSearchMarkers();
+                                                var promise = seeCrowdService.getPlacesBySourceIDs(__places);
+                                                Promise.all([promise]).then(function(result) {
+                                                    var i, j, places = mergePlaces(__places, result[0].data);
+                                                    mapService.moveMapTo(map, mapResults.center, 17);
+                                                    //resolve();
+                                                    markSearchPlaces(places);
+                                                }, function() {
+                                                    //reject();
+                                                });
+                                                $rootScope.$broadcast('unsearchableAsk', {value: location.latitude.toFixed(2) + ', ' + location.longitude.toFixed(2)});
+                                            }, function() {
+                                                $rootScope.$broadcast('longpressForAskRequiresZoom');
+                                            });
+                                        }
+                                    });
                                 }
                             }).then(function(_map) {
                               map = _map;
@@ -421,6 +455,10 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         // });
                     }
                 });
+            };
+
+            self.setMapClickable = function(clickable) {
+                mapService.setMapClickable(map, clickable);
             };
 
             self.selectPlace = function(place) {

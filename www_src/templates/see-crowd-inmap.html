@@ -7,10 +7,10 @@
             <!-- <ons-toolbar-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
                 <ons-icon icon="fa-list"></ons-icon>
             </ons-toolbar-button> -->
-            <ons-back-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});crowdTabbar.setTabbarVisibility(true);"></ons-back-button>
+            <ons-back-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});"></ons-back-button>
         </div>
         <div class="center">
-            <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="map-search-input" ng-disabled="!searchInput.searchable"/>
+            <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="map-search-input" ng-disabled="!searchInput.searchable" ng-change="searchInputChange()" ng-blur="searchInputChange()" ng-focus="searchInputChange()"/>
         </div>
         <div class="right">
             <ons-toolbar-button ng-show="searchInput.value.length > 2 && searchInput.searchable" ng-click="searchPlace()">
@@ -18,8 +18,8 @@
             </ons-toolbar-button>
         </div>
     </ons-toolbar>
-    <div id="map" style="width:100%; height:100%"></div>
-    <div ng-if="selectedPlace" class="selected-place-info">
+    <div id="map" style="width:100%; height:100%" ng-class="{'selected-place-map': selectedPlace}"></div>
+    <div ng-show="selectedPlace" class="selected-place-info">
         <div class="crowd-main-body" ng-click="selectPlace()">
           <div class="crowd-left">
             <div>
@@ -84,7 +84,7 @@
         </p>
 
         <p>
-          <ons-button ng-click="zoomForAskDialog.hide()">{{$root.lang.DIALOG.CLOSE}}</ons-button>
+          <ons-button ng-click="zoomForAskDialog.hide();setMapClickable(true);">{{$root.lang.DIALOG.CLOSE}}</ons-button>
         </p>
       </div>
     </ons-dialog>
@@ -95,7 +95,7 @@
         </p>
 
         <p>
-          <ons-button ng-click="noPlaceFoundDialog.hide()">{{$root.lang.DIALOG.CLOSE}}</ons-button>
+          <ons-button ng-click="noPlaceFoundDialog.hide();setMapClickable(true);">{{$root.lang.DIALOG.CLOSE}}</ons-button>
         </p>
       </div>
     </ons-dialog>

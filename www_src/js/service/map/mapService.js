@@ -7,12 +7,36 @@ angular.module('map.Service', ['google'])
             return googleService.initMap(DOMElementId, center, events);
         };
 
+        self.setMapClickable = function(map, clickable) {
+            googleService.setMapClickable(map, clickable);
+        };
+
         self.resetMap = function(map, center) {
             googleService.resetMap(map, center);
         };
 
         self.getMapBoundingBox = function(map) {
             return googleService.getMapBoundingBox(map);
+        };
+
+        self.getMapZoom = function(map) {
+            return googleService.getMapZoom(map);
+        };
+
+        self.getMapCenter = function(map) {
+            return googleService.getMapCenter(map);
+        };
+
+        self.setMapZoom = function(map, zoom) {
+            googleService.setMapZoom(map, zoom);
+        };
+
+        self.setMapCenter = function(map, center) {
+            googleService.setMapCenter(map, center);
+        };
+
+        self.moveMapTo = function(map, center, zoom) {
+            googleService.moveMapTo(map, center, zoom);
         };
 
         self.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData) {
@@ -29,9 +53,13 @@ angular.module('map.Service', ['google'])
             });
         };
 
-        self.searchPlaces = function(map, query, location, radius){
+        self.isAutocompleteVisible = function() {
+            return googleService.isAutocompleteVisible();
+        };
+
+        self.searchPlaces = function(mapDOMElementId, query, location, radius){
             return new Promise(function(resolve, reject){
-                googleService.searchPlaces(map, query, location, radius).then(resolve, reject).catch(reject);
+                googleService.searchPlaces(mapDOMElementId, query, location, radius).then(resolve, reject).catch(reject);
             });
         };
 

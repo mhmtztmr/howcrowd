@@ -170,9 +170,11 @@ var Platform = function(){
 			addEventsToMap(map, events);
 			addYourLocationButtonToMap(map);
 
-			resolve(map);
+			resolve(map, map);
 		});
 	};
+
+	this.setMapClickable = function() {/*No need to implement*/};
 
 	this.getMapBoundingBox = function(map) {
 		return new Promise(function(resolve, reject) {
@@ -188,6 +190,39 @@ var Platform = function(){
 				}
 			});
 		});
+	};
+
+	this.getMapZoom = function(map) {
+		return new Promise(function(resolve) {
+			resolve(map.getZoom());
+		});
+	};
+
+	this.getMapCenter = function(map) {
+		return new Promise(function(resolve) {
+			var center = map.getCenter();
+			resolve({
+				latitude: center.lat(),
+				longitude: center.lng()
+			});
+		});
+	};
+
+	this.setMapZoom = function(map, zoom) {
+		map.setZoom(zoom);
+	};
+
+	this.setMapCenter = function(map, center) {
+  		map.setCenter({lat: center.latitude, lng: center.longitude});
+	};
+
+	this.moveMapTo = function(map, center, zoom) {
+		if(center) {
+			map.setCenter({lat: center.latitude, lng: center.longitude});
+		}
+	    if(zoom) {
+	    	map.setZoom(zoom);
+	    }
 	};
 
 	this.initAutocomplete = function(map, DOMElementId, boundingBox, onPlaceSelected){
@@ -250,6 +285,10 @@ var Platform = function(){
 
     this.removeMarker = function(marker) {
         marker.setMap(null);
+    };
+
+    this.createCurrentLocationMarker = function(map, location, markerData, onMarkerClick, infoWindowData, extraData){
+    	return this.createMarker(map, location, markerData, onMarkerClick, infoWindowData, extraData);
     };
 
 	return this;

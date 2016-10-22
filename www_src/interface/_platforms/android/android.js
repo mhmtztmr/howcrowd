@@ -119,20 +119,29 @@ var Android = function(){
       },
       'camera': {
         'latLng': new plugin.google.maps.LatLng(center.latitude, center.longitude),
-        'tilt': 30,
-        'zoom': 16,
-        'bearing': 50
+        'zoom': 16
       }
     });
+
+    var serviceMap = new google.maps.Map(document.createElement('div'), {
+        center: {lat: center.latitude, lng: center.longitude},
+    });
+
 
     addEventsToMap(map, events);
 
     return new Promise(function(resolve, reject) {
       // Wait until the map is ready status.
       map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
-        resolve(map);
+        resolve(map, serviceMap);
       });
     });
+  };
+
+  this.setMapClickable = function(map, clickable) {
+    if(map && clickable !== undefined) {
+      map.setClickable(clickable);
+    }
   };
 
   this.getMapBoundingBox = function(map) {
@@ -150,6 +159,41 @@ var Android = function(){
         });
       });      
     });
+  };
+
+  this.getMapZoom = function(map) {
+    return new Promise(function(resolve) {
+      map.getCameraPosition(function(camera) {
+        resolve(camera.zoom);
+      });
+    });
+  };
+
+  this.getMapCenter = function(map) {
+    return new Promise(function(resolve) {
+      map.getCameraPosition(function(camera) {
+        resolve({
+          latitude: camera.target.lat,
+          longitude: camera.target.lng
+        });
+      });
+    });
+  };
+
+  this.setMapZoom = function(map, zoom) {
+      map.setZoom(zoom);
+  };
+
+  this.setMapCenter = function(map, center) {
+      map.setCenter(new plugin.google.maps.LatLng(center.latitude, center.longitude));
+  };
+
+  this.moveMapTo = function(map, center, zoom) {
+    map.animateCamera({
+      target: {lat: center.latitude, lng: center.longitude},
+      zoom: zoom,
+      duration: 1000
+    }, function() {});
   };
 
   this.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, extraData){
@@ -176,7 +220,7 @@ var Android = function(){
           marker.setSnippet(extraData.distanceTooFar);
         }
 
-        marker.setIconAnchor(markerData.anchor.x, markerData.anchor.y);
+        //marker.setIconAnchor(markerData.anchor.x, markerData.anchor.y);
 
         if(onMarkerClick) {
           marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, function() {
@@ -193,6 +237,10 @@ var Android = function(){
 
   this.removeMarker = function(marker) {
       marker.remove();
+  };
+
+  this.createCurrentLocationMarker = function(){
+      return Promise.resolve();
   };
 
 	return this;
