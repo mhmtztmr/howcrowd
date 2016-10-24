@@ -29,11 +29,11 @@
         </div>
     </ons-toolbar>
 
-    <ons-pull-hook ng-action="refreshPlaces($done)" var="loader" fixed-content threshold-height="128px" height="64px">
+    <ons-pull-hook ng-action="refreshPlaces($done)" var="loader" threshold-height="128px" height="96px">
         <span ng-switch="loader.state">
-            <span ng-switch-when="initial"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
-            <span ng-switch-when="preaction"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
-            <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="fa-repeat"></ons-icon></span>
+            <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon></span>
+            <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon></span>
+            <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon></span>
         </span>
     </ons-pull-hook>
 
@@ -121,7 +121,7 @@
         </div>
       </ons-list-item>
     </ons-list>
-    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more"ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
+    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more" ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
       More
     </ons-button>
 </ons-page>

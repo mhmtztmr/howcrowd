@@ -252,7 +252,7 @@ var Platform = function(){
 					map: map,
 					position: latLng,
 					icon: {
-						url: 'img/markers/' + markerData.path + '.png',
+						url: 'img/markers/' + markerData.scaledSize.w + 'x' + markerData.scaledSize.h + '/' + markerData.path + '.png',
 						anchor: new google.maps.Point(markerData.anchor.x, markerData.anchor.y),
 						scaledSize: new google.maps.Size(markerData.scaledSize.w, markerData.scaledSize.h)
 					}

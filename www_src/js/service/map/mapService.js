@@ -47,6 +47,10 @@ angular.module('map.Service', ['google'])
             googleService.removeMarker(marker);
         };
 
+        self.createCurrentLocationMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData) {
+            return googleService.createCurrentLocationMarker(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData);
+        };
+
         self.initAutocomplete = function(map, DOMElementId, boundingBox, onPlaceSelected){
             return new Promise(function(resolve, reject){
                 googleService.initAutocomplete(map, DOMElementId, boundingBox, onPlaceSelected).then(resolve, reject).catch(reject);
@@ -70,8 +74,8 @@ angular.module('map.Service', ['google'])
             CROWD: {
                 ID: "crowd",
                 INFO: {
-                    anchor: {x:7, y: 40},
-                    scaledSize: {w: 14, h: 40}
+                    anchor: {x:6, y: 40},
+                    scaledSize: {w: 12, h: 40}
                 },
                 PATHS: {
                     '0': '0',
@@ -91,8 +95,8 @@ angular.module('map.Service', ['google'])
             SEARCH: {
                 ID: "search",
                 INFO: {
-                    anchor: {x:14, y: 80},
-                    scaledSize: {w: 28, h: 80}
+                    anchor: {x:9, y: 60},
+                    scaledSize: {w: 18, h: 60}
                 },
                 PATHS: {
                     '0': '0',

@@ -103,7 +103,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                     var farPromise = seeCrowdService.searchPlaces(query);
                     Promise.all([farPromise]).then(function(result) {
                         var i, places = [],
-                        _places = result[0].data.places;
+                        _places = result[0].data;
                         for(i = 0; i < _places.length; i++) {
                             if(!placesMap[_places[i].sourceID]) {
                                 _places[i].isNearby = false;

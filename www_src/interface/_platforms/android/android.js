@@ -205,32 +205,20 @@ var Android = function(){
         'snippet': infoWindowData.snippet,
         'styles': (extraData && extraData.distanceTooFar) ? {color: 'red'} : undefined,
         'icon': {
-          'url': 'www/img/markers/' + markerData.path + '.png'
+          'url': 'www/img/markers/' + markerData.scaledSize.w + 'x' + markerData.scaledSize.h + '/' + markerData.path + '.png'
         }
       }, function(marker) {
-        marker.setIcon({
-          'url': 'www/img/markers/' + markerData.path + '.png',
-          'size': {
-            width: markerData.scaledSize.w,
-            height: markerData.scaledSize.h
-          }
-        });
 
         if(extraData && extraData.distanceTooFar) {
           marker.setSnippet(extraData.distanceTooFar);
         }
 
-        //marker.setIconAnchor(markerData.anchor.x, markerData.anchor.y);
-
         if(onMarkerClick) {
           marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, function() {
             onMarkerClick();
-            //map.setCenter({lat: location.latitude, lng: location.longitude});
           });
         }
-
         resolve(marker);
-
       });
     });
   };
