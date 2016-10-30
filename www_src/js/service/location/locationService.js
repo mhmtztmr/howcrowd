@@ -1,4 +1,3 @@
-
 angular.module('location', ['map.Service', 'interface'])
     .factory('locationService', ['$rootScope', 'mapService', 'INTERFACE', '$log', function($rootScope, mapService, INTERFACE, $log){
 		var self = {}, locationInterval, oldLocation, watchId;

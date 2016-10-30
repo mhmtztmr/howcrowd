@@ -1,12 +1,21 @@
-app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 'seeCrowdModel', 'setCrowdModel',
-    function($rootScope, $scope, $filter, seeCrowdModel, setCrowdModel) {
+app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 'seeCrowdModel', 'setCrowdModel', '$timeout',
+    function($rootScope, $scope, $filter, seeCrowdModel, setCrowdModel, $timeout) {
 
         $scope.onPageShown = function(){
+
+            if(app.seeCrowdTabbar.searchInput){
+                $timeout(function() {
+                    $scope.searchInput.value = app.seeCrowdTabbar.searchInput;
+                    document.getElementById('map-search-input').focus();
+                }, 300);
+            }
+
             if(seeCrowdModel.isReload().map) {
                 $scope.searchInput = {value: '', searchable: true};
                 seeCrowdModel.loadMap().then(function() {
                     seeCrowdModel.setReload({map: false});
                 }, function() {
+                    $scope.setMapClickable(false);
                     this.loadingFailedDialog.show();
                     seeCrowdModel.setReload({map: false});
                 });
@@ -36,6 +45,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
                 app.navi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
             }, function() {
                 modal.hide();
+                $scope.setMapClickable(false);
                 this.loadingFailedDialog.show();
             });
         };
@@ -47,6 +57,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
                 app.navi.pushPage('templates/see-crowd-detail.html', {animation:'lift', selectedPlace: _place});
             }, function() {
                 modal.hide();
+                $scope.setMapClickable(false);
                 this.loadingFailedDialog.show();
             });
         };
@@ -75,6 +86,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
                 }
             }, function() {
                 modal.hide();
+                $scope.setMapClickable(false);
                 this.loadingFailedDialog.show();
             });
         };

@@ -30,6 +30,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter', '
             crowdTabbar.setTabbarVisibility(true);
             if($rootScope.location.latitude) {
                 if(seeCrowdModel.isReload().list) {
+                    $scope.stopSearch();
                     $log.log('Reload list detected');
                     modal.show();
                     seeCrowdModel.setReload({list: false});
@@ -132,6 +133,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter', '
         $scope.searchInput = {value: ''};
         $scope.stopSearch = function() {
             $scope.clearSearchInput();
+            app.seeCrowdTabbar.searchInput = $scope.searchInput.value;
             $scope.searchStatus.started = false;
         };
 
@@ -162,6 +164,13 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter', '
         $scope.clearSearchInput = function(){
             $scope.searchInput.value = '';
             $scope.searchInputChange();
+        };
+
+        $scope.askCrowd = function(){
+            if($scope.searchInput.value && $scope.searchInput.value.length > 0) {
+                app.seeCrowdTabbar.searchInput = $scope.searchInput.value;
+                app.seeCrowdTabbar.setActiveTab(1, {animation: 'none'});
+            }
         };
        
         //TODO: was used for infinite loop, could be removed
