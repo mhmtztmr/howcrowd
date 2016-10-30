@@ -5,7 +5,8 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             var self = {},
             mapDivId = 'map', map, searchInputDivId = 'map-search-input',
             currentLocationMarker, markersMap = {}, searchMarkersMap = {}, infowindow,
-            loading,
+            loading, 
+            reload = {list: true, map: true},
             placesNextPage, hasPlacesNextPage, placesMap = {};
 
             /*
@@ -52,7 +53,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
             self.loadPlaces = function() {
                 return new Promise(function(resolve, reject){
                     if(loading === true) {
-                        resolve(places);
+                        return;
                     }
                     else {
                         placesMap = {};
@@ -90,9 +91,9 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
 
                             loading = false;
                             resolve(places);
-                        }, function() {
+                        }, function(e) {
                             loading = false;
-                            reject();
+                            reject(e);
                         });
                     }
                 });
@@ -305,6 +306,7 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                                 }
                             }
                         }
+                        resolve();
                     }, reject);
                 });
             }
@@ -339,6 +341,16 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                 }
             };
 
+            function resetMap() {
+                return new Promise(function(resolve, reject) {
+                    mapService.resetMapPosition(map, $rootScope.location);
+                    self.clearMarkers();
+                    loadPlacesInMapBox().then(function(places) {
+                        markPlaces(places).then(resolve, reject);
+                    }, reject);
+                });
+            }
+
             function initAutocomplete(){
                 return new Promise(function(resolve, reject) {
                     var boundingBox = locationService.getBoundingBox($rootScope.location, configService.FAR_DISTANCE);
@@ -355,7 +367,6 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                                     place = __place;
                                 }
                                 mapService.moveMapTo(map, place.location, 17);
-                                //mapService.resetMap(map, place.location);
                                 var places = [];
                                 places.push(place);
                                 markSearchPlaces(places);
@@ -444,15 +455,11 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                               map = _map;
                               self.markCurrentLocation();
                               initAutocomplete().then(resolve, reject);
-                              resolve();
                             }, reject);
                         }, 100);
                     }
-                    else if(Object.keys(markersMap).length === 0) {
-                        //mapService.resetMap(map, $rootScope.location);
-                        // loadPlacesInMapBox().then(function(places) {
-                        //     markPlaces(places);
-                        // });
+                    else {
+                        resetMap().then(resolve, reject);                     
                     }
                 });
             };
@@ -473,6 +480,21 @@ angular.module('seeCrowd.Model', ['seeCrowd.Service', 'map.Service', 'date', 'lo
                         }, reject);
                     }
                 });
+            };
+
+            self.setReload = function(_reload) {
+                var prevReload = reload;
+                if(_reload.list !== undefined) {
+                    reload.list = _reload.list;
+                }
+                if(_reload.map !== undefined) {
+                    reload.map = _reload.map;
+                }
+                return prevReload;
+            };
+
+            self.isReload = function() {
+                return reload;
             };
 
             return self;

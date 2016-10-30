@@ -19,7 +19,7 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
       text: crowdDisplayService.getCrowdDisplayText(5)
     }];
 
-    $scope.selectedPlace = app.setCrowdNavi.topPage.pushedOptions.selectedPlace;
+    $scope.selectedPlace = app.navi.topPage.pushedOptions.selectedPlace;
     $scope.customPlaceName = {value: ''};
 
     $scope.selectCrowd = function(crowdLevelIndex){
@@ -46,7 +46,7 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
       }
 
       if ($scope.selectedPlace && crowdLevelIndex !== undefined && $rootScope.deviceObject) {
-        app.setCrowdNavi.pushPage('templates/set-crowd-attachment.html', {
+        app.navi.pushPage('templates/set-crowd-attachment.html', {
           animation: 'slide', crowdLevels: $scope.levels,  selectedCrowdLevelIndex: crowdLevelIndex, selectedPlace: $scope.selectedPlace
         });
       }

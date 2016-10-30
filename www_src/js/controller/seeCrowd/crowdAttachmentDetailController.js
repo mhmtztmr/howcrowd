@@ -1,6 +1,9 @@
 app.controller('crowdAttachmentDetailController', ['$scope',
-
   function($scope) {
-    $scope.crowd = app.seeCrowdNavi.topPage.pushedOptions.crowd;
+    $scope.crowd = app.navi.topPage.pushedOptions.crowd;
+
+    $scope.onPageShown = function(){
+        modal.hide();
+    };
   }
 ]);

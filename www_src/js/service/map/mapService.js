@@ -11,8 +11,8 @@ angular.module('map.Service', ['google'])
             googleService.setMapClickable(map, clickable);
         };
 
-        self.resetMap = function(map, center) {
-            googleService.resetMap(map, center);
+        self.resetMapPosition = function(map, center) {
+            googleService.resetMapPosition(map, center);
         };
 
         self.getMapBoundingBox = function(map) {

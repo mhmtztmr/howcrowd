@@ -1,22 +1,31 @@
-app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 'seeCrowdModel',
-    function($rootScope, $scope, $filter, seeCrowdModel) {
-        
-        function loadMap(){
-            seeCrowdModel.loadMap();
-        }
+app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 'seeCrowdModel', 'setCrowdModel',
+    function($rootScope, $scope, $filter, seeCrowdModel, setCrowdModel) {
 
-        $scope.onMapShow = function(){
-            loadMap();
+        $scope.onPageShown = function(){
+            if(seeCrowdModel.isReload().map) {
+                $scope.searchInput = {value: '', searchable: true};
+                seeCrowdModel.loadMap().then(function() {
+                    seeCrowdModel.setReload({map: false});
+                }, function() {
+                    this.loadingFailedDialog.show();
+                    seeCrowdModel.setReload({map: false});
+                });
+            }
+            
             crowdTabbar.setTabbarVisibility(false);
+
+            document.getElementsByClassName('onsen-sliding-menu__menu')[0].previousSibling.previousSibling.style.display = 'none';
+            
             [].forEach.call(document.querySelectorAll('.page__background'), function (el) {
-              el.style.display = 'none';
+                el.style.display = 'none';
             });
         };
 
-        $scope.onMapHide = function(){
-            crowdTabbar.setTabbarVisibility(true);
+        $scope.onPageHidden = function(){
+            document.getElementsByClassName('onsen-sliding-menu__menu')[0].previousSibling.previousSibling.style.display = null;
+
             [].forEach.call(document.querySelectorAll('.page__background'), function (el) {
-              el.style.display = null;
+                el.style.display = null;
             });
         };
 
@@ -24,7 +33,7 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
             modal.show();
             seeCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
                 modal.hide();
-                app.seeCrowdNavi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
+                app.navi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
             }, function() {
                 modal.hide();
                 this.loadingFailedDialog.show();
@@ -35,11 +44,23 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
             modal.show();
             seeCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
                 modal.hide();
-                app.seeCrowdNavi.pushPage('templates/see-crowd-detail.html', {animation:'lift', selectedPlace: _place});
+                app.navi.pushPage('templates/see-crowd-detail.html', {animation:'lift', selectedPlace: _place});
             }, function() {
                 modal.hide();
                 this.loadingFailedDialog.show();
             });
+        };
+
+        //TODO: will be added
+        $scope.setCrowd = function() {
+            // modal.show();
+            // setCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+            //     modal.hide();
+            //     app.navi.pushPage('templates/set-crowd-level.html', {animation:'lift', selectedPlace: _place});
+            // }, function() {
+            //     modal.hide();
+            //     this.loadingFailedDialog.show();
+            // });
         };
 
         $scope.selectPlace = function() {
@@ -47,10 +68,10 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
             seeCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
                 modal.hide();
                 if(_place.crowds && _place.crowds.length > 0) {
-                    app.seeCrowdNavi.pushPage('templates/see-crowd-detail.html', {animation:'lift', selectedPlace: _place});
+                    app.navi.pushPage('templates/see-crowd-detail.html', {animation:'lift', selectedPlace: _place});
                 }
                 else {
-                    app.seeCrowdNavi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
+                    app.navi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
                 }
             }, function() {
                 modal.hide();

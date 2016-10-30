@@ -103,7 +103,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
 
 app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'INTERFACE', '$log',
     function($rootScope, $scope, identificationService, INTERFACE, $log) {
-
+        modal.show();
         function identifyDevice() {
             if(!$rootScope.deviceObject) {
                 $log.log('identifying device');

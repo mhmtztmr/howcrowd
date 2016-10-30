@@ -16,10 +16,10 @@ angular.module('google', ['config', 'placeType', 'interface']).
         INTERFACE.setMapClickable(map, clickable);
     };
 
-	// self.resetMap = function(map, center) {
-	// 	map.setZoom(16);
-	// 	map.setCenter({lat: center.latitude, lng: center.longitude});
-	// };
+	self.resetMapPosition = function(map, center) {
+		self.setMapZoom(map, 16);
+		self.setMapCenter(map, center);
+	};
 
 	self.getMapBoundingBox = function(map) {
 		return INTERFACE.getMapBoundingBox(map);
@@ -149,7 +149,8 @@ angular.module('google', ['config', 'placeType', 'interface']).
 	}
 
 	self.searchPlaces = function(mapDOMElementId, query, location, radius){
-		var placeTypes = Object.keys(placeTypeConstants.google);
+		var placeTypes = Object.keys(placeTypeConstants.google), places = [],
+		bounds = new google.maps.LatLngBounds();
 		return new Promise(function(resolve, reject){
 			if(!serviceMap) {
 				var latLng = new google.maps.LatLng(location.latitude, location.longitude);
@@ -167,9 +168,9 @@ angular.module('google', ['config', 'placeType', 'interface']).
 	            name : query
 	        };
 	                          
-	        service.nearbySearch(request, function(results, status){
+	        service.nearbySearch(request, function(results, status, pagination){
 	          	if (status === google.maps.places.PlacesServiceStatus.OK) {
-	          		var i, place, places = [], bounds = new google.maps.LatLngBounds(), center, zoom;
+	          		var i, place, center, zoom;
 	          		for(i = 0 ; i < results.length; i++) {
 	          			place = results[i];
 	          			if (place.geometry.viewport) {
@@ -180,21 +181,26 @@ angular.module('google', ['config', 'placeType', 'interface']).
 			            }
 	          			places.push(getFormattedPlace(place));
 	          		}
-	          		if(mapDOMElementId) {
-	          			center = {
-	          				latitude: bounds.getCenter().lat(),
-	          				longitude: bounds.getCenter().lng()
-	          			};
-	          			zoom = getBoundsZoomLevel(bounds, {
-		          			height: document.getElementById(mapDOMElementId).clientHeight,
-		          			width: document.getElementById(mapDOMElementId).clientWidth
+	          		if(pagination.hasNextPage) {
+	          			pagination.nextPage();
+	          		}
+	          		else {
+	          			if(mapDOMElementId) {
+		          			center = {
+		          				latitude: bounds.getCenter().lat(),
+		          				longitude: bounds.getCenter().lng()
+		          			};
+		          			zoom = getBoundsZoomLevel(bounds, {
+			          			height: document.getElementById(mapDOMElementId).clientHeight,
+			          			width: document.getElementById(mapDOMElementId).clientWidth
+			          		});
+		          		}
+		            	resolve({
+		            		places: places, 
+		            		center: center,
+		          			zoom: zoom
 		          		});
 	          		}
-	            	resolve({
-	            		places: places, 
-	            		center: center,
-	          			zoom: zoom
-	          		});
 	          	}
 	          	else {
 	          		reject();

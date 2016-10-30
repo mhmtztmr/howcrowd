@@ -1,4 +1,4 @@
-<ons-page ng-controller="seeCrowdInlistController">
+<ons-page ng-controller="seeCrowdInlistController" ons-show="onPageShown()">
     <ons-toolbar ng-show="searchStatus.started">
         <div class="left">
             <ons-back-button class="search-crowd-cancel" ng-click="stopSearch()"></ons-back-button>
@@ -20,7 +20,7 @@
         </div>
         <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
         <div class="right">
-            <ons-toolbar-button ng-show="places && places !== 'pending' && places.length > 0" ng-click="startSearch()">
+            <ons-toolbar-button ng-show="places && places.length > 0" ng-click="startSearch()">
                 <ons-icon icon="fa-search"></ons-icon>
             </ons-toolbar-button>
             <ons-toolbar-button onclick="app.seeCrowdTabbar.setActiveTab(1, {animation: 'none'});">
@@ -29,7 +29,7 @@
         </div>
     </ons-toolbar>
 
-    <ons-pull-hook ng-action="refreshPlaces($done)" var="loader" threshold-height="128px" height="96px">
+    <ons-pull-hook ng-if="places" ng-action="refreshPlaces($done)" var="loader" threshold-height="128px" height="96px">
         <span ng-switch="loader.state">
             <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon></span>
             <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon></span>
@@ -41,10 +41,7 @@
         <button class="no-location-refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
         <ons-icon icon="fa-map-marker" class="no-location-icon"></ons-icon>
     </div>
-    <div ng-if="places === 'pending'" style="text-align: center; padding-top: 144px;">
-        <ons-icon size="70px" spin="true" icon="fa-spinner">
-    </div>
-    <div ng-if="places && places !== 'pending' && places.length === 0 && searchInput.value.length === 0" class="no-crowd-container">
+    <div ng-if="places && places.length === 0 && searchInput.value.length === 0" class="no-crowd-container">
         <div class="no-crowd-text-container">
             <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD}}</div>
         </div>
@@ -61,7 +58,7 @@
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>
     </div>
-    <div ng-if="places && places !== 'pending' && places.length === 0 && searchInput.value.length > 0" class="no-crowd-container">
+    <div ng-if="places && places.length === 0 && searchInput.value.length > 0" class="no-crowd-container">
         <div class="no-crowd-text-container">
             <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD_FOR_SEARCH}}</div>
         </div>
@@ -72,7 +69,7 @@
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>
     </div>
-    <ons-list ng-if="places && places !== 'pending' && places.length > 0">
+    <ons-list ng-if="places && places.length > 0">
       <ons-list-item ng-repeat="item in places" ng-click="selectPlace(item)">
         <div class="crowd-main-body">
           <div class="crowd-left">
@@ -121,7 +118,7 @@
         </div>
       </ons-list-item>
     </ons-list>
-    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more" ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
+    <ons-button ng-if="places && places.length > 0 && more" ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
       More
     </ons-button>
 </ons-page>

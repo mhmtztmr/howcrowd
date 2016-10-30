@@ -1,4 +1,4 @@
-<ons-page ng-controller="seeCrowdInmapController" ons-show="onMapShow()" ons-hide="onMapHide()">
+<ons-page ng-controller="seeCrowdInmapController" ons-show="onPageShown()" ons-hide="onPageHidden()">
     <ons-toolbar>
         <div class="left">
             <ons-toolbar-button ng-show="searchInput.value.length > 0" ng-click="clearSearchInput()" class="search-crowd-cancel" >
@@ -7,7 +7,7 @@
             <!-- <ons-toolbar-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
                 <ons-icon icon="fa-list"></ons-icon>
             </ons-toolbar-button> -->
-            <ons-back-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});"></ons-back-button>
+            <ons-back-button ng-show="searchInput.value.length === 0" ng-click="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});"></ons-back-button>
         </div>
         <div class="center">
             <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="map-search-input" ng-disabled="!searchInput.searchable" ng-change="searchInputChange()" ng-blur="searchInputChange()" ng-focus="searchInputChange()"/>
@@ -69,7 +69,7 @@
             <div class="selected-place-button" ng-click="askCrowd()">
                 <ons-icon icon="fa-question"></ons-icon>
             </div>
-            <div ng-if="selectedPlace.isNearby" class="selected-place-button">
+            <div ng-if="selectedPlace.isNearby" ng-click="setCrowd()" class="selected-place-button">
                 <ons-icon icon="fa-plus"></ons-icon>
             </div>
             <div ng-if="selectedPlace.averageCrowdValue || selectedPlace.hasAsk" class="selected-place-button" ng-click="seeCrowd()">

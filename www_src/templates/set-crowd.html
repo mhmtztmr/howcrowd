@@ -28,8 +28,8 @@
                 </div>
             </ons-toolbar>
 
-            <ons-pull-hook ng-action="refreshNearbyPlaces($done)" var="loader" threshold-height="128px" height="96px">
-                <span ng-switch="loader.state">
+            <ons-pull-hook ng-action="refreshNearbyPlaces($done)" var="loaderr" threshold-height="128px" height="96px">
+                <span ng-switch="loaderr.state">
                     <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon></span>
                     <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon></span>
                     <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon></span>

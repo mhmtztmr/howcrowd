@@ -8,6 +8,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
                 function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
+                    $scope.$apply();
                     if(success) {
                         success();
                     }
@@ -18,6 +19,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
                         success();
                     }
                     $scope.nearbyPlaces = [];
+                    $scope.$apply();
                 });
         }
 
@@ -48,7 +50,7 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
             if(!($scope.nearbyPlaces instanceof Array)) {
                 if($rootScope.location.latitude) {
                     $scope.nearbyPlaces = 'pending';
-                    //loadNearbyPlaces();
+                    loadNearbyPlaces();
                 }
                 else {
                     $scope.nearbyPlaces = undefined;
@@ -57,10 +59,9 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
             }
         }));
 
-
         $scope.selectPlace = function(place) {
             setCrowdModel.selectPlace(place).then(function(_place) {
-                app.setCrowdNavi.pushPage('templates/set-crowd-level.html', {animation: 'lift', selectedPlace: _place});
+                app.navi.pushPage('templates/set-crowd-level.html', {animation: 'lift', selectedPlace: _place});
             });
         };
 
