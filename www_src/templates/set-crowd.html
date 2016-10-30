@@ -25,6 +25,9 @@
                     <ons-toolbar-button ng-click="startSearch();">
                         <ons-icon icon="fa-search"></ons-icon>
                     </ons-toolbar-button>
+                    <ons-toolbar-button ng-if="$root.settings.isCustomPlacesEnabled === true && nearbyPlaces && nearbyPlaces !== 'pending' && nearbyPlaces.length > 0" ng-click="selectPlace()">
+                        <ons-icon icon="fa-pencil-square-o"></ons-icon>
+                    </ons-toolbar-button>
                 </div>
             </ons-toolbar>
 
@@ -36,8 +39,9 @@
                 </span>
             </ons-pull-hook>
 
-            <div ng-if="!nearbyPlaces">
-                <button class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+            <div ng-if="!nearbyPlaces" class="no-location-container">
+                <button class="no-location-refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+                <ons-icon icon="fa-map-marker" class="no-location-icon"></ons-icon>
             </div>
             <div ng-if="nearbyPlaces === 'pending'" style="text-align: center; padding-top: 144px;">
                 <ons-icon size="70px" spin="true" icon="fa-spinner">
@@ -52,17 +56,6 @@
                     </div>
                 </ons-list-item>
             </ons-list>
-
-            <ons-bottom-toolbar ng-if="$root.settings.isCustomPlacesEnabled === true && nearbyPlaces && nearbyPlaces !== 'pending' && nearbyPlaces.length > 0">
-                <div class="tab-bar">
-                    <label class="tab-bar__item" ng-click="selectPlace()">
-                        <input type="radio" name="tab-bar-c" checked="checked">
-                        <button class="tab-bar__button">
-                            <div class="tab-bar__label">{{$root.lang.SET_CROWD_MENU.ENTER_CUSTOM_PLACE}}</div>
-                        </button>
-                    </label>
-                </div>
-            </ons-bottom-toolbar>
         </ons-page>
     </ons-navigator>
 </div>
