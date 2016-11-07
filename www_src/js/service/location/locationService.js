@@ -73,7 +73,7 @@ angular.module('location', ['map.Service', 'interface'])
 				}, {
 					enableHighAccuracy: true,
 					timeout: geolocationTimeout,
-					maximumAge: 0
+					maximumAge: intervalTime * 2
 				});
 			}
 

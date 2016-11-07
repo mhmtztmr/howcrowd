@@ -3,6 +3,7 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter', '
         $log.log('seeCrowdInlistController initialized.');
 
         var searchTimeout, initialPlaces;
+        $scope.places = 'pending';
 
         function loadPlaces() {
             $log.log('Loading see crowd in list places...');
@@ -92,11 +93,11 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter', '
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function() {
             //pending or undefined
-            if(!$scope.places) {
+            if(!($scope.places instanceof Array)) {
                 if($rootScope.location.latitude) {
                     seeCrowdModel.markCurrentLocation();
+                    $scope.places = 'pending';
                     if(seeCrowdModel.isReload().list) {
-                        modal.show();
                         seeCrowdModel.setReload({list: false});
                         loadPlaces().then(function() {
                             modal.hide();

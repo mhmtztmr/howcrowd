@@ -24,11 +24,10 @@ var Android = function(){
 
 	this.isLocationEnabled = function(callback){
 		cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
-            callback(enabled);
-        },
-        function(){
-        	callback(false);
-        });
+      callback(enabled);
+    }, function(){
+    	callback(false);
+    });
 	};
 
 	this.openGPSDialog = function(message, description, title, functionMap, labelMap){

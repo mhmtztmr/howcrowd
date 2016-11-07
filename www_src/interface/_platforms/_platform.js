@@ -23,6 +23,10 @@ var Platform = function(){
 			callback(true);
 		}, function(){
 			callback(false);
+		}, {
+			enableHighAccuracy: true,
+			timeout: 5000,	
+			maximumAge: 60000
 		});
 	};
 

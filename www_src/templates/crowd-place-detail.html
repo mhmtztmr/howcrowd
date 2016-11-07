@@ -6,7 +6,7 @@
       </div>
       <div class="center">
         <div class="crowd-name truncate">
-          <ons-icon icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
+          <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
         </div>
       </div>
     </ons-toolbar>

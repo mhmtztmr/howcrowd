@@ -128,6 +128,17 @@
     font-size: 12px;
   }
 
+  .crowd-pending {
+    height: 96px;
+    line-height: 96px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    z-index: 20002;
+  }
+
   ons-fab {
     position: absolute !important;
   }

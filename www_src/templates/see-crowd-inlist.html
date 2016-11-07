@@ -29,7 +29,7 @@
         </div>
     </ons-toolbar>
 
-    <ons-pull-hook ng-if="places" ng-action="refreshPlaces($done)" var="loader" threshold-height="128px" height="96px">
+    <ons-pull-hook ng-if="places && places !== 'pending'" ng-action="refreshPlaces($done)" var="loader" threshold-height="128px" height="96px">
         <span ng-switch="loader.state">
             <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon></span>
             <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon></span>
@@ -37,11 +37,15 @@
         </span>
     </ons-pull-hook>
 
+    <div ng-if="places === 'pending'" class="crowd-pending">
+        <ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon>
+    </div>
+
     <div ng-if="!places" class="no-location-container">
         <button class="no-location-refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
         <ons-icon icon="fa-map-marker" class="no-location-icon"></ons-icon>
     </div>
-    <div ng-if="places && places.length === 0 && searchInput.value.length === 0" class="no-crowd-container">
+    <div ng-if="places && places !== 'pending' && places.length === 0 && searchInput.value.length === 0" class="no-crowd-container">
         <div class="no-crowd-text-container">
             <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD}}</div>
         </div>
@@ -58,7 +62,7 @@
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>
     </div>
-    <div ng-if="places && places.length === 0 && searchInput.value.length > 0" class="no-crowd-container">
+    <div ng-if="places && places !== 'pending' && places.length === 0 && searchInput.value.length > 0" class="no-crowd-container">
         <div class="no-crowd-text-container">
             <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD_FOR_SEARCH}}</div>
         </div>
@@ -69,15 +73,15 @@
             <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
         </div>
     </div>
-    <ons-list ng-if="places && places.length > 0">
+    <ons-list ng-if="places && places !== 'pending' && places.length > 0">
       <ons-list-item ng-repeat="item in places" ng-click="selectPlace(item)">
         <div class="crowd-main-body">
           <div class="crowd-left">
             <div>
-              <ons-icon ng-if="item.isNearby" icon="fa-street-view"></ons-icon>
+                <ons-icon icon="fa-{{item.typeObject.FA_ICON}}" style="color: brown"></ons-icon>
             </div>
             <div>
-              <ons-icon icon="fa-{{item.typeObject.FA_ICON}}" style="color: brown"></ons-icon>
+                <ons-icon ng-if="item.isNearby" icon="fa-street-view"></ons-icon>
             </div>
           </div>
           <div class="crowd-center">
@@ -118,7 +122,7 @@
         </div>
       </ons-list-item>
     </ons-list>
-    <ons-button ng-if="places && places.length > 0 && more" ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
+    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more" ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
       More
     </ons-button>
 </ons-page>

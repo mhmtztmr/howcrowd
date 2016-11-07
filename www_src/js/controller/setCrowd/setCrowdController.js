@@ -1,42 +1,41 @@
-app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapService', 'setCrowdModel', '$filter',
-    function($rootScope, $scope, $timeout, mapService, setCrowdModel, $filter) {
+app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapService', 'setCrowdModel', '$filter', '$log',
+    function($rootScope, $scope, $timeout, mapService, setCrowdModel, $filter, $log) {
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
 
-        function loadNearbyPlaces(success){
-            setCrowdModel.loadNearbyPlaces().then(
-                function(nbp) {
+        function loadNearbyPlaces(){
+            $log.log('Loading see crowd in list places...');
+            return new Promise(function(resolve, reject) {
+                setCrowdModel.loadNearbyPlaces().then(function(nbp) {
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
                     $scope.$apply();
-                    if(success) {
-                        success();
-                    }
-                },
-                function(){
+                    resolve();
+                }, function(){
                     this.loadingFailedDialog.show();
-                    if(success) {
-                        success();
-                    }
                     $scope.nearbyPlaces = [];
                     $scope.$apply();
+                    reject();
                 });
+            });
         }
 
-        $scope.refreshNearbyPlaces = function($done) {
-            if($scope.nearbyPlaces === 'pending' || $scope.nearbyPlaces === undefined) {
-                if($done) {
-                    $done();
+        $scope.refreshNearbyPlaces = function(done) {
+            if($scope.nearbyPlaces === undefined) {
+                if(done) {
+                    done();
                 }
             }
             if($rootScope.location.latitude) {
-                loadNearbyPlaces($done);
+                loadNearbyPlaces().then(function() {
+                    done();
+                });
             }
-            else if($scope.nearbyPlaces !== 'pending' && $scope.nearbyPlaces !== undefined){
+            else if($scope.nearbyPlaces !== undefined){
                 $scope.nearbyPlaces = undefined;
                 $scope.$apply();
-                if($done) {
-                    $done();
+                if(done) {
+                    done();
                 }
             }
         };
@@ -46,7 +45,6 @@ app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapSe
         }
 
         $scope.$on('$destroy', $rootScope.$on("locationChanged", function() {
-            //pending or undefined
             if(!($scope.nearbyPlaces instanceof Array)) {
                 if($rootScope.location.latitude) {
                     $scope.nearbyPlaces = 'pending';
