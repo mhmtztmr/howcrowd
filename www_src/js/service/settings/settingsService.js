@@ -1,4 +1,4 @@
-var settingsService = function($rootScope) {
+var settingsService = function($rootScope, $log) {
     function loadSettings() {
         return new Promise(function(resolve, reject){
             var settings = localStorage.getItem('settings');
@@ -10,7 +10,7 @@ var settingsService = function($rootScope) {
             } else {
                 $rootScope.settings = JSON.parse(settings);
             }
-            window.console.log('Settings loaded.');
+            $log.log('Settings loaded.');
             resolve();
         });
     }
@@ -26,4 +26,4 @@ var settingsService = function($rootScope) {
 };
 
 angular.module('settings', [])
-    .factory('settingsService', ['$rootScope', settingsService]);
+    .factory('settingsService', ['$rootScope', '$log', settingsService]);

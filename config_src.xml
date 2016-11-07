@@ -21,6 +21,10 @@
     <plugin name="cordova.plugin.diagnostic.api-22" spec="https://github.com/dpa99c/cordova-diagnostic-plugin.git#api-22"/>
 	<plugin name="cordova-plugin-x-socialsharing" spec="https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git"/>
     <plugin name="cordova-plugin-whitelist" spec="1" />
+	<plugin name="cordova-plugin-googlemaps" spec="https://github.com/mapsplugin/cordova-plugin-googlemaps.git">
+	   <variable name="API_KEY_FOR_ANDROID" value="<%=MAPS_ANDROID_KEY%>" />
+	   <variable name="API_KEY_FOR_IOS" value="<%=MAPS_IOS_KEY%>" />
+	</plugin>
 
     <preference name="permissions" value="none"/>
     <preference name="orientation" value="default"/>
@@ -31,8 +35,12 @@
     <preference name="ios-statusbarstyle" value="black-opaque"/>
     <preference name="detect-data-types" value="true"/>
     <preference name="exit-on-suspend" value="false"/>
-    <preference name="show-splash-screen-spinner" value="true"/>
-    <preference name="auto-hide-splash-screen" value="true"/>
+
+    <preference name="ShowSplashScreenSpinner" value="false"/>
+    <preference name="FadeSplashScreen" value="false"/>
+    <preference name="AutoHideSplashScreen" value="false" />
+    <preference name="SplashShowOnlyFirstTime" value="false" />
+    
     <preference name="disable-cursor" value="false"/>
     <preference name="android-minSdkVersion" value="14"/>
     <preference name="android-installLocation" value="auto"/>

@@ -10,6 +10,18 @@ angular.module('placeType', [])
 	        else {
 	            typeObject = placeTypeConstants['default']['default'];
 	        }
+
+	        if(!typeObject) {
+	        	typeObject = placeTypeConstants['default']['default'];
+	        }
+
+        	if(place.source === 'custom') {
+            	typeObject.FA_ICON = 'map-signs'
+            }
+            else {
+            	typeObject.FA_ICON = 'thumb-tack'
+            }
+
 	        return typeObject;
 		};
 

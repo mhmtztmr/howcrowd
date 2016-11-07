@@ -7,8 +7,7 @@
       <div class="center">
         <div ng-if="selectedPlace !== undefined && customPlaceName.value.length === 0">
           <div class="crowd-name truncate">
-            <!-- <img ng-src="img/sources/{{selectedPlace.source}}.png" /> -->
-            <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-thumb-tack"></ons-icon>
+            <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon>
             {{selectedPlace.name}}
           </div>
         </div>

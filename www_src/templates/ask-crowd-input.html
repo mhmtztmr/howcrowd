@@ -4,24 +4,16 @@
             <ons-back-button></ons-back-button>
         </div>
         <div class="center" ng-click="$root.seePlaceDetail(selectedPlace)">
-	        <ons-icon icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
+	        <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
 	    </div>
       </div>
     </ons-toolbar>
-    <ons-list>
-      <ons-list-item>
-        <textarea class="textarea" maxlength="200" ng-model="askCrowdText.value" placeholder="How crowd {{selectedPlace.name}}" style="width: 100%; height: 58px;"></textarea>
-      </ons-list-item>
-    </ons-list>
-    <ons-bottom-toolbar>
-        <div class="tab-bar">
-            <label class="tab-bar__item" ng-click="askCrowd()">
-                <input type="radio" name="tab-bar-c" checked="checked">
-                <button class="tab-bar__button">
-                    <div class="tab-bar__label">Ask Crowd
-                    </div>
-                </button>
-            </label>
-        </div>
-    </ons-bottom-toolbar>
+    <div style="text-align: center;">
+        <p style="margin-top: 30px;">
+            <textarea ng-model="askCrowdText.value" style="width:80%; resize:none; height:72px;" class="text-input text-input--material text-input--underbar" placeholder="How crowd {{selectedPlace.name}}" maxlength="200"></textarea>
+        </p>
+        <p style="margin-top: 30px;">
+            <ons-button style="width:80%" ng-click="askCrowd()">Ask Crowd</ons-button>
+        </p>
+    </div>
 </ons-page>

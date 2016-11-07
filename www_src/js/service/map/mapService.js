@@ -7,20 +7,48 @@ angular.module('map.Service', ['google'])
             return googleService.initMap(DOMElementId, center, events);
         };
 
-        self.resetMap = function(map, center) {
-            googleService.resetMap(map, center);
+        self.setMapClickable = function(map, clickable) {
+            googleService.setMapClickable(map, clickable);
+        };
+
+        self.resetMapPosition = function(map, center) {
+            googleService.resetMapPosition(map, center);
         };
 
         self.getMapBoundingBox = function(map) {
             return googleService.getMapBoundingBox(map);
         };
 
-        self.setMapBoundingBox = function(map, swLat, swLng, neLat, neLng) {
-            googleService.setMapBoundingBox(map, swLat, swLng, neLat, neLng);
+        self.getMapZoom = function(map) {
+            return googleService.getMapZoom(map);
         };
 
-        self.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick) {
-            return googleService.createMarker(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick);
+        self.getMapCenter = function(map) {
+            return googleService.getMapCenter(map);
+        };
+
+        self.setMapZoom = function(map, zoom) {
+            googleService.setMapZoom(map, zoom);
+        };
+
+        self.setMapCenter = function(map, center) {
+            googleService.setMapCenter(map, center);
+        };
+
+        self.moveMapTo = function(map, center, zoom) {
+            googleService.moveMapTo(map, center, zoom);
+        };
+
+        self.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData) {
+            return googleService.createMarker(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData);
+        };
+
+        self.removeMarker = function(marker) {
+            googleService.removeMarker(marker);
+        };
+
+        self.createCurrentLocationMarker = function(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData) {
+            return googleService.createCurrentLocationMarker(map, location, markerData, onMarkerClick, infoWindowData, onInfoWindowClick, extraData);
         };
 
         self.initAutocomplete = function(map, DOMElementId, boundingBox, onPlaceSelected){
@@ -29,9 +57,13 @@ angular.module('map.Service', ['google'])
             });
         };
 
-        self.searchPlaces = function(map, query, location, radius){
+        self.isAutocompleteVisible = function() {
+            return googleService.isAutocompleteVisible();
+        };
+
+        self.searchPlaces = function(mapDOMElementId, query, location, radius){
             return new Promise(function(resolve, reject){
-                googleService.searchPlaces(map, query, location, radius).then(resolve, reject).catch(reject);
+                googleService.searchPlaces(mapDOMElementId, query, location, radius).then(resolve, reject).catch(reject);
             });
         };
 
@@ -42,8 +74,8 @@ angular.module('map.Service', ['google'])
             CROWD: {
                 ID: "crowd",
                 INFO: {
-                    anchor: {x:7, y: 40},
-                    scaledSize: {w: 14, h: 40}
+                    anchor: {x:6, y: 40},
+                    scaledSize: {w: 12, h: 40}
                 },
                 PATHS: {
                     '0': '0',
@@ -63,8 +95,8 @@ angular.module('map.Service', ['google'])
             SEARCH: {
                 ID: "search",
                 INFO: {
-                    anchor: {x:14, y: 80},
-                    scaledSize: {w: 28, h: 80}
+                    anchor: {x:9, y: 60},
+                    scaledSize: {w: 18, h: 60}
                 },
                 PATHS: {
                     '0': '0',

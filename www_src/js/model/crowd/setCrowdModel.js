@@ -18,7 +18,7 @@ angular.module('setCrowd.Model', ['setCrowd.Service', 'map.Service', 'config'])
                 return new Promise(function(resolve, reject){
                     var p1 = mapService.searchPlaces(undefined, undefined, $rootScope.location, configService.NEARBY_DISTANCE);
                     Promise.all([p1]).then(function(result) {
-                        resolve(result[0]);
+                        resolve(result[0].places);
                     }, reject);
                 });
             };

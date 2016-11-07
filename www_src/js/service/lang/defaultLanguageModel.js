@@ -47,7 +47,7 @@ var defaultLanguageModel = function() {
         "SET_CROWD_MENU": {
             "SELECT_PLACE": "Select Place",
             "ENTER_CUSTOM_PLACE": "Enter Custom Place",
-            "PLACE_NAME": "Place Name",
+            "PLACE_NAME": "Custom Place Name",
             "NO_PLACE": "No places around. Tap to enter a custom place!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "PULL_TO_REFRESH": "Pull down to refresh",

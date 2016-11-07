@@ -1,5 +1,5 @@
 <div ng-controller="aboutController">
-    <ons-page>
+    <ons-page ons-show="onPageShown()">
         <ons-carousel var="carousel" ons-postchange="console.log('Changed to ' + $event.activeIndex)" fullscreen swipeable auto-scroll overscrollable>
             <div class="carousel-cover page-indicator">
                 <div class="previous" ng-show="carousel.getActiveIndex() !== 0">
@@ -22,7 +22,7 @@
             </div>
             <ons-carousel-item>
                 <div class="profile-card">
-                    <img src="img/crowd.png" class="about-image"/>
+                    <img src="img/icon_192x192.png" class="about-image"/>
                     <div class="about-name">HowCrowd v{{$root.version}}</div>
                     <div class="about-desc">{{$root.lang.ABOUT.DESCRIPTION}}</div>
                 </div>

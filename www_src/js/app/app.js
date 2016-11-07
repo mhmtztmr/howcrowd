@@ -3,8 +3,8 @@ var app = angular.module('app', ['onsen', 'seeCrowd.Model', 'setCrowd.Model',
     'config', 'feedback', 'date', 'lang', 'db', 'settings', 'location', 'interface'
 ]);
 
-app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', 'feedbackModel', '$log',
-    function(langService, dbService, settingsService, locationService, $rootScope, feedbackModel, $log) {
+app.run(['langService', 'dbService', 'settingsService', 'locationService', '$rootScope', 'feedbackModel', '$log', 'INTERFACE',
+    function(langService, dbService, settingsService, locationService, $rootScope, feedbackModel, $log, INTERFACE) {
     $rootScope.version = version;
     $log.log('App running...');
 
@@ -54,6 +54,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
             });
         });
     }, function() {
+		INTERFACE.hideSplashScreen();
         $log.error('app run init failed');
     });
 
@@ -102,7 +103,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
 
 app.controller('appController', ['$rootScope', '$scope', 'identificationService', 'INTERFACE', '$log',
     function($rootScope, $scope, identificationService, INTERFACE, $log) {
-
+        modal.show();
         function identifyDevice() {
             if(!$rootScope.deviceObject) {
                 $log.log('identifying device');
@@ -116,6 +117,9 @@ app.controller('appController', ['$rootScope', '$scope', 'identificationService'
         }
 
         function init() {
+
+            INTERFACE.hideSplashScreen();
+			
             var connectionType = INTERFACE.getConnectionType();
             if(connectionType  === 'none') {
                 connectionLostDialog.show();

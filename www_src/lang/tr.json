@@ -46,7 +46,7 @@
     "SET_CROWD_MENU": {
         "SELECT_PLACE": "Yer seç",
         "ENTER_CUSTOM_PLACE": "Özel yer gir",
-        "PLACE_NAME": "Yer Adı",
+        "PLACE_NAME": "Özel Yer Adı",
         "NO_PLACE": "Etrafta bir yer yok. Özel yer girmek için dokun!",
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin olun!",
         "SEARCH_INPUT": "Ara"
