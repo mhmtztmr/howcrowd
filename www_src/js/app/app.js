@@ -68,8 +68,8 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
             title: $rootScope.lang.CONFIRM.CONFIRM,
             message: $rootScope.lang.CONFIRM.QUIT_CONFIRM,
             modifier: 'material',
-            buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang.CONFIRM.OK
-            ],
+            buttonLabels: [$rootScope.lang.CONFIRM.CANCEL, $rootScope.lang.CONFIRM.OK],
+            animation: 'none',
             callback: function(answer) {
                 if (answer === 1) { // OK button
                     exitApp();

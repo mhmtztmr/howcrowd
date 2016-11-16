@@ -2,11 +2,11 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
     function($rootScope, $scope, seeCrowdService, $timeout, INTERFACE, seeCrowdModel) {
         $scope.selectedPlace = app.navi.topPage.pushedOptions.selectedPlace;
 
-        $scope.onPageShown = function(){
-            modal.hide();
+        $scope.onPageShown = function() {
+           modal.hide();
         };
 
-        $scope.givePositiveFeedback = function(crowdObject) {
+    	$scope.givePositiveFeedback = function(crowdObject) {
             giveFeedback(crowdObject, true);
         };
 
@@ -68,12 +68,5 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
                     $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
             }
         }];
-
-        $scope.seeCrowdAttachment = function(crowd) {
-            app.navi.pushPage('templates/crowd-attachment-detail.html', {
-                crowd: crowd, 
-                animation:'slide'
-            });
-        };
     }
 ]);

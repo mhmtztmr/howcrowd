@@ -240,3 +240,40 @@
     top: 0;
     bottom: 0;
   }
+
+  .crowd-detail-row {
+    width: 100%;
+    margin: 10px;
+  }
+
+  .crowd-detail-left {
+    float:left;
+  }
+
+  .crowd-detail-right {
+    float:right;
+  }
+
+  .crowd-detail-image {
+    margin: auto;
+  }
+
+  .crowd-detail-text {
+    width: 100%;
+  }
+
+  .crowd-detail-feedback {
+    width: 100%;
+  }
+
+  .crowd-detail-positive-feedback {
+    width: 50%;
+    float: left;
+    text-align: center;
+  }
+
+  .crowd-detail-negative-feedback {
+    width: 50%;
+    float: left;
+    text-align: center;
+  }

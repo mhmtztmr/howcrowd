@@ -38,8 +38,9 @@ app.controller('setCrowdLevelController', ['$rootScope', '$scope',
           $scope.selectedPlace = undefined;
           ons.notification.alert({
             title: $rootScope.lang.ALERT.ALERT,
-            message: 'enter place name',
+            message: $rootScope.lang.WARNING.ENTER_PLACE_NAME,
             buttonLabel: $rootScope.lang.ALERT.OK,
+            animation: 'none'
           });
           return;
         }

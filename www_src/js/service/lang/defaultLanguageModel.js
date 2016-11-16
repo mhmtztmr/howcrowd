@@ -59,6 +59,10 @@ var defaultLanguageModel = function() {
             "TEXT_PLACEHOLDER_APPENDIX": " is...",
             "ADD_CROWD": "Add Crowd"
         },
+        "ASK_CROWD_MENU": {
+            "HOW_CROWD": "How crowd",
+            "ASK_CROWD": "Ask Crowd"
+        },
         "MAP": {
             "YOUR_LOCATION": "Your location"
         },
@@ -77,7 +81,7 @@ var defaultLanguageModel = function() {
             "SUBMIT": "Submit"
         },
         "ABOUT": {
-            "DESCRIPTION": "Crowd (Kalabalık), etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır.Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
+            "DESCRIPTION": "HowCrowd, etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır.Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
             "SEE_CROWD": {
                 "TITLE": "Kalabalık Gör",
                 "DESCRIPTION": "Uygulamanın ana modüllerinden biri kalabalık bilgilerini görebileceğiniz kısımdır. Bu modülde kalabalık bilgileri hakkında detayları, geri bildirimleri görebilir ve paylaşabilirsiniz. Özel olarak girilen yoğunluk bilgilerinden uygulama kriterlerine uygun olmayanlarını bildirebilirsiniz.",
@@ -105,9 +109,9 @@ var defaultLanguageModel = function() {
         },
         "NATIVE_DIALOG": {
             "GPS": {
-                "MESSAGE": "Your GPS is Disabled, this app needs to be enable to works.",
-                "DESCRIPTION": "Use GPS, with wifi or 3G.",
-                "TITLE": "Please Turn on GPS",
+                "MESSAGE": "Your GPS is disabled, this app needs GPS to be enabled to work.",
+                "DESCRIPTION": "Do you want to turn GPS on?",
+                "TITLE": "GPS Status",
                 "YES": "Yes",
                 "NO": "No"
             }
@@ -133,7 +137,8 @@ var defaultLanguageModel = function() {
             "ZOOM_FOR_ASK": "No places around. Zoom and retry longpress!",
             "NO_RESULT_BY_SEARCH": "No result found. Try another search!",
             "LOADING_FAILED": "Loading failed!",
-            "CONNECTION_LOST": "Connection lost! Please check your internet connection, or you can quit the app!"
+            "CONNECTION_LOST": "Connection lost! Please check your internet connection, or you can quit the app!",
+            "ENTER_PLACE_NAME": "Enter place name!"
         }
     };
 };

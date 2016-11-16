@@ -7,3 +7,9 @@
 .page__content > .scroll {
 	height: 100%;
 }
+.list__item--longdivider {
+	border-bottom: 1px solid #eee !important;
+}
+.list--inset {
+	border: 1px solid #ccc !important;
+}
