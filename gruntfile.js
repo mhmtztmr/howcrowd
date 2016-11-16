@@ -56,8 +56,6 @@ module.exports = function(grunt) {
                     'www_src/lib/angular/angular-resource.min.js',
                     'www_src/lib/angular/ready.js',
                     'www_src/lib/angular/filesystem.js',
-                    'www_src/lib/angular/connection.js',
-                    'www_src/lib/angular/geolocation.js',
                     'www_src/lib/backendless/backendless.min.js'
                 ],
                 dest: 'www/js/lib.js'
@@ -150,11 +148,17 @@ module.exports = function(grunt) {
                 }]
             },
             mapsCredentials: {
-                src: ['www/main.html'],
+                src: ['www/main.html', 'config.xml'],
                 overwrite: true, // overwrite matched source files
                 replacements: [{
-                    from: /<%=MAPS_KEY%>/g,
-                    to: '<%= grunt.option(\"credentials\").googleMaps.key %>'
+                    from: /<%=MAPS_JS_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.jsKey %>'
+                }, {
+                    from: /<%=MAPS_ANDROID_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.androidKey %>'
+                }, {
+                    from: /<%=MAPS_IOS_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.iosKey %>'
                 }]
             },
             reportIssue: {
@@ -195,7 +199,7 @@ module.exports = function(grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: 'src/<%= pkg.name %>.js',
+                src: 'js/<%= pkg.name %>.js',
                 dest: 'build/<%= pkg.name %>.min.js'
             }
         },

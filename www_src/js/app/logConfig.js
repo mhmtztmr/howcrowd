@@ -56,12 +56,6 @@ angular.module('app')
             };
 
             $delegate.error = function(msg, args) {
-                if (msg.message) {
-                    args = {
-                        stack: msg.stack
-                    };
-                    msg = msg.message;
-                }
                 printAndStoreLog(errorFn, createLogObject(msg, 'ERROR', args));
             };
 

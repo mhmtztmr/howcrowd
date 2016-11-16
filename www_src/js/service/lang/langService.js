@@ -1,19 +1,19 @@
-var langService = function($q, $http, $rootScope, defaultLanguageModel) {
+var langService = function($q, $http, $rootScope, defaultLanguageModel, $log) {
   function loadLangData() {
     return new Promise(function(resolve, reject){
-      window.console.log('Loading language data...');
+      $log.log('Loading language data...');
       if (navigator.globalization !== null && navigator.globalization !==
         undefined) {
         navigator.globalization.getPreferredLanguage(
           function(language) {
             getLangFile(language.value).then(function(){
-              window.console.log('Lang loaded: ' + language.value);
+             $log.log('Lang loaded: ' + language.value);
               resolve();
             });
           },
           function() {
             getLangFile().then(function(){
-              window.console.log('Lang loaded');
+              $log.log('Lang loaded');
               resolve();
             });
           }
@@ -23,7 +23,7 @@ var langService = function($q, $http, $rootScope, defaultLanguageModel) {
         if (window.navigator.language !== null && window.navigator.language !==
           undefined) {
           getLangFile(window.navigator.language).then(function(){
-            window.console.log('Lang loaded: ' + window.navigator.language);
+            $log.log('Lang loaded: ' + window.navigator.language);
             resolve();
           });
         }
@@ -56,4 +56,4 @@ var langService = function($q, $http, $rootScope, defaultLanguageModel) {
 };
 
 angular.module('lang')
-  .factory('langService', ['$q', '$http', '$rootScope', 'defaultLanguageModel', langService]);
+  .factory('langService', ['$q', '$http', '$rootScope', 'defaultLanguageModel', '$log', langService]);

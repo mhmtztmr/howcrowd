@@ -1,5 +1,5 @@
 var Android = function(){
-
+  Platform.apply( this, arguments );
 	this.Platform = "Android";
 
   this.getDeviceInfo = function() {
@@ -24,11 +24,10 @@ var Android = function(){
 
 	this.isLocationEnabled = function(callback){
 		cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
-            callback(enabled);
-        },
-        function(){
-        	callback(false);
-        });
+      callback(enabled);
+    }, function(){
+    	callback(false);
+    });
 	};
 
 	this.openGPSDialog = function(message, description, title, functionMap, labelMap){
@@ -57,8 +56,178 @@ var Android = function(){
       });
   };
 
+  this.hideSplashScreen = function() {
+      navigator.splashscreen.hide();
+  };
+
   this.socialShare = function(text){
       window.plugins.socialsharing.share(text);
+  };
+
+  this.initMap = function(DOMElementId, center, events) {
+    function addEventsToMap(map, events){
+      if(events) {
+        var mousedownEvent = events.mousedown,
+        idleEvent = events.idle,
+        longpressEvent = events.longpress;
+        if(mousedownEvent) {
+          map.on(plugin.google.maps.event.MAP_CLICK, function(latLng) {
+            mousedownEvent();
+          });
+        }
+        if(idleEvent) {
+          var idleTimer;
+
+          map.on(plugin.google.maps.event.CAMERA_CHANGE, function(latLng) {
+            if(idleTimer) {
+              clearTimeout(idleTimer);
+            }
+            idleTimer = setTimeout(function(){
+              if(idleTimer) {
+                idleEvent();
+                clearTimeout(idleTimer);
+              }
+            }, 1000);
+          });
+        }
+        if(longpressEvent){
+          map.on(plugin.google.maps.event.MAP_LONG_CLICK, function(latLng) {
+            longpressEvent({
+              latitude: latLng.lat,
+              longitude: latLng.lng
+            });
+          });
+        }
+      }
+    }
+
+    var map = plugin.google.maps.Map.getMap(document.getElementById(DOMElementId), {
+      'backgroundColor': 'white',
+      'mapType': plugin.google.maps.MapTypeId.ROADMAP,
+      'controls': {
+        'compass': true,
+        'myLocationButton': true,
+        'indoorPicker': true,
+        'zoom': true
+      },
+      'gestures': {
+        'scroll': true,
+        'tilt': true,
+        'rotate': true,
+        'zoom': true
+      },
+      'camera': {
+        'latLng': new plugin.google.maps.LatLng(center.latitude, center.longitude),
+        'zoom': 16
+      }
+    });
+
+    var serviceMap = new google.maps.Map(document.createElement('div'), {
+        center: {lat: center.latitude, lng: center.longitude},
+    });
+
+
+    addEventsToMap(map, events);
+
+    return new Promise(function(resolve, reject) {
+      // Wait until the map is ready status.
+      map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
+        resolve(map, serviceMap);
+      });
+    });
+  };
+
+  this.setMapClickable = function(map, clickable) {
+    if(map && clickable !== undefined) {
+      map.setClickable(clickable);
+    }
+  };
+
+  this.getMapBoundingBox = function(map) {
+    return new Promise(function(resolve, reject) {
+      map.getVisibleRegion(function(bounds) {
+        resolve({
+          latitude: {
+            upper: bounds.northeast.lat,
+            lower: bounds.southwest.lat
+          },
+          longitude: {
+            upper: bounds.northeast.lng,
+            lower: bounds.southwest.lng
+          }
+        });
+      });      
+    });
+  };
+
+  this.getMapZoom = function(map) {
+    return new Promise(function(resolve) {
+      map.getCameraPosition(function(camera) {
+        resolve(camera.zoom);
+      });
+    });
+  };
+
+  this.getMapCenter = function(map) {
+    return new Promise(function(resolve) {
+      map.getCameraPosition(function(camera) {
+        resolve({
+          latitude: camera.target.lat,
+          longitude: camera.target.lng
+        });
+      });
+    });
+  };
+
+  this.setMapZoom = function(map, zoom) {
+      map.setZoom(zoom);
+  };
+
+  this.setMapCenter = function(map, center) {
+      map.setCenter(new plugin.google.maps.LatLng(center.latitude, center.longitude));
+  };
+
+  this.moveMapTo = function(map, center, zoom) {
+    map.animateCamera({
+      target: {lat: center.latitude, lng: center.longitude},
+      zoom: zoom,
+      duration: 1000
+    }, function() {});
+  };
+
+  this.createMarker = function(map, location, markerData, onMarkerClick, infoWindowData, extraData){
+    return new Promise(function(resolve, reject){
+      var latLng = new plugin.google.maps.LatLng(location.latitude, location.longitude);
+      map.addMarker({
+        'position': latLng,
+        'title': infoWindowData.title,
+        'snippet': infoWindowData.snippet,
+        'styles': (extraData && extraData.distanceTooFar) ? {color: 'red'} : undefined,
+        'icon': {
+          'url': 'www/img/markers/' + markerData.scaledSize.w + 'x' + markerData.scaledSize.h + '/' + markerData.path + '.png'
+        }
+      }, function(marker) {
+
+        if(extraData && extraData.distanceTooFar) {
+          marker.setSnippet(extraData.distanceTooFar);
+        }
+
+        if(onMarkerClick) {
+          marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, function() {
+            onMarkerClick();
+          });
+        }
+        resolve(marker);
+      });
+    });
+  };
+
+  this.removeMarker = function(marker) {
+      marker.remove();
+  };
+
+  this.createCurrentLocationMarker = function(){
+      return Promise.resolve();
   };
 
 	return this;

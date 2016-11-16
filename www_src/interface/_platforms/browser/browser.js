@@ -1,10 +1,6 @@
 var Browser = function(){
-  	
+  	Platform.apply( this, arguments );
 	this.Platform = "Browser";
-
-	this.socialShare = function(text){
-		window.location.href='mailto:?body=' + text;
-  	};
 
   	return this;
 };

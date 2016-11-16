@@ -1,5 +1,5 @@
 var IOS = function(){
-
+	Platform.apply( this, arguments );
 	this.Platform = "IOS";
 
 	this.getDeviceInfo = function() {

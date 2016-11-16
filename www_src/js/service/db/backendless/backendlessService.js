@@ -1,6 +1,6 @@
 angular.module('backendless', ['date'])
-    .factory('backendlessService', ['$rootScope', 'fileUploaderService', 'dateService',
-        function($rootScope, fileUploaderService, dateService) {
+    .factory('backendlessService', ['$rootScope', 'fileUploaderService', 'dateService', '$log',
+        function($rootScope, fileUploaderService, dateService, $log) {
 
             var self = {};
 
@@ -240,7 +240,7 @@ angular.module('backendless', ['date'])
                     var counterName = "counter for " + crowdObject.objectId + (isPositive ?
                     "positive" : "negative") + " feedback";
                     var successCallback = function(response) {
-                        console.log("[ASYNC] counter value is - " + response);
+                        $log.log("[ASYNC] counter value is - " + response);
                         if (isPositive) {
                             crowdObject.positiveFeedback = response;
                         } else {
@@ -250,7 +250,7 @@ angular.module('backendless', ['date'])
                     };
 
                     var failureCallback = function(fault) {
-                        console.log("error - " + fault.message);
+                        $log.error("error - " + fault.message);
                         reject();
                     };
 

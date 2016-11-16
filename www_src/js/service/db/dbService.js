@@ -1,12 +1,12 @@
 angular.module('db', ['backendless', 'date', 'placeType'])
-  .factory('dbService', ['backendlessService', 'dateService', 'placeTypeService',
-    function(backendlessService, dateService, placeTypeService) {
+  .factory('dbService', ['backendlessService', 'dateService', 'placeTypeService', '$log',
+    function(backendlessService, dateService, placeTypeService, $log) {
       var self = {}, backendService = backendlessService;
 
       self.init = function() {
         return new Promise(function(resolve, reject){
           backendService.init().then(function() {
-            window.console.log('Backend initialized.');
+            $log.log('Backend initialized.');
             resolve();
           }, reject).catch(reject);
         });
