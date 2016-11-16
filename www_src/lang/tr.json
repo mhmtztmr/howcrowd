@@ -56,6 +56,10 @@
         "TEXT_PLACEHOLDER_APPENDIX": "...",
         "ADD_CROWD": "Kalabalık Ekle"
     },
+    "ASK_CROWD_MENU": {
+        "HOW_CROWD": "Ne kadar kalabalık: ",
+        "ASK_CROWD": "Kalabalık Sor"
+    },
     "MAP": {
         "YOUR_LOCATION": "Konumunuz"
     },
@@ -74,7 +78,7 @@
         "SUBMIT": "Gönder"
     },
     "ABOUT": {
-        "DESCRIPTION": "Crowd (Kalabalık), etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır. Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
+        "DESCRIPTION": "HowCrowd, etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır. Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
         "SEE_CROWD": {
             "TITLE": "Kalabalık Gör",
             "DESCRIPTION": "Uygulamanın ana modüllerinden biri kalabalık bilgilerini görebileceğiniz kısımdır. Bu modülde kalabalık bilgileri hakkında detayları, geri bildirimleri görebilir ve paylaşabilirsiniz. Özel olarak girilen yoğunluk bilgilerinden uygulama kriterlerine uygun olmayanlarını bildirebilirsiniz.",
@@ -102,9 +106,9 @@
     },
     "NATIVE_DIALOG": {
         "GPS": {
-            "MESSAGE": "GPS kapalı, bu uygulamayı çalıştırmak için açık olmalı.",
-            "DESCRIPTION": "GPS, WiFi ya da 3G ile kullan.",
-            "TITLE": "Lütfen GPS açın.",
+            "MESSAGE": "GPS'iniz kapalı, bu uygulamayı kullanmak için GPS'iniz açık olmalı.",
+            "DESCRIPTION": "GPS'inizi açmak istiyor musunuz?",
+            "TITLE": "GPS Bilgi",
             "YES": "Evet",
             "NO": "Hayır"
         }
@@ -130,6 +134,7 @@
         "ZOOM_FOR_ASK": "Yakında yer bulunamadı.Haritayı yaklaştırıp tekrar deneyin!",
         "NO_RESULT_BY_SEARCH": "Sonuç bulunamadı. Başka bir arama deneyin!",
         "LOADING_FAILED": "Yükleme başarısız!",
-        "CONNECTION_LOST": "Bağlantı başarısız! İnternet bağlantınızı kontrol edebilir, ya da dilerseniz uygulamadan çıkabilirsiniz!"
+        "CONNECTION_LOST": "Bağlantı başarısız! İnternet bağlantınızı kontrol edebilir, ya da dilerseniz uygulamadan çıkabilirsiniz!",
+        "ENTER_PLACE_NAME": "Yer adı gerekli!"
     }
 }

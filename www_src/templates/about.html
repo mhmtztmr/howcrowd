@@ -1,7 +1,7 @@
 <div ng-controller="aboutController">
     <ons-page>
         <ons-carousel var="carousel" ons-postchange="console.log('Changed to ' + $event.activeIndex)" fullscreen swipeable auto-scroll overscrollable>
-            <div class="carousel-cover page-indicator">
+            <!-- <div class="carousel-cover page-indicator">
                 <div class="previous" ng-show="carousel.getActiveIndex() !== 0">
                     <ons-icon onclick="carousel.prev();" icon="fa-chevron-left"></ons-icon>
                 </div>
@@ -16,9 +16,9 @@
                 <div class="next" ng-show="carousel.getActiveIndex() !== 5">
                     <ons-icon onclick="carousel.next();" icon="fa-chevron-right"></ons-icon>
                 </div>
-            </div>
+            </div> -->
             <div ng-show="carousel.getActiveIndex() !== 5" class="carousel-cover skip-button" ng-click="skip()">
-                SKIP
+                <ons-icon size="22px" icon="fa-times"></ons-icon>
             </div>
             <ons-carousel-item>
                 <div class="profile-card">
@@ -27,7 +27,7 @@
                     <div class="about-desc">{{$root.lang.ABOUT.DESCRIPTION}}</div>
                 </div>
             </ons-carousel-item>
-            <ons-carousel-item>
+            <!-- <ons-carousel-item>
                 <div class="about-text">
                     <div class="about-title-1">{{$root.lang.ABOUT.SET_CROWD.TITLE}}</div>
                     <div class="about-description">{{$root.lang.ABOUT.SET_CROWD.DESCRIPTION}}</div>
@@ -56,7 +56,7 @@
             </ons-carousel-item>
             <ons-carousel-item ng-click="skip()">
                 <div>GO AND GET CROWD</div>
-            </ons-carousel-item>
+            </ons-carousel-item> -->
           </ons-carousel>
     </ons-page>
 </div>
