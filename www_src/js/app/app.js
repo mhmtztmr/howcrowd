@@ -84,6 +84,7 @@ app.run(['langService', 'dbService', 'settingsService', 'locationService', '$roo
                 if(crowdTabbar) {
                     //if not see crowd page
                     if(crowdTabbar.getActiveTabIndex() !== 0) {
+                        app.seeCrowdTabbar.setActiveTab(0);
                         crowdTabbar.setActiveTab(0);
                     }
                     else {

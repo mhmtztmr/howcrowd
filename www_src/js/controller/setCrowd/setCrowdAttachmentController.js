@@ -17,12 +17,14 @@ app.controller('setCrowdAttachmentController', ['$rootScope', '$scope',
                         text: $scope.crowdText.value
                     };
 
-                    app.navi.pages[2]._destroy();
-                    app.navi.popPage({animation: 'lift'});
-
                     setCrowdService.setCrowd(crowdData, placeData, $rootScope.deviceObject).then(function(){
                         seeCrowdModel.setReload({list: true, map: true});
+                        while( app.navi.pages.length > 2) {
+                            app.navi.pages[app.navi.pages.length - 1]._destroy();
+                        }
+                        app.navi.popPage({animation: 'lift'});
                         crowdTabbar.setActiveTab(0);
+                        app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});
                     }, function(){
                         modal.hide();
                         this.loadingFailedDialog.show();

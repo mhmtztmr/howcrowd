@@ -7,7 +7,7 @@
             <!-- <ons-toolbar-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
                 <ons-icon icon="fa-list"></ons-icon>
             </ons-toolbar-button> -->
-            <ons-back-button ng-show="searchInput.value.length === 0" ng-click="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});"></ons-back-button>
+            <ons-back-button ng-show="searchInput.value.length === 0" ng-click="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});crowdTabbar.setActiveTab(0, {animation: 'none'});"></ons-back-button>
         </div>
         <div class="center">
             <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="map-search-input" ng-disabled="!searchInput.searchable" ng-change="searchInputChange()" ng-blur="searchInputChange()" ng-focus="searchInputChange()"/>

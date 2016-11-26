@@ -21,16 +21,16 @@ function calculateAverageCrowdForPlace(crowds) {
       return Math.round(total / count);
     }
     else {
-      return;
+      return null;
     }
   }
-  return;
+  return null;
 }
 
 function updatePlace(req, updateFunction) {
   var crowdStorage = Backendless.Persistence.of('Crowd');
   var placeStorage = Backendless.Persistence.of('Place');
-  var now = new Date(parseInt(req.item.datetime));
+  var now = new Date(req.item.datetime);
 
   function getDataQuery() {
     var q, j, query = new Backendless.DataQuery(),
@@ -118,3 +118,7 @@ Backendless.ServerCode.Persistence.afterUpdate('Crowd', function(req, res) {
     updatePlace(req).then(resolve, reject);
   });
 });
+
+module.exports = {
+  updatePlace: updatePlace
+};

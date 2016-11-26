@@ -1,279 +1,223 @@
-  .crowd-item {
-  }
-  .crowd-main-body{
-    height: 60px;
-    width: 100%;
-  }
-  .crowd-left {
-    float:left;
-    width: 30px;
-    height: 100%;
-  }
-  .crowd-info-window .crowd-left {
-    width: 30px !important;
-  }
-  .crowd-source-icon {
-
-  }
-  .crowd-center {
-    float:left;
-    width: 70%;
-  }
-  .crowd-info-window .crowd-center {
-    width: 50% !important;
-  }
-  .crowd-place-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .crowd-city {
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .crowd-time {
-     font-size: 12px;
-     float: left;
-  }
-  .crowd-attachments {
-     font-size: 12px;
-     float: right;
-  }
-  .crowd-right {
-    float: right;
-    width: 40px;
-    height: 100%;
-  }
-  .crowd-info-window .crowd-right {
-    width: 40px !important;
-  }
-  .crowd-last-value {
-    font-size: 12px;
-  }
-  .crowd-circle {
-    position: relative;
-    top: 20%;
-  }
-  .crowd-question {
-    font-size: 30px;
-    position: relative;
-    top: 20%;
-    text-align: center;
-  }
-  .crowd-feedbacks{
-    font-size: 12px;
-    float: left;
-    padding-left: 3px;
-    height: 30px;
-  }
-  .crowd-positive-feedback {
-    color: green;
-    height: 15px;
-  }
-  .crowd-negative-feedback {
-    color: red;
-    height: 15px;
-  }
-  .crowd-average-container {
-    height: 20px;
-    width: 100%;
-  }
-  .crowd-average-text {
-    float: left;
-    font-size: 12px;
-  }
-  .crowd-average-indicator {
-    width: 100%;
-    height: 20px;
-    float:left;
-    background-color: transparent;
-  } 
-  .crowd-average-bar {
-    border-radius: 25px;
-    width: 100%;
-    height: 1px;
-    background-color: lightgray;
-  }
-  .crowd-average-fill {
-    border-radius: 25px;
-    height: 100%;
-    background-color:red;
-  }
-  .search-crowd {
-    width:100%; 
-    height:100%; 
-    border:none;
-    color:white; 
-    margin: 0 auto;
-    font-size: 20px;
-    background: transparent;
-  }
-  .search-crowd-cancel {
-    display: block !important;
-  }
-
-  .crowd-list-container {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow-y: auto;
-  }
-
-  .crowd-owner {
-    font-style: italic;
-    font-size: 12px;
-  }
-
-  .crowd-pending {
-    height: 96px;
-    line-height: 96px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: auto;
-    text-align: center;
-    z-index: 20002;
-  }
-
-  ons-fab {
-    position: absolute !important;
-  }
-
-  .ons-icon.fa-repeat {
-      color: #AB2626;
-  }
-
-  .no-location-container {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    display: table;
-  }
-  .no-location-icon {
-    opacity: 0.1;
-    font-size: 25em !important;
-    display: table-cell;
-    vertical-align: middle;
-  }
-  .no-location-refresh-button {
-    height: 100% !important;
-    width: 100% !important;
-    white-space: normal !important;
-    position: absolute;
-    z-index: 999999;
-  }
-  .no-crowd-container {
-    width: 100%;
-    height: 100%;
-  }
-  .no-crowd-set-crowd-container {
-    width: 100%;
-    height: 44%;
-    text-align: center;
-    display: table;
-    position: relative;
-  }
-  .no-crowd-ask-crowd-container {
-    width: 100%;
-    height: 44%;
-    text-align: center;
-    display: table;
-    position: relative;
-  }
-  .no-crowd-set-crowd-icon {
-    opacity: 0.1;
-    font-size: 10em !important;
-    display: table-cell;
-    vertical-align: middle;
-  }
-  .no-crowd-ask-crowd-icon {
-    opacity: 0.1;
-    font-size: 10em !important;
-    display: table-cell;
-    vertical-align: middle;
-  }
-  .no-crowd-set-crowd-button {
-    height: 100% !important;
-    width: 100% !important;
-    white-space: normal !important;
-    position: absolute;
-    z-index: 999999;
-  }
-  .no-crowd-ask-crowd-button {
-    height: 100% !important;
-    width: 100% !important;
-    white-space: normal !important;
-    position: absolute;
-    z-index: 999999;
-  }
-  .no-crowd-text-container {
-    width: 100%;
-    height: 10%;
-    text-align: center;
-    display: table;
-    position: relative;
-  }
-  .no-crowd-text {
-    display: table-cell;
-    vertical-align: middle;
-    white-space: normal !important;
-  }
-  .no-crowd-seperator {
-    width: 90%;
-    height: 1px;
-    margin: auto;
-    border-radius: 25%;
-    background-color: lightgray;
-  }
-  .nonblocking-modal {
-    position: absolute;
-    z-index: 999999999999;
-    margin: auto;
-    left: 0;
-    right: 0;
-    width: 35px;
-    height: 35px;
-    top: 0;
-    bottom: 0;
-  }
-
-  .crowd-detail-row {
-    width: 100%;
-    margin: 10px;
-  }
-
-  .crowd-detail-left {
-    float:left;
-  }
-
-  .crowd-detail-right {
-    float:right;
-  }
-
-  .crowd-detail-image {
-    margin: auto;
-  }
-
-  .crowd-detail-text {
-    width: 100%;
-  }
-
-  .crowd-detail-feedback {
-    width: 100%;
-  }
-
-  .crowd-detail-positive-feedback {
-    width: 50%;
-    float: left;
-    text-align: center;
-  }
-
-  .crowd-detail-negative-feedback {
-    width: 50%;
-    float: left;
-    text-align: center;
-  }
+.crowd-item {
+}
+.crowd-main-body{
+  height: 60px;
+  width: 100%;
+}
+.crowd-left {
+  float:left;
+  width: 30px;
+  height: 100%;
+}
+.crowd-info-window .crowd-left {
+  width: 30px !important;
+}
+.crowd-source-icon {
+}
+.crowd-center {
+  float:left;
+  width: 70%;
+}
+.crowd-info-window .crowd-center {
+  width: 50% !important;
+}
+.crowd-place-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.crowd-city {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.crowd-time {
+   font-size: 12px;
+   float: left;
+}
+.crowd-attachments {
+   font-size: 12px;
+   float: right;
+}
+.crowd-right {
+  float: right;
+  width: 40px;
+  height: 100%;
+}
+.crowd-info-window .crowd-right {
+  width: 40px !important;
+}
+.crowd-last-value {
+  font-size: 12px;
+}
+.crowd-circle {
+  position: relative;
+  top: 20%;
+}
+.crowd-question {
+  font-size: 30px;
+  position: relative;
+  top: 20%;
+  text-align: center;
+}
+.search-crowd {
+  width:100%; 
+  height:100%; 
+  border:none;
+  color:white; 
+  margin: 0 auto;
+  font-size: 20px;
+  background: transparent;
+}
+.search-crowd-cancel {
+  display: block !important;
+}
+.crowd-list-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+}
+.crowd-owner {
+  font-style: italic;
+  font-size: 12px;
+}
+.crowd-pending {
+  height: 96px;
+  line-height: 96px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  z-index: 20002;
+}
+.ons-icon.fa-repeat {
+  color: #AB2626;
+}
+.no-location-container {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: table;
+}
+.no-location-icon {
+  opacity: 0.1;
+  font-size: 25em !important;
+  display: table-cell;
+  vertical-align: middle;
+}
+.no-location-refresh-button {
+  height: 100% !important;
+  width: 100% !important;
+  white-space: normal !important;
+  position: absolute;
+  z-index: 999999;
+}
+.no-crowd-container {
+  width: 100%;
+  height: 100%;
+}
+.no-crowd-set-crowd-container {
+  width: 100%;
+  height: 44%;
+  text-align: center;
+  display: table;
+  position: relative;
+}
+.no-crowd-ask-crowd-container {
+  width: 100%;
+  height: 44%;
+  text-align: center;
+  display: table;
+  position: relative;
+}
+.no-crowd-set-crowd-icon {
+  opacity: 0.1;
+  font-size: 10em !important;
+  display: table-cell;
+  vertical-align: middle;
+}
+.no-crowd-ask-crowd-icon {
+  opacity: 0.1;
+  font-size: 10em !important;
+  display: table-cell;
+  vertical-align: middle;
+}
+.no-crowd-set-crowd-button {
+  height: 100% !important;
+  width: 100% !important;
+  white-space: normal !important;
+  position: absolute;
+  z-index: 999999;
+}
+.no-crowd-ask-crowd-button {
+  height: 100% !important;
+  width: 100% !important;
+  white-space: normal !important;
+  position: absolute;
+  z-index: 999999;
+}
+.no-crowd-text-container {
+  width: 100%;
+  height: 10%;
+  text-align: center;
+  display: table;
+  position: relative;
+}
+.no-crowd-text {
+  display: table-cell;
+  vertical-align: middle;
+  white-space: normal !important;
+}
+.no-crowd-seperator {
+  width: 90%;
+  height: 1px;
+  margin: auto;
+  border-radius: 25%;
+  background-color: lightgray;
+}
+.nonblocking-modal {
+  position: absolute;
+  z-index: 999999999999;
+  margin: auto;
+  left: 0;
+  right: 0;
+  width: 35px;
+  height: 35px;
+  top: 0;
+  bottom: 0;
+}
+.crowd-detail-item {
+  width: 80%;
+  float: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.crowd-detail-ask {
+  float: right;
+}
+.crowd-detail-image {
+  margin: auto;
+}
+.crowd-detail-text {
+  width: 100%;
+}
+.crowd-detail-feedback {
+  width: 100%;
+}
+.crowd-detail-positive-feedback {
+  color: green;
+  width: 50%;
+  float: left;
+  text-align: center;
+}
+.crowd-detail-negative-feedback {
+  color: red;
+  width: 50%;
+  float: left;
+  text-align: center;
+}
