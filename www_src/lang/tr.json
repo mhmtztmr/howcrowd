@@ -30,7 +30,8 @@
         "YOU": "Siz",
         "JUST_NOW": "Şimdi",
         "SEARCH_INPUT": "Ara: Gör & Sor",
-        "TOO_FAR_TO_ASK": "Geçersiz - Çok uzak"
+        "TOO_FAR_TO_ASK": "Geçersiz - Çok uzak",
+        "MORE": "Daha Fazla"
     },
     "SEE_CROWD_DETAIL_POPOVER_MENU": {
         "INFO": "Bilgi",

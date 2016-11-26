@@ -116,7 +116,7 @@ angular.module('backendless', ['date'])
 
                     query.options = {
                         sortBy: 'lastUpdateDatetime desc',
-                        pageSize: 100
+                        pageSize: 20
                     };
                     query.condition = q;
 

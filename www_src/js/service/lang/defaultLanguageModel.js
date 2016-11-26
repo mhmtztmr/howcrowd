@@ -31,7 +31,8 @@ var defaultLanguageModel = function() {
             "YOU": "You",
             "JUST_NOW": "Just now",
             "SEARCH_INPUT": "Search: See & Ask",
-            "TOO_FAR_TO_ASK": "Unavailable - Too far"
+            "TOO_FAR_TO_ASK": "Unavailable - Too far",
+            "MORE": "More"
         },
         "SEE_CROWD_DETAIL_POPOVER_MENU": {
             "INFO": "Info",
