@@ -62,16 +62,15 @@ app.controller('seeCrowdInmapController', ['$rootScope', '$scope', '$filter', 's
             });
         };
 
-        //TODO: will be added
         $scope.setCrowd = function() {
-            // modal.show();
-            // setCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
-            //     modal.hide();
-            //     app.navi.pushPage('templates/set-crowd-level.html', {animation:'lift', selectedPlace: _place});
-            // }, function() {
-            //     modal.hide();
-            //     this.loadingFailedDialog.show();
-            // });
+            modal.show();
+            setCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                modal.hide();
+                app.navi.pushPage('templates/set-crowd-level.html', {animation:'lift', selectedPlace: _place});
+            }, function() {
+                modal.hide();
+                this.loadingFailedDialog.show();
+            });
         };
 
         $scope.selectPlace = function() {

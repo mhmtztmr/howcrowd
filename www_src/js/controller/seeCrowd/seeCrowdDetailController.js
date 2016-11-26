@@ -1,5 +1,5 @@
-app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdService', '$timeout', 'INTERFACE', 'seeCrowdModel',
-    function($rootScope, $scope, seeCrowdService, $timeout, INTERFACE, seeCrowdModel) {
+app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdService', '$timeout', 'INTERFACE', 'seeCrowdModel', 'setCrowdModel',
+    function($rootScope, $scope, seeCrowdService, $timeout, INTERFACE, seeCrowdModel, setCrowdModel) {
         $scope.selectedPlace = app.navi.topPage.pushedOptions.selectedPlace;
 
         $scope.onPageShown = function() {
@@ -44,11 +44,33 @@ app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdSer
                 });
         }
 
+        $scope.askCrowd = function() {
+            modal.show();
+            seeCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                modal.hide();
+                app.navi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
+            }, function() {
+                modal.hide();
+                $scope.setMapClickable(false);
+                this.loadingFailedDialog.show();
+            });
+        };
+
+        $scope.setCrowd = function() {
+            modal.show();
+            setCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                modal.hide();
+                app.navi.pushPage('templates/set-crowd-level.html', {animation:'lift', selectedPlace: _place});
+            }, function() {
+                modal.hide();
+                this.loadingFailedDialog.show();
+            });
+        };
+
         ons.createPopover('templates/popover.html', {
             parentScope: $scope
         }).then(function(popover) {
             //This is workaround for back button handler for crowd detail page with popover...
-            //TODO: Blog post
             popover.hide();
             $scope.popover = popover;
         });
