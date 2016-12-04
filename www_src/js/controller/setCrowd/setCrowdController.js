@@ -1,17 +1,62 @@
-app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapService', 'setCrowdModel', '$filter', '$log',
-    function($rootScope, $scope, $timeout, mapService, setCrowdModel, $filter, $log) {
+app.controller('setCrowdController', ['$rootScope', '$scope', '$timeout', 'mapService', 'setCrowdModel', '$filter', '$log', 'seeCrowdService', 'identificationService',
+    function($rootScope, $scope, $timeout, mapService, setCrowdModel, $filter, $log, seeCrowdService, identificationService) {
         var nearbyPlaces;
         $scope.nearbyPlaces = 'pending';
+
+        function performInitialAskWorkaround(nearbyPlaces) {
+            var latestWorkaroundTime = localStorage.getItem('initialAskWorkaroundTime') || '0',
+            now = (new Date()).valueOf(),
+            place;
+
+            latestWorkaroundTime = parseInt(latestWorkaroundTime);
+            if(now - latestWorkaroundTime > 1000 * 60 * 20) {
+                if(nearbyPlaces && nearbyPlaces.length > 0) {
+                    var index = Math.floor(Math.random() * nearbyPlaces.length);
+                    place = nearbyPlaces[index];
+                    localStorage.setItem('initialAskWorkaroundTime', now);
+                    seeCrowdService.getPlaceBySourceID(place).then(function(_result) {
+                        if(_result.data.length > 0) {
+                            place = _result.data[0];
+                        }
+                        identificationService.getRobotDeviceObject().then(function(_deviceObject) {
+                            seeCrowdService.askCrowd({}, place, _deviceObject).then(function(){
+                                $rootScope.$broadcast('initialAskWorkaroundDoneEvent');
+                            }, function(){
+                                modal.hide();
+                                this.loadingFailedDialog.show();
+                                $rootScope.$broadcast('initialAskWorkaroundDoneEvent');
+                            });
+                        }, function() {
+                            modal.hide();
+                            this.loadingFailedDialog.show();
+                            $rootScope.$broadcast('initialAskWorkaroundDoneEvent');
+                        });
+                    }, function() {
+                        modal.hide();
+                        this.loadingFailedDialog.show();
+                        $rootScope.$broadcast('initialAskWorkaroundDoneEvent');
+                    });
+                }
+                else {
+                    $rootScope.$broadcast('initialAskWorkaroundDoneEvent');
+                }
+            }
+            else {
+                $rootScope.$broadcast('initialAskWorkaroundDoneEvent');
+            }
+        }
 
         function loadNearbyPlaces(){
             $log.log('Loading see crowd in list places...');
             return new Promise(function(resolve, reject) {
                 setCrowdModel.loadNearbyPlaces().then(function(nbp) {
+                    performInitialAskWorkaround(nbp);
                     nearbyPlaces = nbp;
                     $scope.nearbyPlaces = nbp;
                     $scope.$apply();
                     resolve();
                 }, function(){
+                    performInitialAskWorkaround();
                     this.loadingFailedDialog.show();
                     $scope.nearbyPlaces = [];
                     $scope.$apply();
