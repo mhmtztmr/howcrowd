@@ -44,6 +44,21 @@ angular.module('identification', ['guid', 'file', 'db'])
         // }
       }
 
+      self.getRobotDeviceObject = function() {
+        return new Promise(function(resolve, reject) {
+          dbService.selectDevice('mac-hi-ne').then(function(deviceObject) {
+            if(deviceObject) {
+              resolve(deviceObject);
+            }
+            else {
+              dbService.createDevice({ID:'mac-hi-ne'}).then(function(deviceObject) {
+                resolve(deviceObject);
+              }, reject);
+            }
+          }, reject);
+        });
+      };
+
       self.getDeviceObject = function() {
         return new Promise(function(resolve, reject) {
           getDeviceId(function(deviceID){

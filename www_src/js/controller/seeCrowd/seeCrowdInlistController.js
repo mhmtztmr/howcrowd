@@ -5,7 +5,21 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter', '
         var searchTimeout, initialPlaces;
         $scope.places = 'pending';
 
+        $scope.initialAskWorkaroundDone = false;
+        $scope.$on('$destroy', $rootScope.$on('initialAskWorkaroundDoneEvent', function() {
+            $scope.initialAskWorkaroundDone = true;
+            loadPlaces().then(function() {
+                modal.hide();
+            }, function() {
+                modal.hide();
+            });
+        }));
+
         function loadPlaces() {
+            if($scope.initialAskWorkaroundDone === false) {
+                return Promise.resolve();
+            }
+
             $log.log('Loading see crowd in list places...');
             return new Promise(function(resolve, reject) {
                 seeCrowdModel.loadPlaces().then(function(_places) {
@@ -109,6 +123,8 @@ app.controller('seeCrowdInlistController', ['$rootScope', '$scope', '$filter', '
                 else {
                     seeCrowdModel.setReload({list: true, map: true});
                     $scope.places = undefined;
+
+                    $scope.initialAskWorkaroundDone = true;
                 }
             }
         }));
