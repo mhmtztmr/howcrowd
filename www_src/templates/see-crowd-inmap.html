@@ -1,0 +1,102 @@
+<ons-page ng-controller="seeCrowdInmapController" ons-show="onPageShown()" ons-hide="onPageHidden()">
+    <ons-toolbar>
+        <div class="left">
+            <ons-toolbar-button ng-show="searchInput.value.length > 0" ng-click="clearSearchInput()" class="search-crowd-cancel" >
+                <ons-icon icon="fa-times"></ons-icon>
+            </ons-toolbar-button>
+            <!-- <ons-toolbar-button ng-show="searchInput.value.length === 0" onclick="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});">
+                <ons-icon icon="fa-list"></ons-icon>
+            </ons-toolbar-button> -->
+            <ons-back-button ng-show="searchInput.value.length === 0" ng-click="app.seeCrowdTabbar.setActiveTab(0, {animation: 'none'});crowdTabbar.setActiveTab(0, {animation: 'none'});"></ons-back-button>
+        </div>
+        <div class="center">
+            <input class="search-crowd truncate" type="text" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="map-search-input" ng-disabled="!searchInput.searchable" ng-change="searchInputChange()" ng-blur="searchInputChange()" ng-focus="searchInputChange()"/>
+        </div>
+        <div class="right">
+            <ons-toolbar-button ng-show="searchInput.value.length > 2 && searchInput.searchable" ng-click="searchPlace()">
+                <ons-icon icon="fa-search"></ons-icon>
+            </ons-toolbar-button>
+        </div>
+    </ons-toolbar>
+    <div id="map" style="width:100%; height:100%" ng-class="{'selected-place-map': selectedPlace}"></div>
+    <div ng-show="selectedPlace" class="selected-place-info">
+        <div class="crowd-main-body" ng-click="selectPlace()">
+          <div class="crowd-left">
+            <div>
+              <ons-icon ng-if="selectedPlace.isNearby" icon="fa-street-view"></ons-icon>
+            </div>
+            <div>
+              <ons-icon icon="fa-{{selectedPlace.typeObject.FA_ICON}}" style="color: brown"></ons-icon>
+            </div>
+          </div>
+          <div class="crowd-center">
+            <div class="crowd-place-name">
+                {{selectedPlace.name}}
+            </div>
+            <div class="crowd-city" ng-if="selectedPlace.address">
+                <ons-icon icon="fa-map-marker"></ons-icon> {{selectedPlace.address}}
+            </div>
+            <div ng-if="selectedPlace.averageCrowdValue || selectedPlace.hasAsk" class="crowd-time">
+                <ons-icon icon="fa-clock-o"></ons-icon>  
+                <span ng-if="selectedPlace.lastUpdatePass === 0">
+                    {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
+                </span>
+                <span ng-if="selectedPlace.lastUpdatePass > 0">
+                    {{selectedPlace.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+                </span>
+            </div>
+            <div ng-if="selectedPlace.averageCrowdValue" class="crowd-attachments">
+                <ons-icon ng-if="selectedPlace.hasPhoto === true" icon="fa-picture-o"></ons-icon>
+                <ons-icon ng-if="selectedPlace.hasText === true" icon="fa-comment-o"></ons-icon>
+                <ons-icon ng-if="selectedPlace.hasAsk === true" icon="fa-question"></ons-icon>
+            </div>
+          </div>
+          <div ng-if="selectedPlace.averageCrowdValue || selectedPlace.hasAsk" class="crowd-right">
+            <div ng-if="selectedPlace.averageCrowdValue" class="crowd-circle">
+              <div class="c100 p{{selectedPlace.averageCrowdValue}} crowd-size center">
+                <div class="slice">
+                  <div class="bar"></div>
+                  <div class="fill"></div>
+                </div>
+              </div>
+            </div>
+            <div ng-if="!selectedPlace.averageCrowdValue && selectedPlace.hasAsk" class="crowd-question">
+                <ons-icon icon="fa-question"></ons-icon>
+            </div>
+          </div>
+        </div>
+        <div class="selected-place-buttons">
+            <div class="selected-place-button" ng-click="askCrowd()">
+                <ons-icon icon="fa-question"></ons-icon>
+            </div>
+            <div ng-if="selectedPlace.isNearby" ng-click="setCrowd()" class="selected-place-button">
+                <ons-icon icon="fa-plus"></ons-icon>
+            </div>
+            <div ng-if="selectedPlace.averageCrowdValue || selectedPlace.hasAsk" class="selected-place-button" ng-click="seeCrowd()">
+                <ons-icon icon="fa-info"></ons-icon>
+            </div>
+        </div>
+    </div>
+    <ons-dialog var="zoomForAskDialog" animation="none">
+      <div style="text-align: center; padding: 10px;">
+        <p>
+          {{$root.lang.WARNING.ZOOM_FOR_ASK}}
+        </p>
+
+        <p>
+          <ons-button ng-click="zoomForAskDialog.hide();setMapClickable(true);">{{$root.lang.DIALOG.CLOSE}}</ons-button>
+        </p>
+      </div>
+    </ons-dialog>
+    <ons-dialog var="noPlaceFoundDialog" animation="none">
+      <div style="text-align: center; padding: 10px;">
+        <p>
+          {{$root.lang.WARNING.NO_RESULT_BY_SEARCH}}
+        </p>
+
+        <p>
+          <ons-button ng-click="noPlaceFoundDialog.hide();setMapClickable(true);">{{$root.lang.DIALOG.CLOSE}}</ons-button>
+        </p>
+      </div>
+    </ons-dialog>
+</ons-page>

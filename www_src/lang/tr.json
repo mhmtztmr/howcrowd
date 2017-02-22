@@ -2,6 +2,7 @@
     "MAIN_MENU": {
         "SEE_CROWD": "Kalabalık Gör",
         "SET_CROWD": "Kalabalık Gir",
+        "ASK_CROWD": "Kalabalık Sor",
         "SETTINGS": "Ayarlar",
         "ABOUT": "Hakkında",
         "REPORT_ISSUE": "Sorun Bildir",
@@ -20,22 +21,22 @@
         "LAST_VALUE": "Son",
         "AVERAGE_VALUE": "Ort.",
         "MIN_AGO": "dk. önce",
-        "NO_PLACE": "Yeni bir kalabalık yok. Eklemek için dokun!",
+        "NO_CROWD": "Gösterilecek bir kalabalık bilgisi mevcut değil. Siz bir tane girebilir yada sorabilirsiniz!",
+        "NO_CROWD_FOR_SEARCH": "Aramanıza uygun kalabalık bulunamadı. Sormayı deneyin!",
+        "SET_CROWD": "Kalabalık girmek için dokunun!",
+        "ASK_CROWD": "Kalabalık sormak için dokunun!",
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin olun!",
-        "SEARCH_INPUT": "Son 1s, 15km civarı"
-    },
-    "SEE_CROWD_POPOVER_MENU": {
-        "DISPLAY_TYPE": "Görüntüleme Tipi"
+        "SEARCH_INPUT": "Kalabalık görmek için arayın",
+        "YOU": "Siz",
+        "JUST_NOW": "Şimdi",
+        "SEARCH_INPUT": "Ara: Gör & Sor",
+        "TOO_FAR_TO_ASK": "Geçersiz - Çok uzak",
+        "MORE": "Daha Fazla"
     },
     "SEE_CROWD_DETAIL_POPOVER_MENU": {
         "INFO": "Bilgi",
         "SHARE": "Paylaş",
         "REPORT": "Bildir"
-    },
-    "CROWD_SHARE_MENU": {
-        "WHATSAPP": "WhatsApp",
-        "MESSAGE": "Mesaj",
-        "EMAIL": "E-Posta"
     },
     "CROWD_REPORT_MENU": {
         "REPORT": "Bildir",
@@ -46,26 +47,39 @@
     "SET_CROWD_MENU": {
         "SELECT_PLACE": "Yer seç",
         "ENTER_CUSTOM_PLACE": "Özel yer gir",
-        "PLACE_NAME": "Yer Adı",
+        "PLACE_NAME": "Özel Yer Adı",
         "NO_PLACE": "Etrafta bir yer yok. Özel yer girmek için dokun!",
         "NO_LOCATION": "Yer verisi alınamadı. Cihazın yer servislerinin erişilebilir olduğundan emin olun!",
         "SEARCH_INPUT": "Ara"
     },
+    "SET_CROWD_ATTACHMENT": {
+        "ATTACH_PHOTO": "Fotoğraf Ekle",
+        "TEXT_PLACEHOLDER_APPENDIX": "...",
+        "ADD_CROWD": "Kalabalık Ekle"
+    },
+    "ASK_CROWD_MENU": {
+        "HOW_CROWD": "Ne kadar kalabalık: ",
+        "ASK_CROWD": "Kalabalık Sor"
+    },
+    "MAP": {
+        "YOUR_LOCATION": "Konumunuz"
+    },
     "CROWD_VALUES" : {
-      "100" : "100 - Yer yok!",
-      "90": "90 - Tıklım tıklım!",
-      "80": "80 - Çok kalabalık!",
-      "70": "70 - Az yer var!",
-      "60": "60 - Yer bulunur!",
-      "50": "50 - Yarı yarıya!",
-      "40": "40 - Yarıdan çoğu boş!",
-      "30": "30 - 3'te biri boş!",
-      "20": "20 - Rahat yer bulunur!",
-      "10": "10 - Neredeyse kimse yok!",
-      "0": "0 - Bomboş!"
+        "0": "Bomboş",
+        "1": "Sakin",
+        "2": "Normal",
+        "3": "Kalabalık",
+        "4": "Tıklım tıklım"
+    },
+    "REPORT_ISSUE": {
+        "TITLE": "Sorun Bildir",
+        "EXPLANATION": "Herhangi bir problemi bize bildirebilir ya da bir iyileştirme önerebilirsiniz!",
+        "EMAIL": "Email",
+        "DESCRIPTION": "Açıklama",
+        "SUBMIT": "Gönder"
     },
     "ABOUT": {
-        "DESCRIPTION": "Crowd (Kalabalık), etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır. Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
+        "DESCRIPTION": "HowCrowd, etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır. Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
         "SEE_CROWD": {
             "TITLE": "Kalabalık Gör",
             "DESCRIPTION": "Uygulamanın ana modüllerinden biri kalabalık bilgilerini görebileceğiniz kısımdır. Bu modülde kalabalık bilgileri hakkında detayları, geri bildirimleri görebilir ve paylaşabilirsiniz. Özel olarak girilen yoğunluk bilgilerinden uygulama kriterlerine uygun olmayanlarını bildirebilirsiniz.",
@@ -93,9 +107,9 @@
     },
     "NATIVE_DIALOG": {
         "GPS": {
-            "MESSAGE": "GPS kapalı, bu uygulamayı çalıştırmak için açık olmalı.",
-            "DESCRIPTION": "GPS, WiFi ya da 3G ile kullan.",
-            "TITLE": "Lütfen GPS açın.",
+            "MESSAGE": "GPS'iniz kapalı, bu uygulamayı kullanmak için GPS'iniz açık olmalı.",
+            "DESCRIPTION": "GPS'inizi açmak istiyor musunuz?",
+            "TITLE": "GPS Bilgi",
             "YES": "Evet",
             "NO": "Hayır"
         }
@@ -110,9 +124,18 @@
         "ALERT": "Uyarı",
         "SUCCESS": "Başarılı!",
         "FAIL": "Başarısız!",
+        "LOAD_FAIL": "Yükleme başarısız!",
         "OK": "Tamam"
     },
-    "ERROR": {
-
+    "DIALOG": {
+        "CLOSE": "Kapat",
+        "QUIT": "Çıkış"
+    },
+    "WARNING": {
+        "ZOOM_FOR_ASK": "Yakında yer bulunamadı.Haritayı yaklaştırıp tekrar deneyin!",
+        "NO_RESULT_BY_SEARCH": "Sonuç bulunamadı. Başka bir arama deneyin!",
+        "LOADING_FAILED": "Yükleme başarısız!",
+        "CONNECTION_LOST": "Bağlantı başarısız! İnternet bağlantınızı kontrol edebilir, ya da dilerseniz uygulamadan çıkabilirsiniz!",
+        "ENTER_PLACE_NAME": "Yer adı gerekli!"
     }
 }

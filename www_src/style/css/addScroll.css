@@ -1,0 +1,24 @@
+.addScroll {
+  overflow: auto;
+  height: 100%;
+  position: initial;
+  z-index: 1;
+}
+.addScroll::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.addScroll::-webkit-scrollbar:vertical {
+  width: 12px !important;
+}
+
+.addScroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+}
+
+.addScroll::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: transparent;
+}

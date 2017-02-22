@@ -1,0 +1,128 @@
+<ons-page ng-controller="seeCrowdInlistController" ons-show="onPageShown()">
+    <ons-toolbar ng-show="searchStatus.started">
+        <div class="left">
+            <ons-back-button class="search-crowd-cancel" ng-click="stopSearch()"></ons-back-button>
+        </div>
+        <div class="center">
+            <input class="search-crowd truncate" type="text" ng-change="searchInputChange()" placeholder="{{$root.lang.SEE_CROWD_MENU.SEARCH_INPUT}}" ng-model="searchInput.value" class="text-input text-input--underbar" id="search-input"/>
+        </div>
+        <div class="right" ng-show="searchInput.value.length > 0">
+            <ons-toolbar-button ng-click="clearSearchInput()">
+                <ons-icon icon="fa-times"></ons-icon>
+            </ons-toolbar-button>
+        </div>
+    </ons-toolbar>
+    <ons-toolbar ng-show="!searchStatus.started">
+        <div class="left">
+            <ons-toolbar-button ng-click="menu.toggle()">
+                <ons-icon icon="fa-bars"></ons-icon>
+            </ons-toolbar-button>
+        </div>
+        <div class="center">{{$root.lang.MAIN_MENU.SEE_CROWD}}</div>
+        <div class="right">
+            <ons-toolbar-button ng-show="places && places !== 'pending' && places.length > 0 && initialAskWorkaroundDone === true" ng-click="startSearch()">
+                <ons-icon icon="fa-search"></ons-icon>
+            </ons-toolbar-button>
+            <ons-toolbar-button ng-show="places && places !== 'pending' && places.length > 0 && initialAskWorkaroundDone === true" onclick="app.seeCrowdTabbar.setActiveTab(1, {animation: 'none'});">
+                <ons-icon icon="fa-map"></ons-icon>
+            </ons-toolbar-button>
+        </div>
+    </ons-toolbar>
+
+    <ons-pull-hook ng-if="places && places !== 'pending'" ng-action="refreshPlaces($done)" var="loader" threshold-height="128px" height="96px">
+        <span ng-switch="loader.state">
+            <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon></span>
+            <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon></span>
+            <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon></span>
+        </span>
+    </ons-pull-hook>
+
+    <div ng-if="places === 'pending' || initialAskWorkaroundDone === false" class="crowd-pending">
+        <ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon>
+    </div>
+
+    <div ng-if="!places && initialAskWorkaroundDone === true" class="no-location-container">
+        <button class="no-location-refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+        <ons-icon icon="fa-map-marker" class="no-location-icon"></ons-icon>
+    </div>
+    <div ng-if="places && places !== 'pending' && places.length === 0 && initialAskWorkaroundDone === true && searchInput.value.length === 0" class="no-crowd-container">
+        <div class="no-crowd-text-container">
+            <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD}}</div>
+        </div>
+        <div class="no-crowd-seperator"></div>
+        <div class="no-crowd-set-crowd-container">
+            <span class="no-crowd-set-crowd-button button button--quiet" onclick="crowdTabbar.setActiveTab(1)">
+            {{$root.lang.SEE_CROWD_MENU.SET_CROWD}} &raquo;</span>
+            <ons-icon icon="fa-plus-circle" class="no-crowd-set-crowd-icon"></ons-icon>
+        </div>
+        <div class="no-crowd-seperator"></div>
+        <div class="no-crowd-ask-crowd-container">
+            <span class="no-crowd-ask-crowd-button button button--quiet" onclick="app.seeCrowdTabbar.setActiveTab(1)">
+            &laquo; {{$root.lang.SEE_CROWD_MENU.ASK_CROWD}}</span>
+            <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
+        </div>
+    </div>
+    <div ng-if="places && places !== 'pending' && places.length === 0 && initialAskWorkaroundDone === true && searchInput.value.length > 0" class="no-crowd-container">
+        <div class="no-crowd-text-container">
+            <div class="no-crowd-text">{{$root.lang.SEE_CROWD_MENU.NO_CROWD_FOR_SEARCH}}</div>
+        </div>
+        <div class="no-crowd-seperator"></div>
+        <div class="no-crowd-ask-crowd-container">
+            <span class="no-crowd-ask-crowd-button button button--quiet" ng-click="askCrowd()">
+            &laquo; {{$root.lang.SEE_CROWD_MENU.ASK_CROWD}}</span>
+            <ons-icon icon="fa-question-circle" class="no-crowd-ask-crowd-icon"></ons-icon>
+        </div>
+    </div>
+    <ons-list ng-if="places && places !== 'pending' && places.length > 0 && initialAskWorkaroundDone === true">
+      <ons-list-item modifier="longdivider" ng-repeat="item in places" ng-click="selectPlace(item)">
+        <div class="crowd-main-body">
+          <div class="crowd-left">
+            <div>
+                <ons-icon icon="fa-{{item.typeObject.FA_ICON}}" style="color: brown"></ons-icon>
+            </div>
+            <div>
+                <ons-icon ng-if="item.isNearby" icon="fa-street-view"></ons-icon>
+            </div>
+          </div>
+          <div class="crowd-center">
+            <div class="crowd-place-name">
+                {{item.name}}
+            </div>
+            <div class="crowd-city" ng-if="item.address">
+                <ons-icon icon="fa-map-marker"></ons-icon> {{item.address}}
+            </div>
+            <div class="crowd-time">
+                <ons-icon icon="fa-clock-o"></ons-icon>  
+                <span ng-if="item.lastUpdatePass === 0">
+                    {{$root.lang.SEE_CROWD_MENU.JUST_NOW}}
+                </span>
+                <span ng-if="item.lastUpdatePass > 0">
+                    {{item.lastUpdatePass}} {{$root.lang.SEE_CROWD_MENU.MIN_AGO}}
+                </span>
+            </div>
+            <div ng-if="item.averageCrowdValue" class="crowd-attachments">
+                <ons-icon ng-if="item.hasPhoto === true" icon="fa-picture-o"></ons-icon>
+                <ons-icon ng-if="item.hasText === true" icon="fa-comment-o"></ons-icon>
+                <ons-icon ng-if="item.hasAsk === true" icon="fa-question"></ons-icon>
+            </div>
+          </div>
+          <div class="crowd-right">
+            <div ng-if="item.averageCrowdValue" class="crowd-circle">
+              <div class="c100 p{{item.averageCrowdValue}} crowd-size center">
+                <div class="slice">
+                  <div class="bar"></div>
+                  <div class="fill"></div>
+                </div>
+              </div>
+            </div>
+            <div ng-if="!item.averageCrowdValue" class="crowd-question">
+                <ons-icon icon="fa-question"></ons-icon>
+            </div>
+          </div>
+        </div>
+      </ons-list-item>
+    </ons-list>
+    <ons-button ng-if="places && places !== 'pending' && places.length > 0 && more" ng-click="loadMorePlaces()" modifier="large--quiet" ng-disabled="more === 'pending'">
+      {{$root.lang.SEE_CROWD_MENU.MORE}}
+    </ons-button>
+</ons-page>

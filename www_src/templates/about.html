@@ -1,30 +1,62 @@
 <div ng-controller="aboutController">
-    <ons-page>
-        <ons-toolbar>
-            <div class="left">
-                <ons-toolbar-button ng-click="menu.toggle()">
-                    <ons-icon icon="fa-bars"></ons-icon>
-                </ons-toolbar-button>
+    <ons-page ons-show="onPageShown()">
+        <ons-carousel var="carousel" ons-postchange="console.log('Changed to ' + $event.activeIndex)" fullscreen swipeable auto-scroll overscrollable>
+            <!-- <div class="carousel-cover page-indicator">
+                <div class="previous" ng-show="carousel.getActiveIndex() !== 0">
+                    <ons-icon onclick="carousel.prev();" icon="fa-chevron-left"></ons-icon>
+                </div>
+                <li class="nav-dots">
+                  <label class="nav-dot" onclick="carousel.setActiveIndex(0)" ng-class="{'active': carousel.getActiveIndex() === 0}"></label>
+                  <label class="nav-dot" onclick="carousel.setActiveIndex(1)" ng-class="{'active': carousel.getActiveIndex() === 1}"></label>
+                  <label class="nav-dot" onclick="carousel.setActiveIndex(2)" ng-class="{'active': carousel.getActiveIndex() === 2}"></label>
+                  <label class="nav-dot" onclick="carousel.setActiveIndex(3)" ng-class="{'active': carousel.getActiveIndex() === 3}"></label>
+                  <label class="nav-dot" onclick="carousel.setActiveIndex(4)" ng-class="{'active': carousel.getActiveIndex() === 4}"></label>
+                  <label class="nav-dot" onclick="carousel.setActiveIndex(5)" ng-class="{'active': carousel.getActiveIndex() === 5}"></label>
+                </li>
+                <div class="next" ng-show="carousel.getActiveIndex() !== 5">
+                    <ons-icon onclick="carousel.next();" icon="fa-chevron-right"></ons-icon>
+                </div>
+            </div> -->
+            <div ng-show="carousel.getActiveIndex() !== 5" class="carousel-cover skip-button" ng-click="skip()">
+                <ons-icon size="22px" icon="fa-times"></ons-icon>
             </div>
-            <div class="center">{{$root.lang.MAIN_MENU.ABOUT}}</div>
-        </ons-toolbar>
-        <div class="profile-card">
-            <img src="img/crowd.png" class="about-image">
-            <div class="about-name">Crowd</div>
-            <div class="about-desc">{{$root.lang.ABOUT.DESCRIPTION}}</div>
-        </div>
-        <div class="about-text">
-            <div class="about-title-1">{{$root.lang.ABOUT.SET_CROWD.TITLE}}</div>
-            
-            <div class="about-description">{{$root.lang.ABOUT.SET_CROWD.DESCRIPTION}}</div>
-            <div class="about-title-1">{{$root.lang.ABOUT.SEE_CROWD.TITLE}}</div>
-            <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.IN_CITY.TITLE}}</div>
-            <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.IN_CITY.DESCRIPTION}}</div>
-            <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.HERE.TITLE}}</div>
-            <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.HERE.DESCRIPTION}}</div>
-            <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.ON_MAP.TITLE}}</div>
-            <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.ON_MAP.DESCRIPTION}}</div>
-        </div>
-
+            <ons-carousel-item>
+                <div class="profile-card">
+                    <img src="img/icon_192x192.png" class="about-image"/>
+                    <div class="about-name">HowCrowd v{{$root.version}}</div>
+                    <div class="about-desc">{{$root.lang.ABOUT.DESCRIPTION}}</div>
+                </div>
+            </ons-carousel-item>
+            <!-- <ons-carousel-item>
+                <div class="about-text">
+                    <div class="about-title-1">{{$root.lang.ABOUT.SET_CROWD.TITLE}}</div>
+                    <div class="about-description">{{$root.lang.ABOUT.SET_CROWD.DESCRIPTION}}</div>
+                </div>
+            </ons-carousel-item>
+            <ons-carousel-item>
+                <div class="about-text">
+                    <div class="about-title-1">{{$root.lang.ABOUT.SEE_CROWD.TITLE}}</div>
+                        <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.IN_CITY.TITLE}}</div>
+                        <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.IN_CITY.DESCRIPTION}}</div>
+                    </div>
+            </ons-carousel-item>
+            <ons-carousel-item>
+                <div class="about-text">
+                    <div class="about-title-1">{{$root.lang.ABOUT.SEE_CROWD.TITLE}}</div>
+                        <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.HERE.TITLE}}</div>
+                        <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.HERE.DESCRIPTION}}</div>
+                    </div>
+            </ons-carousel-item>
+            <ons-carousel-item>
+                <div class="about-text">
+                    <div class="about-title-1">{{$root.lang.ABOUT.SEE_CROWD.TITLE}}</div>
+                        <div class="about-title-2">{{$root.lang.ABOUT.SEE_CROWD.ON_MAP.TITLE}}</div>
+                        <div class="about-description">{{$root.lang.ABOUT.SEE_CROWD.ON_MAP.DESCRIPTION}}</div>
+                    </div>
+            </ons-carousel-item>
+            <ons-carousel-item ng-click="skip()">
+                <div>GO AND GET CROWD</div>
+            </ons-carousel-item> -->
+          </ons-carousel>
     </ons-page>
 </div>

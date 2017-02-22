@@ -1,84 +1,96 @@
-var identificationService = function($q, guidService, fileService) {
-  var DID;
+//TODO: file system integartion with INTERFACE
 
-  function loadDeviceId(fileSystemIncluded) {
-    var def = $q.defer();
-    if (fileSystemIncluded === true && myApp.isCordovaApp) {
-      DID = readDeviceIdFromLocalStorage();
-      if (DID) {
-        writeDeviceIdToInternalStorage(DID,
-          function() {
-            def.resolve(DID);
-          },
-          function() {
-            def.resolve(DID);
-          });
-      } else {
-        readDeviceIdFromInternalStorage(function(deviceId) {
-          DID = deviceId;
-          if (DID) {
-            writeDeviceIdToLocalStorage(DID);
-            def.resolve(DID);
+
+angular.module('identification', ['guid', 'file', 'db'])
+  .factory('identificationService', ['guidService', 'fileService', 'dbService',
+    function(guidService, fileService, dbService) {
+      var self = {};
+
+      function getDeviceId(onSuccess) {
+        var deviceID;
+        // if (window.cordova) {
+        //   deviceID = readDeviceIdFromLocalStorage();
+        //   if (deviceID) {
+        //     onSuccess(deviceID);
+        //     writeDeviceIdToInternalStorage(deviceID);
+        //   } else {
+        //     readDeviceIdFromInternalStorage(function(_deviceId) {
+        //       deviceID = _deviceId;
+        //       if (deviceID) {
+        //         onSuccess(deviceID);
+        //         writeDeviceIdToLocalStorage(deviceID);
+        //       } else {
+        //         deviceID = guidService.get();
+        //         onSuccess(deviceID);
+        //         writeDeviceIdToLocalStorage(deviceID);
+        //         writeDeviceIdToInternalStorage(deviceID);
+        //       }
+        //     }, function() {
+        //       deviceID = guidService.get();
+        //       onSuccess(deviceID);
+        //       writeDeviceIdToLocalStorage(deviceID);
+        //       writeDeviceIdToInternalStorage(deviceID);
+        //     });
+        //   }
+        // } else {
+          deviceID = readDeviceIdFromLocalStorage();
+          if (deviceID) {
+            onSuccess(deviceID);
           } else {
-            DID = guidService.get();
-            writeDeviceIdToLocalStorage(DID);
-            writeDeviceIdToInternalStorage(DID, function() {
-              def.resolve(DID);
-            }, function() {
-              def.resolve(DID);
-            });
+            deviceID = guidService.get();
+            writeDeviceIdToLocalStorage(deviceID);
+            onSuccess(deviceID);
           }
+        // }
+      }
 
-        }, function() {
-          DID = guidService.get();
-          writeDeviceIdToLocalStorage(DID);
-          writeDeviceIdToInternalStorage(DID, function() {
-            def.resolve(DID);
-          }, function() {
-            def.resolve(DID);
-          });
+      self.getRobotDeviceObject = function() {
+        return new Promise(function(resolve, reject) {
+          dbService.selectDevice('mac-hi-ne').then(function(deviceObject) {
+            if(deviceObject) {
+              resolve(deviceObject);
+            }
+            else {
+              dbService.createDevice({ID:'mac-hi-ne'}).then(function(deviceObject) {
+                resolve(deviceObject);
+              }, reject);
+            }
+          }, reject);
         });
+      };
+
+      self.getDeviceObject = function() {
+        return new Promise(function(resolve, reject) {
+          getDeviceId(function(deviceID){
+            dbService.selectDevice(deviceID).then(function(deviceObject) {
+              if(deviceObject) {
+                resolve(deviceObject);
+              }
+              else {
+                dbService.createDevice({ID:deviceID}).then(function(deviceObject) {
+                  resolve(deviceObject);
+                }, reject);
+              }
+            }, reject);
+          }, reject);
+        });
+      };
+
+      function readDeviceIdFromLocalStorage() {
+        return localStorage.getItem('deviceId');
       }
-    } else {
-      DID = readDeviceIdFromLocalStorage();
-      if (DID) {
-        def.resolve(DID);
-      } else {
-        DID = guidService.get();
-        writeDeviceIdToLocalStorage(DID);
-        def.resolve(DID);
+
+      function writeDeviceIdToLocalStorage(deviceId) {
+        return localStorage.setItem('deviceId', deviceId);
       }
-    }
-    return def.promise;
-  }
 
-  function getDeviceId() {;
-    return DID;
-  }
+      function readDeviceIdFromInternalStorage(onSuccess, onFailure) {
+        fileService.readData(onSuccess, onFailure);
+      }
 
-  function readDeviceIdFromLocalStorage() {
-    return localStorage.getItem('deviceId');
-  }
+      function writeDeviceIdToInternalStorage(deviceId, onSuccess, onFailure) {
+        fileService.writeData(deviceId, onSuccess, onFailure);
+      }
 
-  function writeDeviceIdToLocalStorage(deviceId) {
-    return localStorage.setItem('deviceId', deviceId);
-  }
-
-  function readDeviceIdFromInternalStorage(onSuccess, onFailure) {
-    fileService.readData(onSuccess, onFailure);
-  }
-
-  function writeDeviceIdToInternalStorage(deviceId, onSuccess, onFailure) {
-    fileService.writeData(deviceId, onSuccess, onFailure);
-  }
-
-  return {
-    loadDeviceId: loadDeviceId,
-    getDeviceId: getDeviceId
-  };
-};
-
-angular.module('identification', ['guid', 'file'])
-  .factory('identificationService', ['$q', 'guidService', 'fileService',
-    identificationService
-  ]);
+      return self;
+    }]);

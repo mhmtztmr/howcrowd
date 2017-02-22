@@ -1,14 +1,18 @@
-var settingsService = function($rootScope) {
+var settingsService = function($rootScope, $log) {
     function loadSettings() {
-        var settings = localStorage.getItem('settings');
-        if (!settings) {
-            $rootScope.settings = {
-                isCustomPlacesEnabled : true
+        return new Promise(function(resolve, reject){
+            var settings = localStorage.getItem('settings');
+            if (!settings) {
+                $rootScope.settings = {
+                    isCustomPlacesEnabled : true
+                };
+                saveSettings();
+            } else {
+                $rootScope.settings = JSON.parse(settings);
             }
-            saveSettings();
-        } else {
-            $rootScope.settings = JSON.parse(settings);
-        }
+            $log.log('Settings loaded.');
+            resolve();
+        });
     }
 
     function saveSettings() {
@@ -22,4 +26,4 @@ var settingsService = function($rootScope) {
 };
 
 angular.module('settings', [])
-    .factory('settingsService', ['$rootScope', settingsService]);
+    .factory('settingsService', ['$rootScope', '$log', settingsService]);

@@ -1,3 +1,20 @@
 .list__item__center {
 	max-width: 100% !important;
 }
+.popover--material {
+	top: 4px !important;
+}
+.page__content > .scroll {
+	height: 100%;
+}
+.list__item--longdivider {
+	border-bottom: 1px solid #eee !important;
+}
+.list--inset {
+	border: 1px solid #888 !important;
+	box-shadow: 3px 3px 1px #888888;
+	border-radius: 0px;
+}
+ons-speed-dial {
+	z-index: 99999;
+}

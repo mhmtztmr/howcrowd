@@ -1,0 +1,61 @@
+<div ng-controller="setCrowdAttachmentController">
+    <ons-page>
+        <ons-toolbar>
+            <div class="left">
+                <ons-back-button></ons-back-button>
+            </div>
+            <div class="center">
+                <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
+            </div>
+        </ons-toolbar>
+        <ons-list>
+            <ons-list-item>
+                <ons-row align="center">
+                    <ons-col style="text-align: left;"  ng-click="decreaseCrowdLevel()">
+                        <ons-icon icon="fa-chevron-left"></ons-icon>
+                    </ons-col>
+                    <ons-col width="110px">
+                        {{selectedCrowdLevel.text}}
+                    </ons-col>
+                    <ons-col class="crowd-last-value">
+                        <div class="c100 p{{selectedCrowdLevel.value}} crowd-size center">
+                            <div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                    </ons-col>
+                    <ons-col style="text-align: right;" ng-click="increaseCrowdLevel()">
+                        <ons-icon icon="fa-chevron-right"></ons-icon>
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+            <ons-list-item tappable ng-show="!crowdPhoto" ng-click="takePhoto()">
+                <div class="left">
+                    <ons-icon icon="fa-camera" class="list__item__icon"></ons-icon>
+                </div>
+                <div class="center">
+                    {{$root.lang.SET_CROWD_ATTACHMENT.ATTACH_PHOTO}}          
+                </div>
+            </ons-list-item>
+            <ons-list-item ng-show="crowdPhoto">
+                <div class="left">
+                    <img ng-src="data:image/png;base64,{{crowdPhoto}}" height="58"/>
+                </div>
+                <div class="right">
+                    <ons-icon ng-click="clearPhoto()" icon="fa-times" class="list__item__icon"></ons-icon>
+                </div>
+            </ons-list-item>
+            <ons-list-item>
+                <div class="center">
+                    <textarea ng-model="crowdText.value" style="width:100%; resize:none; height:72px;" class="text-input text-input--material text-input--underbar" placeholder="{{selectedPlace.name}}{{$root.lang.SET_CROWD_ATTACHMENT.TEXT_PLACEHOLDER_APPENDIX}}" maxlength="200"></textarea>
+                </div>
+            </ons-list-item>
+            <ons-list-item>
+                <div class="center">
+                    <ons-button style="width:100%" ng-click="insertCrowd()">{{$root.lang.SET_CROWD_ATTACHMENT.ADD_CROWD}}</ons-button>
+                </div>
+            </ons-list-item>
+        </ons-list>
+    </ons-page>
+</div>

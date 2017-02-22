@@ -1,0 +1,19 @@
+<ons-page ng-controller="askCrowdInputController">
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button></ons-back-button>
+        </div>
+        <div class="center" ng-click="$root.seePlaceDetail(selectedPlace)">
+	        <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon> {{selectedPlace.name}}
+	    </div>
+      </div>
+    </ons-toolbar>
+    <div style="text-align: center;">
+        <p style="margin-top: 30px;">
+            <textarea ng-model="askCrowdText.value" style="width:80%; resize:none; height:72px;" class="text-input text-input--material text-input--underbar" placeholder="{{$root.lang.ASK_CROWD_MENU.HOW_CROWD}} {{selectedPlace.name}}" maxlength="200"></textarea>
+        </p>
+        <p style="margin-top: 30px;">
+            <ons-button style="width:80%" ng-click="askCrowd()">{{$root.lang.ASK_CROWD_MENU.ASK_CROWD}}</ons-button>
+        </p>
+    </div>
+</ons-page>

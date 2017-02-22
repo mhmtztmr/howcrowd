@@ -3,6 +3,7 @@ var defaultLanguageModel = function() {
         "MAIN_MENU": {
             "SEE_CROWD": "See Crowd",
             "SET_CROWD": "Set Crowd",
+            "ASK_CROWD": "Ask Crowd",
             "SETTINGS": "Settings",
             "ABOUT": "About",
             "REPORT_ISSUE": "Report Issue",
@@ -21,22 +22,22 @@ var defaultLanguageModel = function() {
             "LAST_VALUE": "Last",
             "AVERAGE_VALUE": "Avg.",
             "MIN_AGO": "min(s) ago",
-            "NO_PLACE": "No recent crowd. Tap to enter one!",
+            "NO_CROWD": "No recent crowd to display. You can set one or ask for it!",
+            "NO_CROWD_FOR_SEARCH": "No crowd for your search. Try to ask for it!",
+            "SET_CROWD": "Tap to set a crowd!",
+            "ASK_CROWD": "Tap to ask for a crowd!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
-            "SEARCH_INPUT": "Last 1h, Around 15kms"
-        },
-        "SEE_CROWD_POPOVER_MENU": {
-            "DISPLAY_TYPE": "Display Type"
+            "SEARCH_INPUT": "See crowd by search",
+            "YOU": "You",
+            "JUST_NOW": "Just now",
+            "SEARCH_INPUT": "Search: See & Ask",
+            "TOO_FAR_TO_ASK": "Unavailable - Too far",
+            "MORE": "More"
         },
         "SEE_CROWD_DETAIL_POPOVER_MENU": {
             "INFO": "Info",
             "SHARE": "Share",
             "REPORT": "Report"
-        },
-        "CROWD_SHARE_MENU": {
-            "WHATSAPP": "WhatsApp",
-            "MESSAGE": "Message",
-            "EMAIL": "E-Mail"
         },
         "CROWD_REPORT_MENU": {
             "REPORT": "Report",
@@ -47,28 +48,41 @@ var defaultLanguageModel = function() {
         "SET_CROWD_MENU": {
             "SELECT_PLACE": "Select Place",
             "ENTER_CUSTOM_PLACE": "Enter Custom Place",
-            "PLACE_NAME": "Place Name",
+            "PLACE_NAME": "Custom Place Name",
             "NO_PLACE": "No places around. Tap to enter a custom place!",
             "NO_LOCATION": "No location data. Make sure your device's location service is accessible!",
             "PULL_TO_REFRESH": "Pull down to refresh",
             "RELEASE_TO_REFRESH": "Release to refresh",
             "SEARCH_INPUT": "Search"
         },
+        "SET_CROWD_ATTACHMENT": {
+            "ATTACH_PHOTO": "Attach Photo",
+            "TEXT_PLACEHOLDER_APPENDIX": " is...",
+            "ADD_CROWD": "Add Crowd"
+        },
+        "ASK_CROWD_MENU": {
+            "HOW_CROWD": "How crowd",
+            "ASK_CROWD": "Ask Crowd"
+        },
+        "MAP": {
+            "YOUR_LOCATION": "Your location"
+        },
         "CROWD_VALUES" : {
-          "100" : "100",
-          "90": "90",
-          "80": "80",
-          "70": "70",
-          "60": "60",
-          "50": "50",
-          "40": "40",
-          "30": "30",
-          "20": "20",
-          "10": "10",
-          "0": "0"
+            "0": "Empty",
+            "1": "Quiet",
+            "2": "Moderate",
+            "3": "Crowded",
+            "4": "Congested"
+        },
+        "REPORT_ISSUE": {
+            "TITLE": "Report Issue",
+            "EXPLANATION": "You can report any issue or suggest any improvement!",
+            "EMAIL": "Email",
+            "DESCRIPTION": "Description",
+            "SUBMIT": "Submit"
         },
         "ABOUT": {
-            "DESCRIPTION": "Crowd (Kalabalık), etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır.Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
+            "DESCRIPTION": "HowCrowd, etrafınızdaki yerlerin yoğunluk bilgilerini başkalarıyla kimliğinizi belirtmeden paylaşabileceğiniz, başkalarının paylaştığı yoğunluk bilgilerini de anlık takip edebileceğiniz interaktif bir uygulamadır.Uygulamayı daha etkin kullanabilmek için aygıtınızın konum bilgisinin açık olması gerekmektedir.",
             "SEE_CROWD": {
                 "TITLE": "Kalabalık Gör",
                 "DESCRIPTION": "Uygulamanın ana modüllerinden biri kalabalık bilgilerini görebileceğiniz kısımdır. Bu modülde kalabalık bilgileri hakkında detayları, geri bildirimleri görebilir ve paylaşabilirsiniz. Özel olarak girilen yoğunluk bilgilerinden uygulama kriterlerine uygun olmayanlarını bildirebilirsiniz.",
@@ -96,9 +110,9 @@ var defaultLanguageModel = function() {
         },
         "NATIVE_DIALOG": {
             "GPS": {
-                "MESSAGE": "Your GPS is Disabled, this app needs to be enable to works.",
-                "DESCRIPTION": "Use GPS, with wifi or 3G.",
-                "TITLE": "Please Turn on GPS",
+                "MESSAGE": "Your GPS is disabled, this app needs GPS to be enabled to work.",
+                "DESCRIPTION": "Do you want to turn GPS on?",
+                "TITLE": "GPS Status",
                 "YES": "Yes",
                 "NO": "No"
             }
@@ -113,12 +127,21 @@ var defaultLanguageModel = function() {
             "ALERT": "Alert",
             "SUCCESS": "Successful!",
             "FAIL": "Failure!",
+            "LOAD_FAIL": "Loading failure!",
             "OK": "Ok"
         },
-        "ERROR": {
-
+        "DIALOG": {
+            "CLOSE": "Close",
+            "QUIT": "Quit"
+        },
+        "WARNING": {
+            "ZOOM_FOR_ASK": "No places around. Zoom and retry longpress!",
+            "NO_RESULT_BY_SEARCH": "No result found. Try another search!",
+            "LOADING_FAILED": "Loading failed!",
+            "CONNECTION_LOST": "Connection lost! Please check your internet connection, or you can quit the app!",
+            "ENTER_PLACE_NAME": "Enter place name!"
         }
-    }
+    };
 };
 angular.module('lang', [])
     .factory('defaultLanguageModel', [defaultLanguageModel]);

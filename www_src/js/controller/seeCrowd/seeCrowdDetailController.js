@@ -1,121 +1,94 @@
-app.controller('seeCrowdDetailController', ['$rootScope', '$scope',
-  'seeCrowdModel', 'feedbackModel', 'seeCrowdService',
-  function($rootScope, $scope, seeCrowdModel,
-    feedbackModel, seeCrowdService) {
-    $scope.selectedPlaceBasedCrowd = seeCrowdModel.getSelectedPlaceBasedCrowd();
-    var lastCrowd = $scope.selectedPlaceBasedCrowd.crowds[0];
-    var myFeedback = feedbackModel.getFeedback(lastCrowd.crowdId);
-    if (myFeedback) {
-      $scope.myFeedback = myFeedback.isPositive;
-    }
+app.controller('seeCrowdDetailController', ['$rootScope', '$scope', 'seeCrowdService', '$timeout', 'INTERFACE', 'seeCrowdModel', 'setCrowdModel',
+    function($rootScope, $scope, seeCrowdService, $timeout, INTERFACE, seeCrowdModel, setCrowdModel) {
+        $scope.selectedPlace = app.navi.topPage.pushedOptions.selectedPlace;
 
-    $scope.givePositiveFeedback = function() {
-      giveFeedback(true);
-    };
+        $scope.onPageShown = function() {
+           modal.hide();
+        };
 
-    $scope.giveNegativeFeedback = function() {
-      giveFeedback(false);
-    };
+    	$scope.givePositiveFeedback = function(crowdObject) {
+            giveFeedback(crowdObject, true);
+        };
 
-    function giveFeedback(isPositive) {
-      if ($scope.myFeedback === undefined) {
-        var crowd = $scope.selectedPlaceBasedCrowd.crowds[0];
-        if (crowd.deviceId === $rootScope.device.id) {
-          return;
-        }
-        $scope.myFeedback = isPositive;
-        if (isPositive) {
-          $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.positiveFeedback++;
-        } else {
-          $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback++;
-        }
-        seeCrowdModel.giveFeedback(crowd, isPositive,
-          function() {
-            feedbackModel.insertFeedback(crowd.crowdId, isPositive);
-          },
-          function() {
-            $scope.myFeedback = undefined;
-            if (isPositive) {
-              $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.positiveFeedback--;
-            } else {
-              $scope.selectedPlaceBasedCrowd.crowds[0].crowdFeedback.negativeFeedback--;
+        $scope.giveNegativeFeedback = function(crowdObject) {
+            giveFeedback(crowdObject, false);
+        };
+
+        function giveFeedback(crowdObject, isPositive) {
+            if((crowdObject.myFeedback !== undefined) || 
+                (crowdObject.device.ID === $rootScope.deviceObject.ID)) {
+                return;
             }
-          });
-      }
-    }
 
-    $scope.dialogs = {
-      'templates/share-crowd.html': {},
-      'templates/report-crowd.html': {}
-    };
-    ons.createDialog('templates/share-crowd.html',  {
-      parentScope: $scope
-    }).then(
-    function(
-      dialog) {
-      $scope.dialogs['templates/share-crowd.html'] = dialog;
-    });
-    ons.createDialog('templates/report-crowd.html',  {
-      parentScope: $scope
-    }).then(
-    function(
-      dialog) {
-      $scope.dialogs['templates/report-crowd.html'] = dialog;
-    });
+            crowdObject.myFeedback = isPositive;
+            var tempPositiveFeedback = crowdObject.positiveFeedback,
+            tempNegativeFeedback = crowdObject.negativeFeedback;
+            if (isPositive) {
+                crowdObject.positiveFeedback++;
+            } else {
+                crowdObject.negativeFeedback++;
+            }
 
-    ons.createPopover('templates/popover.html', {
-      parentScope: $scope
-    }).then(function(popover) {
-      $scope.popover = popover;
-    });
-    $scope.options = [{
-      label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
-      fnc: function() {
-        app.navi.pushPage('templates/crowd-place-detail.html', {
-          selectedPlaceBasedCrowd: $scope.selectedPlaceBasedCrowd, 
-          animation:'lift'
-        });
-      }
-    }, {
-      label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
-      fnc: function() {
-        var placeName = $scope.selectedPlaceBasedCrowd.placeName,
-        lastCrowdValue = $scope.selectedPlaceBasedCrowd.crowdLast.crowdValue,
-        lastUpdateDate = new Date($scope.selectedPlaceBasedCrowd.crowdLast.crowdDate).toLocaleString(),
-        averageValue = $scope.selectedPlaceBasedCrowd.crowdAverage;
-
-        window.plugins.socialsharing.share(placeName + ' [' + lastUpdateDate + ']\n' +
-            $rootScope.lang.SEE_CROWD_MENU.LAST_VALUE + ': ' + lastCrowdValue + '%\t' + 
-            $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
-
-      }
-    }];
-    if ($scope.selectedPlaceBasedCrowd.placeSource === 'custom') {
-      $scope.options.push({
-        label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.REPORT,
-        fnc: function() {
-          $scope.dialogs['templates/report-crowd.html'].show();
+            var prevReload = seeCrowdModel.setReload({list: true, map: true});
+            seeCrowdService.giveFeedback(crowdObject, isPositive).then(function() {},
+                function() {
+                    seeCrowdModel.setReload(prevReload);
+                    $timeout(function() {
+                        crowdObject.myFeedback = undefined;
+                        if (isPositive) {
+                            crowdObject.positiveFeedback = tempPositiveFeedback;
+                        } else {
+                            crowdObject.negativeFeedback = tempNegativeFeedback;
+                        }
+                    });
+                });
         }
-      });
+
+        $scope.askCrowd = function() {
+            modal.show();
+            seeCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                modal.hide();
+                app.navi.pushPage('templates/ask-crowd-input.html', {animation: 'lift', selectedPlace: _place});
+            }, function() {
+                modal.hide();
+                $scope.setMapClickable(false);
+                this.loadingFailedDialog.show();
+            });
+        };
+
+        $scope.setCrowd = function() {
+            modal.show();
+            setCrowdModel.selectPlace($scope.selectedPlace).then(function(_place) {
+                modal.hide();
+                app.navi.pushPage('templates/set-crowd-level.html', {animation:'lift', selectedPlace: _place});
+            }, function() {
+                modal.hide();
+                this.loadingFailedDialog.show();
+            });
+        };
+
+        ons.createPopover('templates/popover.html', {
+            parentScope: $scope
+        }).then(function(popover) {
+            //This is workaround for back button handler for crowd detail page with popover...
+            popover.hide();
+            $scope.popover = popover;
+        });
+        $scope.options = [{
+            label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.INFO,
+            fnc: function() {
+                $rootScope.seePlaceDetail($scope.selectedPlace);
+            }
+        }, {
+            label: $rootScope.lang.SEE_CROWD_DETAIL_POPOVER_MENU.SHARE,
+            fnc: function() {
+                var placeName = $scope.selectedPlace.name,
+                lastUpdateDatetime = new Date($scope.selectedPlace.lastUpdateDatetime).toLocaleString(),
+                averageValue = $scope.selectedPlace.averageCrowdValue;
+
+                INTERFACE.socialShare(placeName + ' [' + lastUpdateDatetime + ']\n' +
+                    $rootScope.lang.SEE_CROWD_MENU.AVERAGE_VALUE + ': ' + averageValue + '%'); 
+            }
+        }];
     }
-
-    $scope.reportReasons = [{
-      label: $rootScope.lang.CROWD_REPORT_MENU.INAPPROPRIATE,
-      value: 'inappropriate'
-    }, {
-      label: $rootScope.lang.CROWD_REPORT_MENU.PRIVATE,
-      value: 'private'
-    }, {
-      label: $rootScope.lang.CROWD_REPORT_MENU.MISLEADING,
-      value: 'misleading'
-    }];
-
-    $scope.report = function() {
-      seeCrowdService.reportCrowd($scope.selectedPlaceBasedCrowd.crowds[
-        0], $scope.reportReason);
-      app.navi.resetToPage('templates/see-crowd.html');
-    };
-
-    $scope.reportReason = $scope.reportReasons[0].value;
-  }
 ]);

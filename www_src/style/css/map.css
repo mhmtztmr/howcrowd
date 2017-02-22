@@ -1,3 +1,57 @@
 .gmnoprint {
-	display: none !important;
+    display: none !important;
+}
+
+.pinpoint {
+    left: 20px !important;
+    top: 20px !important;
+}
+
+.selected-place-map {
+    bottom: 95px !important;
+    position: absolute;
+    /*-webkit-transition: bottom 0.2s ease-in-out;
+    -moz-transition: bottom 0.2s ease-in-out;
+    -o-transition: bottom 0.2s ease-in-out;
+    transition: bottom 0.2s ease-in-out;*/
+}
+
+.selected-place-info {
+    height: 90px;
+    position: absolute;
+    bottom: 0;
+    width: 96%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.selected-place-buttons {
+    font-size: 20px;
+}
+
+.selected-place-button {
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+
+.pac-container {
+    width: 100% !important;
+    left: 0px !important;
+    height: 60% !important;
+    overflow-y: scroll !important;
+    top: 56px !important;
+}
+.pac-item {
+    line-height: 48px !important;
+    font-size: 16px !important;
+}
+.pac-item-query {
+    float: right;
+}
+.pac-logo:after {
+    display: none !important;
+}
+.pac-icon {
+    display: none !important;
 }

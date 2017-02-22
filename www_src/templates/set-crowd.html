@@ -1,5 +1,5 @@
 <div ng-controller="setCrowdController">
-    <ons-navigator var="app.navi">
+    <ons-navigator var="app.setCrowdNavi">
         <ons-page>
             <ons-toolbar ng-show="searchStatus.started">
                 <div class="left">
@@ -25,46 +25,40 @@
                     <ons-toolbar-button ng-click="startSearch();">
                         <ons-icon icon="fa-search"></ons-icon>
                     </ons-toolbar-button>
+                    <ons-toolbar-button ng-if="$root.settings.isCustomPlacesEnabled === true && nearbyPlaces && nearbyPlaces !== 'pending' && nearbyPlaces.length > 0" ng-click="selectPlace()">
+                        <ons-icon icon="fa-pencil-square-o"></ons-icon>
+                    </ons-toolbar-button>
                 </div>
             </ons-toolbar>
 
-            <ons-pull-hook ng-action="refreshNearbyPlaces($done)" var="loader" fixed-content threshold-height="128px" height="64px">
-                <span ng-switch="loader.state">
-                  <span ng-switch-when="initial"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
-                  <span ng-switch-when="preaction"><ons-icon size="35px" icon="fa-repeat"></ons-icon></span>
-                  <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="fa-repeat"></ons-icon> </span>
+            <ons-pull-hook ng-if="nearbyPlaces && nearbyPlaces !== 'pending'" ng-action="refreshNearbyPlaces($done)" var="loaderr" threshold-height="128px" height="96px">
+                <span ng-switch="loaderr.state">
+                    <span ng-switch-when="initial"><ons-icon size="35px" icon="ion-arrow-down-a"></ons-icon></span>
+                    <span ng-switch-when="preaction"><ons-icon size="35px" icon="ion-arrow-up-a"></ons-icon></span>
+                    <span ng-switch-when="action"><ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon></span>
                 </span>
             </ons-pull-hook>
 
-            <div ng-if="!nearbyPlaces">
-                <button class="refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+            <div ng-if="!nearbyPlaces" class="no-location-container">
+                <button class="no-location-refresh-button button button--quiet">{{$root.lang.SEE_CROWD_MENU.NO_LOCATION}}</button>
+                <ons-icon icon="fa-map-marker" class="no-location-icon"></ons-icon>
             </div>
-            <div ng-if="nearbyPlaces === 'pending'" style="text-align: center; padding-top: 144px;">
-                <ons-icon size="70px" spin="true" icon="fa-spinner">
+
+            <div ng-if="nearbyPlaces === 'pending'" class="crowd-pending">
+                <ons-icon size="35px" spin="true" icon="ion-load-d"></ons-icon>
             </div>
+
             <div ng-if="nearbyPlaces && nearbyPlaces !== 'pending' && nearbyPlaces.length === 0">
-                <button class="refresh-button button button--quiet" onclick="menu.setMainPage('templates/set-crowd.html')">{{$root.lang.SEE_CROWD_MENU.NO_PLACE}}</button>
+                <button class="refresh-button button button--quiet" ng-click="selectPlace()">{{$root.lang.SET_CROWD_MENU.NO_PLACE}}</button>
             </div>
+            
             <ons-list ng-if="nearbyPlaces && nearbyPlaces !== 'pending' && nearbyPlaces.length > 0">
                 <ons-list-item ng-repeat="place in nearbyPlaces" ng-if="$root.settings.isCustomPlacesEnabled === true || place.source !== 'custom'" ng-click="selectPlace(place)">
                     <div class="crowd-name">
-                        <!-- <img ng-src="img/sources/{{place.source}}.png" />  -->
-                        <ons-icon ng-if="place.source ==='custom'" icon="fa-map-signs" style="color: brown"></ons-icon>
-                        {{place.name}}
+                        <ons-icon icon="fa-{{place.typeObject.FA_ICON}}" style="color: brown"></ons-icon> {{place.name}}
                     </div>
                 </ons-list-item>
             </ons-list>
-
-            <ons-bottom-toolbar ng-if="$root.settings.isCustomPlacesEnabled === true && nearbyPlaces && nearbyPlaces !== 'pending' && nearbyPlaces.length > 0">
-                <div class="tab-bar">
-                    <label class="tab-bar__item" ng-click="selectPlace()">
-                        <input type="radio" name="tab-bar-c" checked="checked">
-                        <button class="tab-bar__button">
-                            <div class="tab-bar__label">{{$root.lang.SET_CROWD_MENU.ENTER_CUSTOM_PLACE}}</div>
-                        </button>
-                    </label>
-                </div>
-            </ons-bottom-toolbar>
         </ons-page>
     </ons-navigator>
 </div>

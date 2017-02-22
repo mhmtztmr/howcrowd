@@ -1,43 +1,64 @@
 module.exports = function(grunt) {
 
+    var currentDate = new Date(),
+        currentMonth = currentDate.getMonth() + 1,
+        currentMonth = ("0" + currentMonth).slice(-2),
+        currentDay = ("0" + currentDate.getDate()).slice(-2),
+        currentHour = ("0" + currentDate.getHours()).slice(-2),
+        currentMinutes = ("0" + currentDate.getMinutes()).slice(-2),
+        buildTimestamp = "" + currentDate.getFullYear() + currentMonth + currentDay + currentHour + currentMinutes,
+        buildNumber = process.env.BUILD_NUMBER,
+        pkg = grunt.file.readJSON('package.json'),
+        appVersion, androidVersioncode, iosVersioncode;
+
+    appVersion = pkg.version + (buildNumber ? ('.' + buildNumber) : '');
+
+    function defineVersioncodes() {
+        var numbers = appVersion.split('.'),
+        major = numbers[0], minor = numbers[1], patch = numbers[2];
+
+        androidVersioncode = 1000000000; //to get rid of mistakenly set versioncode in Google Play
+        if(buildNumber) {
+            androidVersioncode += parseInt(buildNumber);
+        }
+        androidVersioncode += 100 * parseInt(patch);
+        androidVersioncode += 10000 * parseInt(minor);
+        androidVersioncode += 1000000 * parseInt(major);
+
+        iosVersioncode = appVersion;
+    }
+
+    defineVersioncodes();
+
     // Project configuration.
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
         clean: {
-            target: ["www/**/*"]
+            target: ["www/**/*", 'target/**/*'],
+            version: ["www/js/version.js"]
         },
         concat: {
             js: {
-                src: ['www_src/js/**/*.js'],
+                src: ['www_src/js/**/*.js','www/js/version.js'],
                 dest: 'www/js/crowd.js'
+            },
+            interface: {
+                src: ['www_src/interface/**/*.js'],
+                dest: 'www/js/interface.js'
             },
             css: {
                 src: ['www_src/style/css/*.css'],
                 dest: 'www/css/crowd.css'
-            },
-            less: {
-                src: ['www_src/style/less/*.less'],
-                dest: 'www/css/crowd.less'
             },
             libjs: {
                 src: ['www_src/lib/angular/angular-1.5.7.js',
                     'www_src/lib/onsen/js/onsenui.js',
                     'www_src/lib/onsen/js/angular-onsenui.js',
                     'www_src/lib/angular/angular-resource.min.js',
-                    'www_src/lib/angular/ng-cordova.js',
                     'www_src/lib/angular/ready.js',
                     'www_src/lib/angular/filesystem.js',
-                    'www_src/lib/angular/connection.js',
-                    'www_src/lib/angular/geolocation.js',
-                   
-                    'www_src/lib/backendless/backendless.min.js',
-                    'www_src/lib/less/less.min.js'
+                    'www_src/lib/backendless/backendless.min.js'
                 ],
                 dest: 'www/js/lib.js'
-            },
-            libcss: {
-                src: ['www_src/lib/onsen/css/onsenui.css', 'www_src/lib/onsen/css/onsen-css-components.css'],
-                dest: 'www/css/lib.css'
             }
         },
         copy: {
@@ -82,12 +103,26 @@ module.exports = function(grunt) {
                     src: '**',
                     dest: 'www/css/material-design-iconic-font',
                     expand: true
+                }, {
+                    src: 'coderunner_src.json',
+                    dest: '.',
+                    expand: true,
+                    rename: function(dest, src) {
+                        return src.replace('coderunner_src','coderunner');
+                    }
+                }, {
+                    src: 'config_src.xml',
+                    dest: '.',
+                    expand: true,
+                    rename: function(dest, src) {
+                        return src.replace('config_src','config');
+                    }
                 }]
             }
         },
         replace: {
             dbCredentials: {
-                src: ['www/js/*.js'],
+                src: ['www/js/*.js', 'coderunner.json'],
                 overwrite: true, // overwrite matched source files
                 replacements: [{
                     from: /<%=SERVER_URL%>/g,
@@ -96,8 +131,16 @@ module.exports = function(grunt) {
                     from: /<%=APPLICATION_ID%>/g,
                     to: '<%= grunt.option(\"credentials\").backendless.applicationId %>'
                 }, {
-                    from: /<%=SECRET_KEY%>/g,
-                    to: '<%= grunt.option(\"credentials\").backendless.secretKey %>'
+                    from: /<%=JS_SECRET_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.jsSecretKey %>'
+
+                }, {
+                    from: /<%=REST_SECRET_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.restSecretKey %>'
+
+                }, {
+                    from: /<%=CR_SECRET_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").backendless.crSecretKey %>'
 
                 }, {
                     from: /<%=VERSION%>/g,
@@ -105,11 +148,17 @@ module.exports = function(grunt) {
                 }]
             },
             mapsCredentials: {
-                src: ['www/main.html'],
+                src: ['www/main.html', 'config.xml'],
                 overwrite: true, // overwrite matched source files
                 replacements: [{
-                    from: /<%=MAPS_KEY%>/g,
-                    to: '<%= grunt.option(\"credentials\").googleMaps.key %>'
+                    from: /<%=MAPS_JS_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.jsKey %>'
+                }, {
+                    from: /<%=MAPS_ANDROID_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.androidKey %>'
+                }, {
+                    from: /<%=MAPS_IOS_KEY%>/g,
+                    to: '<%= grunt.option(\"credentials\").googleMaps.iosKey %>'
                 }]
             },
             reportIssue: {
@@ -119,6 +168,30 @@ module.exports = function(grunt) {
                     from: /<%=REPORT_ISSUE%>/g,
                     to: '<%= grunt.option(\"reportIssue\") %>'
                 }]
+            },
+            appVersion: {
+                src: ['config.xml'],
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: /<%=APP_VERSION%>/g,
+                    to: appVersion
+                }]
+            },
+            androidVersioncode: {
+                src: ['config.xml'],
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: /<%=ANDROID_VERSIONCODE%>/g,
+                    to: androidVersioncode
+                }]
+            },
+            iosVersioncode: {
+                src: ['config.xml'],
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: /<%=IOS_VERSIONCODE%>/g,
+                    to: iosVersioncode
+                }]
             }
         },
         uglify: {
@@ -126,7 +199,7 @@ module.exports = function(grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: 'src/<%= pkg.name %>.js',
+                src: 'js/<%= pkg.name %>.js',
                 dest: 'build/<%= pkg.name %>.min.js'
             }
         },
@@ -141,44 +214,61 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        'file-creator': {
+            version_prod: {
+                "www/js/version.js": function (fs, fd, done) {
+                    var version = pkg.version + "." + buildNumber;
+                    fs.writeSync(fd, "var version = '" + version + "';");
+                    done();
+                }
+            },
+            version_dev: {
+                "www/js/version.js": function (fs, fd, done) {
+                    fs.writeSync(fd, "var version = '" + pkg.version + "." + buildTimestamp + "';");
+                    done();
+                }
+            }
+        },
         jshint: {
             options: {
+                predef: ["angular", "window", "ons", "Backendless", 
+                "console", "google", "app", "modal", "crowdTabbar", "version", "menu", "Bodyparts",
+                "Crowd", "Place", "Device"],
                 curly: true,
                 eqeqeq: true,
                 forin: true,
                 freeze: true,
                 //maxparams: 1,
                 noarg: true,
-                nocomma: true,
                 nonbsp: true,
                 nonew: true,
                 unused: true,
                 undef: true,
-                futurehostile: true,
                 latedef: true,
                 maxcomplexity: 5,
                 browser: true,
                 reporter: 'checkstyle',
                 reporterOutput: 'target/jshint-result.xml'
             },
-            all: ['src/main/js/**/*.js']
+            all: ['www_src/js/**/*.js']
         },
-        ngtemplates: {
-            app: {
-                cwd: 'src/main/js',
-                src: '**/*.html',
-                dest: 'target/war/templates/templates.js',
-                options: {
-                    prefix: 'templates',
-                    htmlmin: {
-                        collapseWhitespace: true,
-                        removeEmptyAttributes: true
-                    }
+        less: {
+            compile: {
+                files: {
+                    'www/css/less.css': ['www_src/style/less/circle.less', 'www_src/style/less/mixins.less']
+                }
+            }
+        },
+        sass: {
+            dist: {
+                files: {
+                    'www/css/lib.css': 'www_src/lib/onsen/css/onsenui.scss'
                 }
             }
         }
     });
 
+    grunt.loadNpmTasks('grunt-file-creator');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -187,6 +277,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-sass');
 
     grunt.registerTask('setCredentials', 'asdfg', function(t) {
 		var credentials = grunt.file.readJSON('credentials.json');
@@ -196,15 +288,15 @@ module.exports = function(grunt) {
             global.credentials = credentials.prod;
         }  else if (t === 'dev_local') {
             global.credentials = credentials.dev_local;
-        } else if (t === 'dev_remote') {
-            global.credentials = credentials.dev_remote;
+        } else if (t === 'dev') {
+            global.credentials = credentials.dev;
         } else {
-            global.credentials = credentials.dev_remote;
+            global.credentials = credentials.dev;
         }
         grunt.option("credentials", global.credentials);
     });
 
-     grunt.registerTask('setReportIssue', 'asdfg', function(t) {
+    grunt.registerTask('setReportIssue', 'asdfg', function(t) {
         if (t === 'alpha') {
             global.reportIssue = true;
         } else if (t === 'prod') {
@@ -216,8 +308,9 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('delete', ['clean']);
-    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'concat', 'copy', 'replace']);
-    grunt.registerTask('dev_remote', ['clean', 'setCredentials:dev_remote', 'setReportIssue:dev_remote', 'concat', 'copy', 'replace']);
-	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'concat', 'copy', 'replace']);
-	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'concat', 'copy', 'replace']);
+    grunt.registerTask('dev_local', ['clean', 'setCredentials:dev_local', 'setReportIssue:dev_local', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+    grunt.registerTask('dev', ['clean', 'jshint', 'setCredentials:dev', 'setReportIssue:dev', 'copy', 'file-creator:version_dev', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+	grunt.registerTask('alpha', ['clean', 'setCredentials:alpha', 'setReportIssue:alpha', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+	grunt.registerTask('prod', ['clean', 'setCredentials:prod', 'setReportIssue:prod', 'copy', 'file-creator:version_prod', 'concat', 'replace', 'less:compile', 'sass', 'clean:version']);
+    grunt.registerTask('default', ['dev']);
 };

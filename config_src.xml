@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.oztemur.howcrowd" version="<%=APP_VERSION%>" android-versionCode="<%=ANDROID_VERSIONCODE%>" ios-CFBundleVersion="<%=IOS_VERSIONCODE%>" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>HowCrowd</name>
+    <description>
+        HowCrowd is an application that provides how places are crowded.
+    </description>
+    <author email="support@howcrowdapp.com" href="http://howcrowdapp.com">
+        HowCrowd Team
+    </author>
+    <content src="index.html" />
+    <engine name="android" spec="5.2.1"/>
+    <plugin name="cl.rmd.cordova.dialoggps" spec="https://github.com/rodrigo-martinezd/cordova-dialog-gps.git#v0.0.2"/>
+    <plugin name="cordova-plugin-camera" spec="2.2.0"/>
+    <plugin name="cordova-plugin-compat" spec="1.0.0"/>
+    <plugin name="cordova-plugin-device" spec="1.1.2"/>
+    <plugin name="cordova-plugin-file" spec="3.0.0"/>
+    <plugin name="cordova-plugin-geolocation" spec="1.0.1"/>
+    <plugin name="cordova-plugin-globalization" spec="1.0.2"/>
+    <plugin name="cordova-plugin-network-information" spec="https://git-wip-us.apache.org/repos/asf/cordova-plugin-network-information.git"/>
+    <plugin name="cordova-plugin-splashscreen" spec="3.2.2"/>
+    <plugin name="cordova.plugin.diagnostic.api-22" spec="https://github.com/dpa99c/cordova-diagnostic-plugin.git#api-22"/>
+	<plugin name="cordova-plugin-x-socialsharing" spec="https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git"/>
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+	<plugin name="cordova-plugin-googlemaps" spec="https://github.com/mapsplugin/cordova-plugin-googlemaps.git">
+	   <variable name="API_KEY_FOR_ANDROID" value="<%=MAPS_ANDROID_KEY%>" />
+	   <variable name="API_KEY_FOR_IOS" value="<%=MAPS_IOS_KEY%>" />
+	</plugin>
+
+    <preference name="permissions" value="none"/>
+    <preference name="orientation" value="default"/>
+    <preference name="target-device" value="universal"/>
+    <preference name="webviewbounce" value="true"/>
+    <preference name="prerendered-icon" value="true"/>
+    <preference name="stay-in-webview" value="false"/>
+    <preference name="ios-statusbarstyle" value="black-opaque"/>
+    <preference name="detect-data-types" value="true"/>
+    <preference name="exit-on-suspend" value="false"/>
+
+    <preference name="ShowSplashScreenSpinner" value="false"/>
+    <preference name="FadeSplashScreen" value="false"/>
+    <preference name="AutoHideSplashScreen" value="false" />
+    <preference name="SplashShowOnlyFirstTime" value="false" />
+    
+    <preference name="disable-cursor" value="false"/>
+    <preference name="android-minSdkVersion" value="14"/>
+    <preference name="android-installLocation" value="auto"/>
+    <preference name="AndroidPersistentFileLocation" value="Compatibility"/>
+
+    <!-- <icon src="icon.png"/> -->
+    <icon density="ldpi" platform="android" src="www/res/icon/android/icon-36-ldpi.png"/>
+    <icon density="mdpi" platform="android" src="www/res/icon/android/icon-48-mdpi.png"/>
+    <icon density="hdpi" platform="android" src="www/res/icon/android/icon-72-hdpi.png"/>
+    <icon density="xhdpi" platform="android" src="www/res/icon/android/icon-96-xhdpi.png"/>
+    <icon density="xhdpi" platform="android" src="www/res/icon/android/icon-96-xhdpi.png"/>
+    <icon density="xxhdpi" platform="android" src="www/res/icon/android/icon-144-xxhdpi.png"/>
+    <icon density="xxxhdpi" platform="android" src="www/res/icon/android/icon-192-xxxhdpi.png"/>
+    <icon platform="blackberry" src="www/res/icon/blackberry/icon-80.png"/>
+    <icon platform="blackberry" state="hover" src="www/res/icon/blackberry/icon-80.png"/>
+    <icon platform="ios" height="57" src="www/res/icon/ios/icon-57.png" width="57"/>
+    <icon platform="ios" height="72" src="www/res/icon/ios/icon-72.png" width="72"/>
+    <icon platform="ios" height="114" src="www/res/icon/ios/icon-57-2x.png" width="114"/>
+    <icon platform="ios" height="144" src="www/res/icon/ios/icon-72-2x.png" width="144"/>
+    <icon platform="webos" src="www/res/icon/webos/icon-64.png"/>
+    <icon platform="winphone" src="www/res/icon/windows-phone/icon-48.png"/>
+    <icon platform="winphone" role="background" src="www/res/icon/windows-phone/icon-173-tile.png"/>
+
+    <splash platform="android" density="port-ldpi" src="www/res/screen/android/screen-ldpi-portrait.png"/>
+    <splash platform="android" density="port-mdpi" src="www/res/screen/android/screen-mdpi-portrait.png"/>
+    <splash platform="android" density="port-hdpi" src="www/res/screen/android/screen-hdpi-portrait.png"/>
+    <splash platform="android" density="port-xhdpi" src="www/res/screen/android/screen-xhdpi-portrait.png"/>
+    <splash platform="ios" height="480" src="www/res/screen/ios/screen-iphone-portrait.png" width="320"/>
+    <splash platform="ios" height="960" src="www/res/screen/ios/screen-iphone-portrait-2x.png" width="640"/>
+    <splash platform="ios" height="1136" src="www/res/screen/ios/screen-iphone-portrait-568h-2x.png" width="640"/>
+    <splash platform="ios" height="1024" src="www/res/screen/ios/screen-ipad-portrait.png" width="768"/>
+    <splash platform="ios" height="768" src="www/res/screen/ios/screen-ipad-landscape.png" width="1024"/>
+
+    <access origin="*" />
+
+    <allow-navigation href="http://*/*" />
+
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
+    <platform name="ios">
+        <allow-intent href="itms:*" />
+        <allow-intent href="itms-apps:*" />
+    </platform>
+</widget>

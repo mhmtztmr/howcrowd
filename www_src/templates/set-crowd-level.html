@@ -1,37 +1,35 @@
 <div ng-controller="setCrowdLevelController">
-<ons-page>
-  <ons-toolbar>
-    <div class="left">
-      <ons-back-button></ons-back-button>
-    </div>
-    <div class="center">
-      <div ng-if="selectedPlace !== undefined">
-        <div class="crowd-name truncate">
-          <!-- <img ng-src="img/sources/{{selectedPlace.source}}.png" /> -->
-          <ons-icon ng-if="selectedPlace.placeSource ==='custom'" icon="fa-map-signs"></ons-icon>
-          {{selectedPlace.name}}
-        </div>
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-back-button></ons-back-button>
       </div>
-      <input ng-if="selectedPlace === undefined" class="search-crowd truncate" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName" class="text-input text-input--underbar" />
-    </div>
-  </ons-toolbar>
-
-  <ons-list>
-    <ons-list-item modifier="tappable" ng-click="insertCrowd(level.value, customPlaceName);app.navi.popPage();" ng-repeat="level in levels">
-      <ons-row align="center">
-        <ons-col>
-            {{$root.lang.CROWD_VALUES[level.value]}}
-        </ons-col>
-        <ons-col width="40px" class="crowd-last-value">
-          <div class="c100 p{{level.value}} crowd-size center">
-            <div class="slice">
-              <div class="bar"></div>
-              <div class="fill"></div>
-            </div>
+      <div class="center">
+        <div ng-if="selectedPlace !== undefined && customPlaceName.value.length === 0">
+          <div class="crowd-name truncate">
+            <ons-icon ng-if="selectedPlace.source ==='custom'" icon="fa-{{selectedPlace.typeObject.FA_ICON}}"></ons-icon>
+            {{selectedPlace.name}}
           </div>
-        </ons-col>
-      </ons-row>
-    </ons-list-item>
-  </ons-list>
+        </div>
+        <input id="customCrowdName" ng-if="selectedPlace === undefined || customPlaceName.value.length > 0" class="search-crowd truncate" type="text" placeholder="{{$root.lang.SET_CROWD_MENU.PLACE_NAME}}" ng-model="$parent.customPlaceName.value" class="text-input text-input--underbar" />
+      </div>
+    </ons-toolbar>
+    <ons-list>
+      <ons-list-item modifier="tappable" ng-click="selectCrowd(levels.indexOf(level))" ng-repeat="level in levels">
+        <ons-row align="center">
+          <ons-col>
+              {{level.text}}
+          </ons-col>
+          <ons-col width="40px" class="crowd-last-value">
+            <div class="c100 p{{level.value}} crowd-size center">
+              <div class="slice">
+                <div class="bar"></div>
+                <div class="fill"></div>
+              </div>
+            </div>
+          </ons-col>
+        </ons-row>
+      </ons-list-item>
+    </ons-list>
   </ons-page>
 </div>
